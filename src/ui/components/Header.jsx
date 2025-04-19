@@ -1,14 +1,18 @@
-import React, { Children } from 'react';
 
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const Header = ({ children }) => {
-    return (
-      <div className="flex justify-center h-screen px-10">
-        <h1 className="text-4xl font-bold text-[#f5f5dc] font-sans">
-          {children}
-        </h1>
-      </div>
-    );
-  };
+const Header = ({ text, className = '' }) => {
+  return (
+    <h1 className={`text-4xl font-bold text-[#f5f5dc] font-sans ${className}`}>
+      {text}
+    </h1>
+  );
+};
 
-  export default Header;
+Header.propTypes = {
+  text: PropTypes.string.isRequired,
+  className: PropTypes.string,
+};
+
+export default Header;

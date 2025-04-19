@@ -5,3 +5,7 @@
   --font-sans: "Poppins", "serif";
   --font-primary: "Roboto", "sans-serif";
 }
+
+h1, h2, h3, h4, h5, h6, p, span, button, input, label, li, a {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
