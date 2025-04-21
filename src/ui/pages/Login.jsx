@@ -1,3 +1,7 @@
+import TextForgotPass from "../components/TextForgotPass";
+
 export default function Login() {
-  return <div>Hello from login</div>;
-}
+  return(
+    <TextForgotPass />
+  );
+};
