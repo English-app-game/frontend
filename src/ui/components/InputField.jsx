@@ -1,14 +1,17 @@
 import React from "react";
 
-const InputField = ({ type, placeholder, text }) => {
+const InputField = ({ id, type, placeholder, text, title, onChange }) => {
   return (
     <div className="flex justify-start">
-      <div className=" p-1 rounded-xl  w-96 'text-sky-900'">
-        <h3 className="text-l font-bold mb-1 text-white">{text}</h3>
+      <div className=" p-1 rounded-xl w-96 text-sky-900 flex flex-col">
+        <label className="text-lg font-bold mb-2 text-white" htmlFor={id}>{text}</label>
         <input
           className="bg-white w-70 px-3 py-1 border rounded focus:outline-none focus:ring-1 focus:ring-white border-white"
+          id={id}
           type={type}
           placeholder={placeholder}
+          title={title}
+          onChange={onChange}
         />
       </div>
     </div>
