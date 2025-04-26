@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputField = ({ id, type, placeholder, text, title, onChange }) => {
+const InputField = ({ id, type, placeholder, text, title, onChange, value }) => {
   return (
     <div className="flex justify-start">
       <div className=" p-1 rounded-xl w-96 text-sky-900 flex flex-col">
@@ -12,6 +12,7 @@ const InputField = ({ id, type, placeholder, text, title, onChange }) => {
           placeholder={placeholder}
           title={title}
           onChange={onChange}
+          value={value}
         />
       </div>
     </div>
