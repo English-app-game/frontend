@@ -10,13 +10,13 @@ export default function Home() {
       />
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full ">
-        <h1 className="text-[#000080] bg-[#B2F8F5] text-5xl font-bold mb-4 ">
+        <h1 className="text-[#000080] bg-[#9CF2F9] text-6xl font-bold mb-4 ">
           WELCOME TO
         </h1>
-        <h1 className="text-[#000080] bg-[#B2F8F5] text-6xl font-bold mb-4">
+        <h1 className="text-[#000080] bg-[#9CF2F9] text-7xl font-bold mb-4">
           SPEALISH
         </h1>
-        <h1 className="text-blue-400 bg-[#B2F8F5] text-2xl font-bold mb-6">
+        <h1 className="text-blue-400 bg-[#9CF2F9] text-3xl font-bold mb-6">
           Learn English with us!
         </h1>
         <PrimaryButton text="START" />
