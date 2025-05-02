@@ -1,5 +1,3 @@
-import PrimaryButton from "../components/PrimaryButton";
-
 export default function Home() {
   return (
     <div className="relative w-full h-screen overflow-hidden">
