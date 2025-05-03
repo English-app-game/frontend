@@ -25,7 +25,7 @@ export default function WaitingRoom() {
   const host = "PLAYER1";
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-teal-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
       <RoomHeader />
       <PlayersList playersAtGame={playersAtGame} host={host} />
       <RoomFooter copied={copied} handleCopy={handleCopy} handleStart={handleStart} />
