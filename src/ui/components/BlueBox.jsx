@@ -1,11 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const BlueBox = ({ children, className = "", override = false }) => {
-  const defaultClasses = "min-h-[400px] bg-[#137f95] rounded-xl p-8 w-full max-w-md mx-auto shadow-lg";
+const BlueBox = ({ children, className = "", size = "medium" }) => {
+  const boxSizes = {
+    small: "max-w-md",
+    medium: "max-w-md mx-auto",
+    large: "w-[45rem] h-[24rem]"
+  };
+
+  const sizeClass = boxSizes[size] || boxSizes.medium;
 
   return (
-    <div className={`${override ? className : `${defaultClasses} ${className}`}`}>
+    <div className={`min-h-[400px] bg-[#137f95] rounded-xl p-8 shadow-lg ${sizeClass} ${className}`}>
       {children}
     </div>
   );
@@ -14,7 +20,7 @@ const BlueBox = ({ children, className = "", override = false }) => {
 BlueBox.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  override: PropTypes.bool, 
+  size: PropTypes.oneOf(["small", "medium", "large"]),
 };
 
 export default BlueBox;
