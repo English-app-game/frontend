@@ -7,8 +7,6 @@ import Header from "../components/Header";
 import * as avatars from "../../assets/index";
 
 export default function Register() {
-  const navigate = useNavigate();
-
   return (
     <>
       <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
@@ -22,7 +20,6 @@ export default function Register() {
               <PrimaryButton
                 text="REGISTER"
                 className="float-right mt-4 ml-4"
-                onClick={() => navigate("/login")}
               />
             </div>
             <h3 className="text-white">Choose your Avatar:</h3>
