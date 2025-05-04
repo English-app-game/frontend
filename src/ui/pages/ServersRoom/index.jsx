@@ -3,7 +3,7 @@ import Main from "./Main";
 import Footer from "./Footer";
 
 // rooms temp data
-const rooms = Array.from({ length: 8 }, (_, index) => index);
+const rooms = Array.from({ length: 50 }, (_, index) => index);
 
 export default function ServersRoom() {
   return (

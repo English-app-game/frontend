@@ -2,7 +2,7 @@ import JoinGameRoom from "../../components/JoinGameRoom";
 
 export default function Main({ rooms }) {
   return (
-    <main className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 justify-items-center">
+    <main className="flex-1 overflow-y-scroll grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 justify-items-center pb-36 sm:pb-36">
       {rooms.map((_, index) => (
         <JoinGameRoom
           id={index}
