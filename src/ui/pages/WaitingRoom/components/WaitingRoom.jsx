@@ -1,8 +1,8 @@
-import RoomHeader from "./WaitingRoom/components/RoomHeader";
-import PlayersList from "./WaitingRoom/components/PlayerList";
-import RoomFooter from "./WaitingRoom/components/RoomFooter";
+import RoomHeader from "./RoomHeader";
+import PlayersList from "./PlayerList";
+import RoomFooter from "./RoomFooter";
 
-import { ROUTES } from "../../routes/routes_consts";
+import { ROUTES } from "../../../../routes/routes_consts";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
