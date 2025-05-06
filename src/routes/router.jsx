@@ -5,7 +5,7 @@ import Login from "../ui/pages/Login";
 import LoginGuest from "../ui/pages/LoginGuest";
 import Register from "../ui/pages/Register";
 import ServersRoom from "../ui/pages/ServersRoom";
-import CreateRoom from "../ui/pages/CreateRoom";
+import CreateRoom from "../ui/pages/CreateRoom/CreateRoom";
 import WaitingRoom from "../ui/pages/WaitingRoom/components/WaitingRoom";
 import ActiveRoom from "../ui/pages/ActiveRoom";
 import { Error as ErrorPage } from "../ui/pages/Error";
