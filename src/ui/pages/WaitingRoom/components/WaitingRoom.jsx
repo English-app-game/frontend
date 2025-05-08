@@ -6,6 +6,9 @@ import useAuthRedirect from "@hooks/useAuthRedirect";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useNavigate } from 'react-router-dom';
 import { useState,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function WaitingRoom() {
   const navigate = useNavigate();
@@ -13,6 +16,8 @@ export default function WaitingRoom() {
 
   useAuthRedirect();
   
+  const room = useSelector((store) => store.room);
+  console.log(room);
   const handleCopy = () => {
     navigator.clipboard.writeText("1KO4W7H");
     setCopied(true);
@@ -20,7 +25,7 @@ export default function WaitingRoom() {
   };
 
   const handleStart = () => {
-    const roomId = "1KO4W7H"; //for now I did it manualy 
+    const roomId = "1KO4W7H"; //for now I did it manualy
     navigate(ROUTES.ACTIVE_ROOM(roomId));
   };
 
@@ -31,7 +36,11 @@ export default function WaitingRoom() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
       <RoomHeader />
       <PlayersList playersAtGame={playersAtGame} host={host} />
-      <RoomFooter copied={copied} handleCopy={handleCopy} handleStart={handleStart} />
+      <RoomFooter
+        copied={copied}
+        handleCopy={handleCopy}
+        handleStart={handleStart}
+      />
     </div>
   );
 }
