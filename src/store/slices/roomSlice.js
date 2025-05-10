@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { GameTypes, RoomStatus } from "../../consts/gameTypes";
+import { formatDateAndTime } from "../../services/dateService";
 
 // Initial State aligned with your GameRoom schema
 const initialState = {
@@ -12,7 +14,7 @@ const initialState = {
     //   name: '',
     // }
   ],
-  gameType: "translation", // GameType, required
+  gameType: GameTypes.TRANSLATION, // GameType, required
   level: "", // string, required
   key: null, // string, not required
   isActive: false, // boolean, true
@@ -21,8 +23,8 @@ const initialState = {
     userId: "",
     name: "",
   },
-  currentStatus: "waiting", // 'waiting' | 'playing' | 'finished' | 'error', required
-  createdAt: new Date().toISOString(), // required
+  currentStatus: RoomStatus.WAITING, // 'waiting' | 'playing' | 'finished' | 'error', required
+  createdAt: "", // required
   finishedAt: null, //optional
   chat: [
     // Record<User.name, Message> -- User.name is typeof string, message is typeof string, so techincally Record<string, string>.
@@ -44,7 +46,7 @@ const roomSlice = createSlice({
       state.amountOfPlayers = 1;
       state.maxPlayers = 4; // or dynamically based on game type
       state.players = [TEMP_USER];
-      state.gameType = "translation";
+      state.gameType = GameTypes.TRANSLATION;
       state.level = level;
       state.key = null;
       state.isActive = true;
@@ -53,7 +55,7 @@ const roomSlice = createSlice({
         name: TEMP_USER.name,
       };
       state.currentStatus = status;
-      state.createdAt = new Date().toISOString();
+      state.createdAt = formatDateAndTime(new Date());
       state.finishedAt = null;
       state.chat = [];
     },
