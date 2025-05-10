@@ -37,11 +37,11 @@ const CreateRoom = () => {
       return;
     }
 
-    // Assuming user already exists here, because it passed check in './ServersRoom/Footer.handleCreateRoomClick'.
+    //TODO: Assuming user already exists here, because it passed check in './ServersRoom/Footer.handleCreateRoomClick'.
     // console.log(level, status);
 
     const newRoomId = crypto.randomUUID();
-    //  here i also need to add async middleware to handle adding the room to db but i need to wait for db implementation
+    //TODO:  here i also need to add async middleware to handle adding the room to db but i need to wait for db implementation
     dispatch(createRoom({ newRoomId, TEMP_USER, level, status }));
 
     navigate(WAITING_ROOM(newRoomId));
