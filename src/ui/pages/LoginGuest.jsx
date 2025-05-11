@@ -4,30 +4,83 @@ import InputField from "../components/InputField";
 import * as avatars from "../../assets/index";
 import AvatarImg from "../components/AvatarImg";
 import PrimaryButton from "../components/PrimaryButton";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 
 export default function LoginGuest() {
-  return (
-      <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-        <div className="pt-10 w-full">
-          <BlueBox className="pr-3 ">
-            <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
-            <div className="pt-7">
-              <InputField text="User Name" />
-            </div>
-            <div className="pt-7">
-            <PrimaryButton
-                text="LET'S GO!"
-                className="float-right mt-4 ml-4"
-              />
-              <h3 className="text-white">Choose your Avatar:</h3>
-              <div className="grid grid-cols-5 gap-1">
-                {Object.entries(avatars).map(([key, src]) => (
-                  <AvatarImg key={key} src={src} alt={key} />
-                ))}
-              </div>
-            </div>
-          </BlueBox>
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [usernameError, setUsernameError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
+
+  const handleLogin = () => {
+    let hasError = false;
+  
+    if (!username.trim()) {
+      setUsernameError("Username is required");
+      hasError = true;
+    } else {
+      setUsernameError("");
+    }
+  
+    if (!selectedAvatar) {
+      setAvatarError("Please choose an avatar");
+      hasError = true;
+    } else {
+      setAvatarError("");
+    }
+  
+    if (hasError) return;
+  
+    const guestUser = {
+      name: username,
+      avatarImg: selectedAvatar,
+    };
+  
+    localStorage.setItem("guestUser", JSON.stringify(guestUser));
+    navigate("/rooms");
+  };
+
+return (
+  <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
+    <div className="pt-10 w-full">
+      <BlueBox className="pr-3 ">
+        <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
+        <div className="pt-7">
+          <InputField
+            text="User Name"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your name"
+          />
         </div>
-      </div>
-  );
+        <div className="pt-7">
+          <PrimaryButton
+            text="LET'S GO!"
+            className="float-right mt-4 ml-4"
+            onClick={handleLogin}
+          />
+          <h3 className="text-white mb-2">Choose your Avatar:</h3>
+          <div className="grid grid-cols-5 gap-1">
+            {Object.entries(avatars).map(([key, src]) => (
+              <div
+                key={key}
+                onClick={() => setSelectedAvatar(src)}
+                className={`cursor-pointer transition transform duration-200 rounded-xl overflow-hidden border-2 
+                  ${selectedAvatar === src
+                    ? "scale-110 border-transparent"
+                    : "opacity-80 hover:scale-105 border-transparent"
+                  }`}
+              >
+                <AvatarImg src={src} alt={key} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </BlueBox>
+    </div>
+  </div>
+);
 }
