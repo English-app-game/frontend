@@ -9,8 +9,6 @@ import { useState } from "react";
 import { loginGuest } from "../../services/auth.js";
 import { ROOMS_LIST } from "../../routes/routes_consts.js"
 
-
-
 export default function LoginGuest() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
