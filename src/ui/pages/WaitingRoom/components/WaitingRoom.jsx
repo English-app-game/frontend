@@ -5,24 +5,43 @@ import RoomFooter from "./RoomFooter";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
+import socket from "../../../../sockets/socket";
 
 export default function WaitingRoom() {
+  const { id: roomId } = useParams();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [playersAtGame, setPlayersAtGame] = useState([]);
+  const host = playersAtGame[0] || "HOST";
+
+  useEffect(() => {
+
+    socket.emit("joinRoom", roomId);
+    socket.on("roomsList", (rooms) => {
+      const room = rooms.find((r) => r.id === roomId);
+      if (room) {
+        const players = room.players || Array(room.currentPlayers).fill("Player");
+        setPlayersAtGame(players);
+      }
+    });
+
+    return () => {
+      socket.emit("leaveRoom", roomId);
+      socket.off("roomsList");
+    };
+  }, [roomId]);
+
 
   const handleCopy = () => {
-    navigator.clipboard.writeText("1KO4W7H");
+    navigator.clipboard.writeText(roomId);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
   const handleStart = () => {
-    const roomId = "1KO4W7H"; //for now I did it manualy 
     navigate(ROUTES.ACTIVE_ROOM(roomId));
   };
 
-  const playersAtGame = ["PLAYER1", "PLAYER2", "PLAYER4", "PLAYER5"];
-  const host = "PLAYER1";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
