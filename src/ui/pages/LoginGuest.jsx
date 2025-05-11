@@ -8,8 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginGuest } from "../../services/auth.js";
 
-
-
 export default function LoginGuest() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
