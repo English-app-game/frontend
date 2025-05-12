@@ -5,8 +5,9 @@ import PrimaryButton from "../components/PrimaryButton";
 import Header from "../components/Header";
 import * as avatars from "../../assets/index";
 import { useState } from "react";
-import {handleRegister} from "../../utils/handleRegister"
+import { handleRegister } from "../../utils/handleRegister";
 import { useNavigate } from "react-router-dom";
+import { handleInputChange, handleAvatarClick, onSubmitRegister, toggleShowPassword } from "../../utils/handleRegister";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Register() {
     email: "",
     password: "",
     avatarImg: "",
-    lastLogin: new Date()
+    lastLogin: new Date(),
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setshowPassword] = useState(false);
@@ -30,13 +31,11 @@ export default function Register() {
               <InputField
                 text="User"
                 value={dataform.name}
-                onChange={(e) =>
-                  setDataform({ ...dataform, name: e.target.value })
+                onChange={
+                  (handleInputChange("name", dataform, setDataform))
                 }
+                error={errors.name}
               />
-              {errors.name && (
-                <p className="text-black text-sm mt-1">{errors.name}</p>
-              )}
               {errors.general === "User name already in use" && (
                 <p className="text-black text-sm mt-1">{errors.general}</p>
               )}
@@ -45,39 +44,33 @@ export default function Register() {
                   text="Password"
                   type={showPassword ? "text" : "password"}
                   value={dataform.password}
-                  onChange={(e) =>
-                    setDataform({ ...dataform, password: e.target.value })
+                  onChange={
+                    (handleInputChange("password", dataform, setDataform))
                   }
+                  error={errors.password}
                 />
                 <span
                   className="absolute top-9 right-19 cursor-pointer text-gray-600"
-                  onClick={() => setshowPassword(!showPassword)}
+                  onClick={toggleShowPassword(showPassword,setshowPassword)}
                 >
                   👁️
                 </span>
               </div>
-              {errors.password && (
-                <p className="text-black text-sm mt-1">{errors.password}</p>
-              )}
               <InputField
                 text="Email"
                 value={dataform.email}
-                onChange={(e) =>
-                  setDataform({ ...dataform, email: e.target.value })
+                onChange={
+                  (handleInputChange("email", dataform, setDataform))
                 }
+                error={errors.email}
               />
-              {errors.email && (
-                <p className="text-black text-sm mt-1">{errors.email}</p>
-              )}
               {errors.general === "Email already in use" && (
                 <p className="text-black text-sm mt-1">{errors.general}</p>
               )}
               <PrimaryButton
                 text="REGISTER"
                 className="float-right mt-4 ml-4"
-                onClick={() => {
-                  handleRegister(dataform,setErrors,navigate);
-                }}
+                onClick={onSubmitRegister(dataform,setErrors,navigate)}
               />
             </div>
             <h3 className="text-white">Choose your Avatar:</h3>
@@ -85,7 +78,7 @@ export default function Register() {
               {Object.entries(avatars).map(([key, src]) => (
                 <div
                   key={key}
-                  onClick={() => setDataform({ ...dataform, avatarImg: src })}
+                  onClick={handleAvatarClick(src, dataform, setDataform)}
                   className={`cursor-pointer rounded-xl ${
                     dataform.avatarImg === src ? "ring-4 ring-green-500" : ""
                   }`}
