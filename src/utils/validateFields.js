@@ -5,8 +5,6 @@ export function validateRegister(dataform) {
       errors.name = "Username is required";
     } else if (!/^[A-Za-z0-9]+$/.test(dataform.name)) {
       errors.name = "Only letters allowed";
-    } else if (dataform.name.length > 10) {
-      errors.name = "Username too long";
     }
   
     if (!dataform.email.trim()) {
