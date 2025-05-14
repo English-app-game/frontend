@@ -4,15 +4,11 @@ import Footer from "./Footer";
 import { useState, useEffect } from "react";
 
 
-
-// rooms temp data
-// const rooms = Array.from({ length: 50 }, (_, index) => index);
-
 export default function ServersRoom() {
 
    const [rooms, setRooms] = useState([]);
 
-   useEffect=>(()=>{
+   useEffect(()=>{
       const fetchRooms = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/rooms"); 
