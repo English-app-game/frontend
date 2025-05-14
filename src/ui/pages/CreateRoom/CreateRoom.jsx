@@ -5,19 +5,18 @@ import PrimaryButton from "../../../ui/components/PrimaryButton";
 import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
 import { useDispatch } from "react-redux";
-import { createRoom } from "../../../store/slices/roomSlice";
+import { createRoom } from "../../../store/thunks/createRoomThunk";
 import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
 
 const TEMP_USER = {
-  userId: "user123",
+  // this user ID has to be real ID from db.
+  _id: "681f7a077d51665473dbe491", 
   name: "Alice Example",
   email: "alice@example.com",
-  birthday: "1995-06-21", // ISO string or YYYY-MM-DD
   password: "securePassword123!",
-  avatarImg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...", // string for base64 or image URL
+  avatarImg: "https://api.dicebear.com/7.x/adventurer/svg?seed=Alice",
   lastLogin: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
 };
 
 const CreateRoom = () => {
@@ -36,11 +35,12 @@ const CreateRoom = () => {
     //TODO: Assuming user already exists here, because it passed check in './ServersRoom/Footer.handleCreateRoomClick'.
     // console.log(level, status);
 
-    const newRoomId = crypto.randomUUID();
-    //TODO:  here i also need to add async middleware to handle adding the room to db but i need to wait for db implementation
-    dispatch(createRoom({ newRoomId, TEMP_USER, level, status }));
+    const key = crypto.randomUUID();
+    dispatch(
+      createRoom({ key, users: TEMP_USER, level, status, admin: TEMP_USER })
+    );
 
-    navigate(WAITING_ROOM(newRoomId));
+    navigate(WAITING_ROOM(key));
   };
 
   return (

@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { GameTypes, RoomStatus } from "../../consts/gameTypes";
-import { formatDateAndTime } from "../../services/dateService";
+import { createRoom as createRoomMiddleware } from "../thunks/createRoomThunk";
 
 // Initial State aligned with your GameRoom schema
 const initialState = {
-  roomId: "", //string, required
+  // changeroomId to key
+  // roomId: "", //string, required
   amountOfPlayers: 0, //int, required
   maxPlayers: 0, // int , required
   players: [
@@ -16,7 +17,8 @@ const initialState = {
   ],
   gameType: GameTypes.TRANSLATION, // GameType, required
   level: "", // string, required
-  key: null, // string, not required
+  // this is roomId
+  // key: null, // string, not required
   isActive: false, // boolean, true
   admin: {
     // User, required
@@ -38,29 +40,25 @@ const initialState = {
 const roomSlice = createSlice({
   name: "room",
   initialState,
-  reducers: {
-    createRoom(state, action) {
-      const { newRoomId: roomId, TEMP_USER, level, status } = action.payload;
-
-      state.roomId = roomId;
-      state.amountOfPlayers = 1;
-      state.maxPlayers = 4; // or dynamically based on game type
-      state.players = [TEMP_USER];
-      state.gameType = GameTypes.TRANSLATION;
-      state.level = level;
-      state.key = null;
-      state.isActive = true;
-      state.admin = {
-        userId: TEMP_USER.userId,
-        name: TEMP_USER.name,
-      };
-      state.currentStatus = status;
-      state.createdAt = formatDateAndTime(new Date());
-      state.finishedAt = null;
-      state.chat = [];
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(createRoomMiddleware.fulfilled, (state, action) => {
+      const room = action.payload;
+      state.key = room.key;
+      state.amountOfPlayers = room.amountOfPlayers;
+      state.maxPlayers = room.maxPlayers;
+      state.players = room.players;
+      state.gameType = room.gameType;
+      state.level = room.level;
+      state.isActive = room.isActive;
+      state.admin = room.admin;
+      state.currentStatus = room.currentStatus;
+      state.createdAt = room.createdAt;
+      state.finishedAt = room.finishedAt || null;
+      state.chat = room.chat || [];
+    });
   },
 });
 
-export const { createRoom } = roomSlice.actions;
+// export const { createRoom } = roomSlice.actions;
 export default roomSlice.reducer;
