@@ -14,7 +14,7 @@ export default function Footer({ rooms }) {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  function handleJoinRoom(e) {
+   function handleJoinRoom(e) { 
     e.preventDefault();
 
     const formData = new FormData(e.target);

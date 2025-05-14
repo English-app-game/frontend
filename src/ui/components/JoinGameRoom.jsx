@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 
-const JoinGameRoom = ({ id, currentPlayers, capacity, onJoinAttempt, className = 'w-45' }) => {
+const JoinGameRoom = ({ id, currentPlayers,displayIndex, capacity, onJoinAttempt, className = 'w-45' }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -28,7 +28,7 @@ const JoinGameRoom = ({ id, currentPlayers, capacity, onJoinAttempt, className =
       className={`h-auto flex flex-col items-center hover:cursor-pointer ${className}`}
       onClick={handleClick}
     >
-      <p className='font-bold text-2xl'>ROOM {id + 1}</p>
+      <p className='font-bold text-2xl'>ROOM {displayIndex + 1}</p>
       <div className={`relative ${className}  shadow-md hover:shadow-none h-auto`}>
         <img
           src={joinRoomIcon}
@@ -44,7 +44,8 @@ const JoinGameRoom = ({ id, currentPlayers, capacity, onJoinAttempt, className =
 };
 
 JoinGameRoom.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  displayIndex: PropTypes.number.isRequired,
   currentPlayers: PropTypes.number.isRequired,
   capacity: PropTypes.number.isRequired,
   onJoinAttempt: PropTypes.func,
