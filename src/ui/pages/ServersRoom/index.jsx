@@ -5,16 +5,12 @@ import useAuthRedirect from "@hooks/useAuthRedirect";
 import { useState, useEffect } from "react";
 
 
-
-// rooms temp data
-// const rooms = Array.from({ length: 50 }, (_, index) => index);
-
 export default function ServersRoom() {
 
   useAuthRedirect();
    const [rooms, setRooms] = useState([]);
 
-   useEffect=>(()=>{
+   useEffect(()=>{
       const fetchRooms = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/rooms"); 

@@ -12,7 +12,7 @@ export default function Main({ rooms }) {
           id={room.key}
           currentPlayers={room.amountOfPlayers}
           displayIndex={index} 
-          capacity={5}
+          capacity={room.maxPlayers}
           key={room.key}
           className="w-32 sm:w-52"
         />
