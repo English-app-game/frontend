@@ -2,28 +2,28 @@ import Nav from "./Nav";
 import Main from "./Main";
 import Footer from "./Footer";
 import { useState, useEffect } from "react";
+import { fetchRooms } from "../../../services/room/getRooms"; 
+
 
 
 export default function ServersRoom() {
 
    const [rooms, setRooms] = useState([]);
 
-   useEffect(()=>{
-      const fetchRooms = async () => {
+  useEffect(() => {
+    const getRooms = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/rooms"); 
-        const data = await res.json();
-        console.log("📦 Rooms from backend:", data); // 🔹first check
-
+        const data = await fetchRooms();
+        console.log("📦 Rooms from service:", data);
         setRooms(data);
       } catch (err) {
-        console.error("Failed to fetch rooms:", err);
+        console.error("Error loading rooms:", err);
       }
     };
 
-    fetchRooms();
+    getRooms();
+  }, []);
 
-   }, []);
 
   return (
     <div className="flex flex-col h-screen bg-secondary relative">
