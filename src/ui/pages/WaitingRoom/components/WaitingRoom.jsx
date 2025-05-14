@@ -4,9 +4,8 @@ import RoomFooter from "./RoomFooter";
 import useAuthRedirect from "@hooks/useAuthRedirect";
 
 import { ROUTES } from "../../../../routes/routes_consts";
-import { useNavigate } from 'react-router-dom';
 import { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -24,13 +23,14 @@ export default function WaitingRoom() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const handleStart = () => {
-    const roomId = "1KO4W7H"; //for now I did it manualy
-    navigate(ROUTES.ACTIVE_ROOM(roomId));
+   const handleStart = () => {
+    navigate(ROUTES.ACTIVE_ROOM(roomKey));
   };
-
-  const playersAtGame = ["PLAYER1", "PLAYER2", "PLAYER4", "PLAYER5"];
-  const host = "PLAYER1";
+  
+  const { id: roomKey } = useParams();
+  //for now it manualy. Itay and I need to solve something in the DB
+  const playersAtGame = ["Liad", "Tomer", "Itay"];
+  const host = "Liad";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
@@ -40,6 +40,7 @@ export default function WaitingRoom() {
         copied={copied}
         handleCopy={handleCopy}
         handleStart={handleStart}
+        roomKey={roomKey}
       />
     </div>
   );
