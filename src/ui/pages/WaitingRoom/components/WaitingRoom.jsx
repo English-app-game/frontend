@@ -1,6 +1,7 @@
 import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
+import useAuthRedirect from "../hooks/useAuthRedirect";
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useNavigate } from 'react-router-dom';
@@ -10,14 +11,7 @@ export default function WaitingRoom() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-      const token =
-        localStorage.getItem("token") || sessionStorage.getItem("token");
-  
-      if (!token) {
-        navigate("/login");
-      }
-    }, []);
+  useAuthRedirect();
   
   const handleCopy = () => {
     navigator.clipboard.writeText("1KO4W7H");

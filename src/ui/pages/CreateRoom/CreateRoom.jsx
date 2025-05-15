@@ -6,20 +6,14 @@ import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
 import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
+import useAuthRedirect from "../hooks/useAuthRedirect";
 
 const CreateRoom = () => {
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login");
-    }
-  }, []);
+  useAuthRedirect();
   
   const handleCreateRoom = () => {
     if (!level || !status) {
