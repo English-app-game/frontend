@@ -12,3 +12,15 @@ export const fetchRooms = async () => {
     throw err;
   }
 };
+
+export const checkRoomAvailabilityByKey = async (roomKey) => {
+  const res = await fetch(`${ROOMS_API_URL}/check/${roomKey}`);
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Room not available");
+  }
+
+  return data;  
+};
