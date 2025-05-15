@@ -14,7 +14,7 @@ const PlayersList = ({ playersAtGame, host }) => {
                     Players In The Room:
                 </h1>
                 <ul className="space-y-4 text-white font-semibold">
-                    {playersAtGame.map((player, index) => (
+                    {playersAtGame.map((player, index ) => (
                         <WaitingPlayerListItem
                             key={player}
                             avatarImage={avatarImage}
