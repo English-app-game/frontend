@@ -1,6 +1,6 @@
 import { BASE_URL, LOGIN_API, GUEST_API } from "../constants/api";
 
-async function postAndStore(endpoint, payload, isGuest = false) {
+async function postAndStore(endpoint, payload, storageType = "local") {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -11,7 +11,7 @@ async function postAndStore(endpoint, payload, isGuest = false) {
   const data = await res.json();
 
   if (res.ok) {
-    const storage = isGuest ? sessionStorage : localStorage;
+    const storage = storageType === "session" ? sessionStorage : localStorage;
     storage.setItem("token", data.token);
     storage.setItem("user", JSON.stringify(data.user));
   }
@@ -20,9 +20,9 @@ async function postAndStore(endpoint, payload, isGuest = false) {
 }
 
 export function loginUser(email, password) {
-  return postAndStore(LOGIN_API, { email, password });
+  return postAndStore(LOGIN_API, { email, password }, "local");
 }
 
 export function loginGuest(name, avatarImg) {
-  return postAndStore(GUEST_API, { name, avatarImg }, true);
+  return postAndStore(GUEST_API, { name, avatarImg }, "session");
 }
