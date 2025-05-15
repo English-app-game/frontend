@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
 import LevelSelector from "./LevelSelector";
@@ -6,7 +6,8 @@ import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
 import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
-import useAuthRedirect from "../hooks/useAuthRedirect";
+import useAuthRedirect from "@hooks/useAuthRedirect";
+
 
 const CreateRoom = () => {
   const [level, setLevel] = useState(null);

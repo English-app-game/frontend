@@ -1,7 +1,7 @@
 import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
-import useAuthRedirect from "../hooks/useAuthRedirect";
+import useAuthRedirect from "@hooks/useAuthRedirect";
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useNavigate } from 'react-router-dom';

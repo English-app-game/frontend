@@ -1,7 +1,7 @@
 import Nav from "./Nav";
 import Main from "./Main";
 import Footer from "./Footer";
-import useAuthRedirect from "../hooks/useAuthRedirect";
+import useAuthRedirect from "@hooks/useAuthRedirect";
 
 // rooms temp data
 const rooms = Array.from({ length: 50 }, (_, index) => index);
