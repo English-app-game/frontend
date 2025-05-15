@@ -27,7 +27,9 @@ export default function Login() {
   
     if (!isValidEmail(email)) {
       setEmailError("Invalid email");
-      return;
+      hasError = true;
+    } else {
+      setEmailError("");
     }
 
   
@@ -35,7 +37,7 @@ export default function Login() {
       setPasswordError("Password is required");
       hasError = true;
     } else {
-      setEmailError("");
+      setPasswordError("");
     }
 
   
@@ -65,7 +67,7 @@ export default function Login() {
     }
   };
   
-
+   
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
       <div className="pt-10 w-full flex items-center">
