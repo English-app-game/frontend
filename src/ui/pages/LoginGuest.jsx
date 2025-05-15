@@ -6,6 +6,8 @@ import AvatarImg from "../components/AvatarImg";
 import PrimaryButton from "../components/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { loginGuest } from "../../services/auth.js";
+
 
 
 export default function LoginGuest() {
@@ -15,33 +17,39 @@ export default function LoginGuest() {
   const [usernameError, setUsernameError] = useState("");
   const [avatarError, setAvatarError] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     let hasError = false;
-
+  
     if (!username.trim()) {
       setUsernameError("Username is required");
       hasError = true;
     } else {
       setUsernameError("");
     }
-
+  
     if (!selectedAvatar) {
       setAvatarError("Please choose an avatar");
       hasError = true;
     } else {
       setAvatarError("");
     }
-
+  
     if (hasError) return;
-
-    const guestUser = {
-      name: username,
-      avatarImg: selectedAvatar,
-    };
-
-    localStorage.setItem("guestUser", JSON.stringify(guestUser));
-    navigate("/rooms");
+  
+    try {
+      const data = await loginGuest(username, selectedAvatar);
+  
+      if (data.error) {
+        setAvatarError("Login failed. Try again.");
+      } else {
+        navigate("/rooms");
+      }
+    } catch (err) {
+      console.error("Guest login error:", err);
+      setAvatarError("Server error. Please try again.");
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">

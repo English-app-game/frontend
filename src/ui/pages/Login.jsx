@@ -5,7 +5,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import TextBottom from "../components/TextButton"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+import { loginUser } from "../../services/auth.js";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -39,16 +39,9 @@ export default function Login() {
     if (hasError) return;
 
     try {
-      const res = await fetch("http://localhost:5001/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
+      const data = await loginUser(email, password);
+    
+      if (data.error) {
         if (data.error === "Invalid password") {
           setPasswordError("Incorrect password");
         } else if (data.error === "User not found") {
@@ -66,8 +59,8 @@ export default function Login() {
       setGeneralError("Server error. Please try again later.");
       console.error(err);
     }
-  };
-
+  }    
+   
   return (
     <>
       <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
