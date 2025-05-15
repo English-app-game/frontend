@@ -4,12 +4,21 @@ import RoomFooter from "./RoomFooter";
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useNavigate } from 'react-router-dom';
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 export default function WaitingRoom() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+  
+      if (!token) {
+        navigate("/login");
+      }
+    }, []);
+  
   const handleCopy = () => {
     navigator.clipboard.writeText("1KO4W7H");
     setCopied(true);

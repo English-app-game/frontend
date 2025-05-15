@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
 import LevelSelector from "./LevelSelector";
 import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
 import BlueBox from "../../../ui/components/BlueBox";
-import Header  from "../../components/Header";
+import Header from "../../components/Header";
 
 const CreateRoom = () => {
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
+  
   const handleCreateRoom = () => {
     if (!level || !status) {
       alert("Please select both level and status");
@@ -20,6 +29,7 @@ const CreateRoom = () => {
     navigate(ROUTES.WAITING_ROOM(), { state: { level, status } });
   };
 
+  
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
       <BlueBox size="large" className="text-center w-[50rem] h-[30rem]">

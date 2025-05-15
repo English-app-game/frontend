@@ -22,9 +22,9 @@ export async function loginUser(email, password) {
   
     const data = await res.json();
     if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-    }
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+      }
     return data;
   }
   
