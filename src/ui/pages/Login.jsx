@@ -22,30 +22,32 @@ export default function Login() {
     return regex.test(email);
   };
 
-  const handleLogin = async () => {
-    let hasError = false;
+  const validateLoginFields = () => {
+    let valid = true;
   
     if (!isValidEmail(email)) {
       setEmailError("Invalid email");
-      hasError = true;
+      valid = false;
     } else {
       setEmailError("");
     }
-
   
     if (!password) {
       setPasswordError("Password is required");
-      hasError = true;
+      valid = false;
     } else {
       setPasswordError("");
     }
-
   
-    if (hasError) return;
+    return valid;
+  };
+  
+  const handleLogin = async () => {
+    const isValid = validateLoginFields();
+    if (!isValid) return;
   
     try {
       const { ok, data } = await loginUser(email, password);
-
   
       if (!ok) {
         if (data.error === "Invalid password") {
@@ -66,6 +68,7 @@ export default function Login() {
       console.error(err);
     }
   };
+  
   
    
   return (
