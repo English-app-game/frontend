@@ -5,6 +5,8 @@ import PrimaryButton from "../components/PrimaryButton";
 import TextBottom from "../components/TextButton"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { ROOMS_LIST } from "../../routes/routes_consts"
+import { loginUser } from "../../services/auth";
 
 
 export default function Login() {
@@ -24,31 +26,25 @@ export default function Login() {
 
   const handleLogin = async () => {
     let hasError = false;
-
+  
     if (!isValidEmail(email)) {
       setEmailError("Invalid email");
       return;
     }
+  
     if (!password) {
-      setPasswordError("Password is required")
+      setPasswordError("Password is required");
       hasError = true;
-    }
-    else {
+    } else {
       setEmailError("");
     }
+  
     if (hasError) return;
-
+  
     try {
-      const res = await fetch("http://localhost:5001/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
+      const { ok, data } = await loginUser(email, password);
+  
+      if (!ok) {
         if (data.error === "Invalid password") {
           setPasswordError("Incorrect password");
         } else if (data.error === "User not found") {
@@ -60,13 +56,14 @@ export default function Login() {
         setEmailError("");
         setPasswordError("");
         setGeneralError("");
-        navigate("/rooms");
+        navigate(ROOMS_LIST);
       }
     } catch (err) {
       setGeneralError("Server error. Please try again later.");
       console.error(err);
     }
   };
+  
 
   return (
     <>
