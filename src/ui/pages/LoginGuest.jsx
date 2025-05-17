@@ -7,6 +7,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginGuest } from "../../services/auth.js";
+import { ROOMS_LIST } from "../../routes/routes_consts.js"
 
 
 
@@ -17,7 +18,7 @@ export default function LoginGuest() {
   const [usernameError, setUsernameError] = useState("");
   const [avatarError, setAvatarError] = useState("");
 
-  const handleLogin = async () => {
+  const validateGuestFields = (username, selectedAvatar, setUsernameError, setAvatarError) => {
     let hasError = false;
   
     if (!username.trim()) {
@@ -34,7 +35,12 @@ export default function LoginGuest() {
       setAvatarError("");
     }
   
-    if (hasError) return;
+    return !hasError;
+  };
+  
+  const handleGuestLogin = async () => {
+    const isValid = validateGuestFields(username, selectedAvatar, setUsernameError, setAvatarError);
+    if (!isValid) return;
   
     try {
       const data = await loginGuest(username, selectedAvatar);
@@ -42,13 +48,14 @@ export default function LoginGuest() {
       if (data.error) {
         setAvatarError("Login failed. Try again.");
       } else {
-        navigate("/rooms");
+        navigate(ROOMS_LIST);
       }
     } catch (err) {
       console.error("Guest login error:", err);
       setAvatarError("Server error. Please try again.");
     }
   };
+  
   
 
   return (
@@ -71,7 +78,7 @@ export default function LoginGuest() {
             <PrimaryButton
               text="LET'S GO!"
               className="float-right mt-4 ml-4"
-              onClick={handleLogin}
+              onClick={handleGuestLogin}
             />
             <h3 className="text-white mb-2">Choose your Avatar:</h3>
             <div className="grid grid-cols-5 gap-1">
