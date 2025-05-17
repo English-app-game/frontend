@@ -6,7 +6,7 @@ import TextBottom from "../components/TextButton";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../../services/auth.js";
-import { ROOMS_LIST, REGISTER, LOGIN_GUEST } from "../../routes/routes_consts";
+import { ROOMS_LIST } from "../../routes/routes_consts.js"
 
 export default function Login() {
   const navigate = useNavigate();
