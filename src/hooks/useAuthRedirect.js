@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LOGIN } from "../../routes/routes_consts"
+import { LOGIN } from "../routes/routes_consts"
 
 export default function useAuthRedirect() {
   const navigate = useNavigate();
