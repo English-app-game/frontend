@@ -1,5 +1,7 @@
+import { BASE_URL, LOGIN_API, GUEST_LOGIN_API } from "../constants/api";
+
 export async function loginUser(email, password) {
-    const res = await fetch("http://localhost:5001/api/login", {
+    const res = await fetch(`${BASE_URL}${LOGIN_API}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -14,7 +16,7 @@ export async function loginUser(email, password) {
   }
   
   export async function loginGuest(name, avatarImg) {
-    const res = await fetch("http://localhost:5001/api/guest", {
+    const res = await fetch(`${BASE_URL}${GUEST_LOGIN_API}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, avatarImg })

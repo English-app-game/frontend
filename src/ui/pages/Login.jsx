@@ -6,6 +6,7 @@ import TextBottom from "../components/TextButton"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../../services/auth.js";
+import { ROOMS_LIST } from "../../routes/routes_consts.js"
 
 export default function Login() {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ export default function Login() {
         setEmailError("");
         setPasswordError("");
         setGeneralError("");
-        navigate("/rooms");
+        navigate(ROOMS_LIST);
       }
     } catch (err) {
       setGeneralError("Server error. Please try again later.");

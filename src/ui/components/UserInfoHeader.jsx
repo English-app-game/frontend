@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { HOME } from "../../routes/routes_consts"
 
 export default function UserInfoHeader() {
     const navigate = useNavigate();
@@ -7,7 +8,7 @@ export default function UserInfoHeader() {
     const handleLogout = () => {
         localStorage.clear();
         sessionStorage.clear();
-        navigate("/");
+        navigate(HOME);
     };
 
     const user = JSON.parse(
