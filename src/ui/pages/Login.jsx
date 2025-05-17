@@ -24,12 +24,13 @@ export default function Login() {
 
   const handleLogin = async () => {
     let hasError = false;
-
+  
     if (!isValidEmail(email)) {
       setEmailError("Invalid email");
       return;
     }
 
+  
     if (!password) {
       setPasswordError("Password is required");
       hasError = true;
@@ -37,11 +38,13 @@ export default function Login() {
       setEmailError("");
     }
 
+  
     if (hasError) return;
-
+  
     try {
       const { ok, data } = await loginUser(email, password);
 
+  
       if (!ok) {
         if (data.error === "Invalid password") {
           setPasswordError("Incorrect password");
@@ -61,6 +64,7 @@ export default function Login() {
       console.error(err);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
