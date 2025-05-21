@@ -8,6 +8,8 @@ import ServersRoom from "../ui/pages/ServersRoom";
 import CreateRoom from "../ui/pages/CreateRoom/CreateRoom";
 import WaitingRoom from "../ui/pages/WaitingRoom/components/WaitingRoom";
 import ActiveRoom from "../ui/pages/ActiveRoom";
+import ResetPassword from "../ui/pages/ResetPassword";
+import SetNewPassword from "../ui/pages/SetNewPassword";
 import { Error as ErrorPage } from "../ui/pages/Error";
 import { ROUTES } from "./routes_consts";
 
@@ -38,6 +40,20 @@ const router = createBrowserRouter([
         element: <LoginGuest />,
         errorElement: (
           <ErrorPage error={new Error("Can't get into login guest page")} />
+        ),
+      },
+      {
+        path: ROUTES.RESET_PASSWORD,
+        element: <ResetPassword />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into reset password room")} />
+        ),
+      },
+      {
+        path: ROUTES.SET_NEW_PASSWORD,
+        element: <SetNewPassword />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into reset password room")} />
         ),
       },
       {

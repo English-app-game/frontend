@@ -19,7 +19,7 @@ export default function Login() {
               <PrimaryButton text="LOGIN" className="float-right mt-4 ml-4" />
               <div className="flex flex-col items-start">
                 {/*/////////Need to change to text-button component/////////*/}
-                <button className="pt-4 text-white hover:underline cursor-pointer">
+                <button className="pt-4 text-white hover:underline cursor-pointer" onClick={() => navigate("/login/resetPassword")}>
                   Forget Password?
                 </button>
                 <button className="pt-1 text-white hover:underline cursor-pointer" onClick={() => navigate("/login/guest")}>
