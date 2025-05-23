@@ -1,6 +1,7 @@
 import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
+import useAuthRedirect from "@hooks/useAuthRedirect";
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useParams, useNavigate } from "react-router-dom";
@@ -8,6 +9,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function WaitingRoom() {
+  useAuthRedirect();
+
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 

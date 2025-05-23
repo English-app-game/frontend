@@ -61,6 +61,7 @@ export default function Login() {
         setEmailError("");
         setPasswordError("");
         setGeneralError("");
+        console.log("🚀 navigating to ROOMS_LIST");
         navigate(ROOMS_LIST);
       }
     } catch (err) {

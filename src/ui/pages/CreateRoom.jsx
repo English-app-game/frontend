@@ -1,8 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../components/PrimaryButton";
 import { ROOMS_LIST } from "../../routes/routes_consts";
+import useAuthRedirect from "@hooks/useAuthRedirect";
+
 
 export default function CreateRoom() {
+  useAuthRedirect();
+
   const navigate = useNavigate();
 
   function handleCreateRoom() {
