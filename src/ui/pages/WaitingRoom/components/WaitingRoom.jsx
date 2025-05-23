@@ -6,7 +6,6 @@ import useAuthRedirect from "@hooks/useAuthRedirect";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useState,useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function WaitingRoom() {
