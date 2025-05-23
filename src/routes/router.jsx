@@ -13,33 +13,34 @@ import { ROUTES } from "./routes_consts";
 
 const router = createBrowserRouter([
   {
+    path: ROUTES.HOME,
+    element: <Home />,
+    errorElement: <ErrorPage error={new Error("Can't get into home")} />,
+  },
+  {
+    path: ROUTES.LOGIN,
+    element: <Login />,
+    errorElement: <ErrorPage error={new Error("Can't get into login")} />,
+  },
+  {
+    path: ROUTES.REGISTER,
+    element: <Register />,
+    errorElement: (
+      <ErrorPage error={new Error("Can't get into register page")} />
+    ),
+  },
+  {
+    path: ROUTES.LOGIN_GUEST,
+    element: <LoginGuest />,
+    errorElement: (
+      <ErrorPage error={new Error("Can't get into login guest page")} />
+    ),
+  },
+
+  {
     element: <AppLayout />,
     errorElement: <ErrorPage error={new Error("404 not found")} />,
     children: [
-      {
-        path: ROUTES.HOME,
-        element: <Home />,
-        errorElement: <ErrorPage error={new Error("Can't get into home")} />,
-      },
-      {
-        path: ROUTES.LOGIN,
-        element: <Login />,
-        errorElement: <ErrorPage error={new Error("Can't get into login")} />,
-      },
-      {
-        path: ROUTES.REGISTER,
-        element: <Register />,
-        errorElement: (
-          <ErrorPage error={new Error("Can't get into register page")} />
-        ),
-      },
-      {
-        path: ROUTES.LOGIN_GUEST,
-        element: <LoginGuest />,
-        errorElement: (
-          <ErrorPage error={new Error("Can't get into login guest page")} />
-        ),
-      },
       {
         path: ROUTES.ROOMS_LIST,
         element: <ServersRoom />,
@@ -71,5 +72,4 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
 export default router;
