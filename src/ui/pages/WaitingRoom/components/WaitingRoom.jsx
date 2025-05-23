@@ -4,7 +4,7 @@ import RoomFooter from "./RoomFooter";
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function WaitingRoom() {
@@ -24,14 +24,31 @@ export default function WaitingRoom() {
   };
   
   const { id: roomKey } = useParams();
-  //for now it manualy. Itay and I need to solve something in the DB
-  const playersAtGame = ["Liad", "Tomer", "Itay"];
-  const host = "Liad";
+  const [players, setPlayers] = useState([]);
+  const [hostId, setHostId] = useState(null);
+
+useEffect(() => {
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/rooms/players/${roomKey}`);
+      const data = await res.json();
+
+      if (data.players.length !== players.length) {
+        setPlayers(data.players);
+        setHostId(data.admin._id); 
+      }
+    } catch (err) {
+      console.error("Failed fetching players", err);
+    }
+  }, 500);
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
       <RoomHeader />
-      <PlayersList playersAtGame={playersAtGame} host={host} />
+      <PlayersList players={players} hostId={hostId} />
       <RoomFooter
         copied={copied}
         handleCopy={handleCopy}
