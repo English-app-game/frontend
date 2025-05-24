@@ -3,10 +3,12 @@ import Main from "./Main";
 import Footer from "./Footer";
 import { useState, useEffect } from "react";
 import { fetchRooms } from "../../../services/room/getRooms"; 
+import useAuthRedirect from "@hooks/useAuthRedirect";
 
 
 
 export default function ServersRoom() {
+  useAuthRedirect();
 
    const [rooms, setRooms] = useState([]);
 
