@@ -8,39 +8,54 @@ import ServersRoom from "../ui/pages/ServersRoom";
 import CreateRoom from "../ui/pages/CreateRoom/CreateRoom";
 import WaitingRoom from "../ui/pages/WaitingRoom/components/WaitingRoom";
 import ActiveRoom from "../ui/pages/ActiveRoom";
+import ResetPassword from "../ui/pages/ResetPassword";
+import SetNewPassword from "../ui/pages/SetNewPassword";
 import { Error as ErrorPage } from "../ui/pages/Error";
 import { ROUTES } from "./routes_consts";
 
 const router = createBrowserRouter([
   {
-    path: ROUTES.HOME,
-    element: <Home />,
-    errorElement: <ErrorPage error={new Error("Can't get into home")} />,
-  },
-  {
-    path: ROUTES.LOGIN,
-    element: <Login />,
-    errorElement: <ErrorPage error={new Error("Can't get into login")} />,
-  },
-  {
-    path: ROUTES.REGISTER,
-    element: <Register />,
-    errorElement: (
-      <ErrorPage error={new Error("Can't get into register page")} />
-    ),
-  },
-  {
-    path: ROUTES.LOGIN_GUEST,
-    element: <LoginGuest />,
-    errorElement: (
-      <ErrorPage error={new Error("Can't get into login guest page")} />
-    ),
-  },
-
-  {
     element: <AppLayout />,
     errorElement: <ErrorPage error={new Error("404 not found")} />,
     children: [
+      {
+        path: ROUTES.HOME,
+        element: <Home />,
+        errorElement: <ErrorPage error={new Error("Can't get into home")} />,
+      },
+      {
+        path: ROUTES.LOGIN,
+        element: <Login />,
+        errorElement: <ErrorPage error={new Error("Can't get into login")} />,
+      },
+      {
+        path: ROUTES.REGISTER,
+        element: <Register />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into register page")} />
+        ),
+      },
+      {
+        path: ROUTES.LOGIN_GUEST,
+        element: <LoginGuest />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into login guest page")} />
+        ),
+      },
+      {
+        path: ROUTES.RESET_PASSWORD,
+        element: <ResetPassword />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into reset password room")} />
+        ),
+      },
+      {
+        path: ROUTES.SET_NEW_PASSWORD,
+        element: <SetNewPassword />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into reset password room")} />
+        ),
+      },
       {
         path: ROUTES.ROOMS_LIST,
         element: <ServersRoom />,
