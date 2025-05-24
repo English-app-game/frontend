@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../../services/auth.js";
 import { LOGIN_GUEST, REGISTER, ROOMS_LIST } from "../../routes/routes_consts.js"
+import { isValidEmail } from "../../utils/helpers.js";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,10 +18,6 @@ export default function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
 
-  const isValidEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
 
   const validateLoginFields = () => {
     let valid = true;
@@ -50,18 +47,11 @@ export default function Login() {
       const { ok, data } = await loginUser(email, password);
 
       if (!ok) {
-        if (data.error === "Invalid password") {
-          setPasswordError("Incorrect password");
-        } else if (data.error === "User not found") {
-          setEmailError("Email not found");
-        } else {
-          setGeneralError("Login failed. Please try again.");
-        }
+        setGeneralError("Invalid email or password");
       } else {
         setEmailError("");
         setPasswordError("");
         setGeneralError("");
-        console.log("🚀 navigating to ROOMS_LIST");
         navigate(ROOMS_LIST);
       }
     } catch (err) {
@@ -69,8 +59,8 @@ export default function Login() {
       console.error(err);
     }
   };
-   return (
-     <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
+  return (
+    <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
       <div className="pt-10 w-full flex items-center">
         <BlueBox className="pr-3 mb-5">
           <Header text="ALMOST THERE!" className="pl-2" />
@@ -117,7 +107,7 @@ export default function Login() {
               </TextBottom>
               <p className="pt-1 text-white">Doesn't have an account yet?</p>
             </div>
-             <PrimaryButton
+            <PrimaryButton
               text="SIGN UP"
               className="mt-4 bg-gray"
               onClick={() => navigate(REGISTER)}
@@ -125,6 +115,6 @@ export default function Login() {
           </div>
         </BlueBox>
       </div>
-        </div>
+    </div>
   );
 }
