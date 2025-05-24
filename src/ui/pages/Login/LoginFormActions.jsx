@@ -1,6 +1,6 @@
 import PrimaryButton from "../../components/PrimaryButton.jsx";
 import TextBottom from "../../components/TextButton.jsx";
-import { LOGIN_GUEST, REGISTER } from "../../../routes/routes_consts.js";
+import { LOGIN_GUEST, REGISTER, RESET_PASSWORD } from "../../../routes/routes_consts.js";
 
 export default function LoginFormActions({ handleLogin, navigate }) {
   return (
@@ -11,7 +11,7 @@ export default function LoginFormActions({ handleLogin, navigate }) {
         onClick={handleLogin}
       />
       <div className="flex flex-col items-start">
-        <TextBottom className="pt-4 text-white hover:underline cursor-pointer">
+        <TextBottom className="pt-4 text-white hover:underline cursor-pointer" onClick={() => navigate(RESET_PASSWORD)}>
           Forget Password?
         </TextBottom>
         <TextBottom
