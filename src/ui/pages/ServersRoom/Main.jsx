@@ -1,6 +1,6 @@
 import JoinGameRoom from "../../components/JoinGameRoom";
 import React, { useState, useEffect } from "react";
-import NoRoomsMessage from "../../components/NoRoomsMessage";
+import NoRoomsMessage from "../ServersRoom/NoRoomsMessage";
 
 
 export default function Main({ rooms }) {
