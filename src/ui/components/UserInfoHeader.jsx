@@ -25,7 +25,7 @@ export default function UserInfoHeader() {
                     onClick={handleLogout}
                     className="text-white hover:cursor-pointer hover:underline"
                 >
-                    logout
+                    Logout
                 </a>
             </div>
 
