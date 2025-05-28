@@ -19,7 +19,7 @@ export default function LoginFormFields({
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Enter your email"
       />
-      {emailError && <p className="text-red-700 text-md mt-1 ml-1">{emailError}</p>}
+      {emailError && <p className="text-black text-md mt-1 ml-1">{emailError}</p>}
 
       <InputField
         id="password"
@@ -29,8 +29,8 @@ export default function LoginFormFields({
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Enter your password"
       />
-      {passwordError && <p className="text-red-700 text-md mt-1 ml-1">{passwordError}</p>}
-      {generalError && <p className="text-red-700 text-md mt-2 ml-1">{generalError}</p>}
+      {passwordError && <p className="text-black text-md mt-1 ml-1">{passwordError}</p>}
+      {generalError && <p className="text-white text-md mt-2 ml-1">{generalError}</p>}
     </div>
   );
 }

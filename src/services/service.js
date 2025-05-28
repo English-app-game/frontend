@@ -3,7 +3,7 @@ import {
   RESET_PASSWORD_PATH,
   SET_NEW_PASSWORD_PATH,
   REGISTER_PATH
-} from "../assets/consts";
+} from "../consts/consts";
 import { validateEmail, validatePassword } from "../utils/validateFields";
 
 
