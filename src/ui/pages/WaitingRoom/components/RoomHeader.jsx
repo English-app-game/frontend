@@ -16,7 +16,7 @@ const RoomHeader = () => {
             <div className="absolute top-4 left-4">
                 <ExitButton onClick={handleExit} className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400">EXIT ROOM</ExitButton>
             </div>
-            <h1 className="text-4xl font-extrabold text-teal-600 mb-10 uppercase drop-shadow-md text-center">WAITING ROOM</h1>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-teal-600 mb-6 sm:mb-10 uppercase drop-shadow-md text-center">WAITING ROOM</h1>
         </>
     );
 };
