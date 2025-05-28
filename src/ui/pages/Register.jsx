@@ -90,7 +90,11 @@ export default function Register() {
             {errors.avatarImg && (
               <p className="text-black text-sm mt-1">{errors.avatarImg}</p>
             )}
+            {errors.general && (
+                <p className="text-white text-sm mt-3">{errors.general}</p>
+              )}
           </BlueBox>
+          
         </div>
       </div>
     </>
