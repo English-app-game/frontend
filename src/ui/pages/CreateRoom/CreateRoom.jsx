@@ -9,6 +9,7 @@ import { createRoom } from "../../../store/thunks/createRoomThunk";
 import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
 import useAuthRedirect from "@hooks/useAuthRedirect";
+import GameTypeSelector from "../../components/GameTypeSelector";
 
 
 const TEMP_USER = {
@@ -26,13 +27,15 @@ const CreateRoom = () => {
 
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
+  const [gameType, setGameType] = useState(null);
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
   const handleCreateRoom = () => {
-    if (!level || !status) {
-      alert("Please select both level and status");
+    if (!level || !status|| !gameType) {
+      alert("Please select both level , status and game type");
       return;
     }
 
@@ -49,11 +52,12 @@ const CreateRoom = () => {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
-      <BlueBox size="large" className="text-center w-[50rem] h-[30rem]">
+     <BlueBox size="large" className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]">
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}
         ></Header>
+        <GameTypeSelector gameType={gameType} setGameType={setGameType} />
         <LevelSelector level={level} setLevel={setLevel} />
         <StatusSelector status={status} setStatus={setStatus} />
         <PrimaryButton
