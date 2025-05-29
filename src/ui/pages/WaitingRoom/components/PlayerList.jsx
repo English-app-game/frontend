@@ -13,12 +13,12 @@ const PlayersList = ({ players, hostId }) => {
                     Players In The Room:
                 </h1>
                 <ul className="space-y-4 text-white font-semibold">
-                    {players.map((player) => (
+                    {players.map(({ _id, avatarImg, name }) => (
                         <WaitingPlayerListItem
-                            key={player._id}
-                            avatarImage={player.avatarImg}
-                            player={player.name}
-                            host={player._id === hostId}
+                            key={_id}
+                            avatarImage={avatarImg}
+                            player={name}
+                            host={_id === hostId}
                         />
                     ))}
                 </ul>
