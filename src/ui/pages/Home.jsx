@@ -9,7 +9,7 @@ export default function Home() {
     <div className="bg-[url('/homePage.png')] h-screen">
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full">
-        <div className="bg-[#9CF2F9] px-8 py-6 flex flex-col items-center justify-center rounded-xl shadow-lg">
+        <div className=" px-8 py-6 flex flex-col items-center justify-center rounded-xl">
         <h1 className="text-[#000080] bg-[#9CF2F9] text-6xl font-bold mb-4 ">
           WELCOME TO
         </h1>

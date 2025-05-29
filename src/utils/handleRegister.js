@@ -1,5 +1,7 @@
 import { validateRegister } from "../utils/validateFields";
 import { registerUser } from "../services/service.js";
+import { LOGIN_API } from "../consts/api.js";
+import { postAndStore } from "../services/auth.js"
 
 export const handleRegister = async (dataform, setErrors, navigate) => {
   const validationErrors = validateRegister(dataform);
@@ -21,6 +23,16 @@ export const handleRegister = async (dataform, setErrors, navigate) => {
 
     if (!ok) {
       setErrors({ general: result.message });
+      return;
+    }
+
+    const { ok: loginOk, data } = await postAndStore(LOGIN_API, {
+      email: dataform.email,
+      password: dataform.password,
+    });
+
+    if (!loginOk) {
+      setErrors({ general: data.message || "Login failed after registration." });
       return;
     }
 
