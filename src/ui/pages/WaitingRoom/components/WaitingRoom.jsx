@@ -2,6 +2,8 @@ import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
 import useAuthRedirect from "@hooks/useAuthRedirect";
+import { fetchPlayers } from "../../../../services/room/getPlayers";
+
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useParams, useNavigate } from "react-router-dom";
@@ -22,31 +24,29 @@ export default function WaitingRoom() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-   const handleStart = () => {
+  const handleStart = () => {
     navigate(ROUTES.ACTIVE_ROOM(roomKey));
   };
-  
+
   const { id: roomKey } = useParams();
   const [players, setPlayers] = useState([]);
   const [hostId, setHostId] = useState(null);
-
-useEffect(() => {
-  const interval = setInterval(async () => {
-    try {
-      const res = await fetch(`http://localhost:5000/api/rooms/players/${roomKey}`);
-      const data = await res.json();
-
-      if (data.players.length !== players.length) {
-        setPlayers(data.players);
-        setHostId(data.admin._id); 
+  
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const data = await fetchPlayers(roomKey);
+        if (data.players.length !== players.length) {
+          setPlayers(data.players);
+          setHostId(data.admin._id);
+        }
+      } catch (err) {
+        console.error("Failed fetching players", err);
       }
-    } catch (err) {
-      console.error("Failed fetching players", err);
-    }
-  }, 500);
+    }, 500);
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
