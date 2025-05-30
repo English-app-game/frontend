@@ -10,10 +10,9 @@ import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
 import useAuthRedirect from "@hooks/useAuthRedirect";
 
-
 const TEMP_USER = {
   // this user ID has to be real ID from db.
-  _id: "681f7a077d51665473dbe491", 
+  _id: "681f7a077d51665473dbe491",
   name: "Alice Example",
   email: "alice@example.com",
   password: "securePassword123!",
@@ -36,12 +35,13 @@ const CreateRoom = () => {
       return;
     }
 
-    //TODO: Assuming user already exists here, because it passed check in './ServersRoom/Footer.handleCreateRoomClick'.
-    // console.log(level, status);
+    const user = JSON.parse(
+      localStorage.getItem("user") || sessionStorage.getItem("user")
+    );
 
     const key = crypto.randomUUID();
     dispatch(
-      createRoom({ key, users: TEMP_USER, level, status, admin: TEMP_USER })
+      createRoom({ key, users: user.id, level, status, admin: user.id })
     );
 
     navigate(WAITING_ROOM(key));

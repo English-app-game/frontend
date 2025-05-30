@@ -10,7 +10,7 @@ export async function addRoomToDB(roomData, thunkAPI) {
       },
       body: JSON.stringify({
         ...roomData,
-        maxPlayers: 4,
+        maxPlayers: 5,
         players: [],
         // i copied the id from db of translation type
         gameType: "68245ead00dfdf81fed2c805",
@@ -18,7 +18,7 @@ export async function addRoomToDB(roomData, thunkAPI) {
         currentStatus: "waiting",
         createdAt: formatDateAndTime(new Date()),
         chat: [],
-        amountOfPlayers: 4,
+        amountOfPlayers: 1,
       }),
     });
 
