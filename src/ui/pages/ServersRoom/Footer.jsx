@@ -9,23 +9,35 @@ import { useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import PrimaryButton from "../../components/PrimaryButton";
 import InputField from "../../components/InputField";
+import { checkRoomAvailabilityByKey} from "../../../services/room/getRooms"; 
+
 
 export default function Footer({ rooms }) {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-   function handleJoinRoom(e) { 
+   async function handleJoinRoom(e) { 
     e.preventDefault();
+      setError("");
 
-    const formData = new FormData(e.target);
+   const formData = new FormData(e.target);
+   const roomCode = formData.get("roomCode").trim();
 
-    if (!formData.get("roomCode")) return;
+   console.log("🔍 Room code sent to server:", roomCode);
 
-    const roomCode = Number(formData.get("roomCode"));
 
-    if (rooms.includes(roomCode)) return navigate(WAITING_ROOM(roomCode));
+    if (!roomCode) {
+    setError("Please enter a room code");
+    return;
+   }
 
-    setError("Invalid Room Code");
+   try {
+    const data = await checkRoomAvailabilityByKey(roomCode);
+    navigate(WAITING_ROOM(data.roomId)); 
+  } catch (err) {
+    setError(err.message);
+  }
+
   }
 
   function handleCreateRoomClick(e) {
@@ -77,7 +89,7 @@ export default function Footer({ rooms }) {
               className={"w-48"}
             />
             {error && (
-              <p className="bg-red-200 rounded-full px-2">Invalid Room Code</p>
+              <p className="bg-red-200 rounded-full px-2">{error}</p>
             )}
           </div>
           <PrimaryButton type="submit" className="p-2">
