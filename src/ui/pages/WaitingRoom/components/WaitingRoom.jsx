@@ -4,11 +4,9 @@ import RoomFooter from "./RoomFooter";
 import useAuthRedirect from "@hooks/useAuthRedirect";
 import { fetchPlayers } from "../../../../services/room/getPlayers";
 
-
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 
 export default function WaitingRoom() {
   useAuthRedirect();
@@ -16,8 +14,6 @@ export default function WaitingRoom() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  const room = useSelector((store) => store.room);
-  console.log(room);
   const handleCopy = () => {
     navigator.clipboard.writeText("1KO4W7H");
     setCopied(true);
@@ -31,7 +27,7 @@ export default function WaitingRoom() {
   const { id: roomKey } = useParams();
   const [players, setPlayers] = useState([]);
   const [hostId, setHostId] = useState(null);
-  
+
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
