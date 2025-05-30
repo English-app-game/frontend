@@ -1,18 +1,58 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 
-const JoinGameRoom = ({ id, currentPlayers,displayIndex, capacity, onJoinAttempt, className = 'w-45' }) => {
+const JoinGameRoom = ({
+  id,
+  currentPlayers,
+  displayIndex,
+  capacity,
+  onJoinAttempt,
+  className = "w-45",
+}) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (currentPlayers >= capacity) {
       if (onJoinAttempt) {
         onJoinAttempt({ id, full: true });
       } else {
         alert("This room is full!");
       }
+      return;
+    }
+
+    const user =
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(sessionStorage.getItem("user"));
+
+    if (!user || !user.id) {
+      alert("User not found. Please log in.");
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:5000/api/rooms/players/join", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roomKey: id,
+          userId: user.id,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to join the room");
+      }
+      console.log("test");
+
+      const data = await res.json();
+      console.log("Joined room successfully:", data);
+    } catch (err) {
+      console.error("❌ Error joining room:", err);
+      alert("Failed to join the room.");
       return;
     }
 
@@ -28,8 +68,10 @@ const JoinGameRoom = ({ id, currentPlayers,displayIndex, capacity, onJoinAttempt
       className={`h-auto flex flex-col items-center hover:cursor-pointer ${className}`}
       onClick={handleClick}
     >
-      <p className='font-bold text-2xl'>ROOM {displayIndex + 1}</p>
-      <div className={`relative ${className}  shadow-md hover:shadow-none h-auto`}>
+      <p className="font-bold text-2xl">ROOM {displayIndex + 1}</p>
+      <div
+        className={`relative ${className}  shadow-md hover:shadow-none h-auto`}
+      >
         <img
           src={joinRoomIcon}
           alt="Join Room Icon"
