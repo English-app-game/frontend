@@ -40,7 +40,24 @@ const initialState = {
 const roomSlice = createSlice({
   name: "room",
   initialState,
-  reducers: {},
+  reducers: {
+    setRoom: (state, action) => {
+      const room = action.payload;
+      state.key = room.key;
+      state.amountOfPlayers = room.amountOfPlayers;
+      state.maxPlayers = room.maxPlayers;
+      state.players = room.players;
+      state.gameType = room.gameType;
+      state.level = room.level;
+      state.isActive = room.isActive;
+      state.admin = room.admin;
+      state.currentStatus = room.currentStatus;
+      state.createdAt = room.createdAt;
+      state.finishedAt = room.finishedAt || null;
+      state.chat = room.chat || [];
+    },
+    resetRoom: () => initialState,
+  },
   extraReducers: (builder) => {
     builder.addCase(createRoomMiddleware.fulfilled, (state, action) => {
       const room = action.payload;
@@ -60,5 +77,5 @@ const roomSlice = createSlice({
   },
 });
 
-// export const { createRoom } = roomSlice.actions;
+export const { setRoom, resetRoom } = roomSlice.actions;
 export default roomSlice.reducer;
