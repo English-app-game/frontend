@@ -8,8 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginGuest } from "../../services/auth.js";
 import { ROOMS_LIST } from "../../routes/routes_consts.js"
+import useRedirectLoggedIn from "@hooks/useRedirectLoggedIn.js";
 
 export default function LoginGuest() {
+  useRedirectLoggedIn();
+
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(null);

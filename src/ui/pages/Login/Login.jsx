@@ -8,8 +8,11 @@ import BlueBox from "../../components/BlueBox.jsx";
 import LoginFormHeader from "./LoginFormHeader.jsx";
 import LoginFormFields from "./LoginFormFields.jsx";
 import LoginFormActions from "./LoginFormActions.jsx";
+import useRedirectLoggedIn from "@hooks/useRedirectLoggedIn.js";
 
 export default function Login() {
+  useRedirectLoggedIn();
+  
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
