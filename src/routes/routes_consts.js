@@ -7,6 +7,7 @@ export const SET_NEW_PASSWORD= "login/setNewPassword"
 export const REGISTER = "/register";
 export const ROOMS_LIST = "/rooms";
 export const CREATE_ROOM = "/rooms/create";
+export const STATISTICS = "/statistics"
 export const WAITING_ROOM = (id = ":id") => `/rooms/${id}`;
 export const ACTIVE_ROOM = (id = ":id") => `/rooms/active/${id}`;
 
@@ -20,6 +21,7 @@ export const ROUTES = {
   CREATE_ROOM,
   RESET_PASSWORD,
   SET_NEW_PASSWORD,
+  STATISTICS,
   WAITING_ROOM,
   ACTIVE_ROOM,
 };
