@@ -5,8 +5,11 @@ import PrimaryButton from "../components/PrimaryButton";
 import { handleInputChange } from "../../utils/handleRegister";
 import { onSubmitReset } from "../../utils/handleReset";
 import { useState } from "react";
+import useRedirectLoggedIn from "@hooks/useRedirectLoggedIn.js";
 
 export default function ResetPassword() {
+  useRedirectLoggedIn();
+  
   const [Email, setEmail] = useState({ email: "" });
   const [errors, setErrors] = useState({});
   const [serverMessage, setServerMessage] = useState(null);
