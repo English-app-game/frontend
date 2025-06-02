@@ -1,12 +1,12 @@
 import { BASE_URL} from "../consts/consts";
 
-export const fetchTop = async (setTop, path, text) => {
+export const fetchTop = async (path) => {
   try {
     const res = await fetch(`${BASE_URL}${path}`);
     const data = await res.json();
-    setTop(data);
+    return data;
   } catch (error) {
-    console.error(`Failed to fetch ${text}:`, error);
+    console.error("Failed to fetch:", error);
   }
 };
 

@@ -9,9 +9,17 @@ export default function Main() {
   const [topGames, setTopGames] = useState([]);
 
   useEffect(() => {
-    fetchTop(setTopScores, SCORE_STATISTICS_PATH,"scores");
-    fetchTop(setTopPlayers, PLAYERS_STATISTICS_PATH, "players");
-    fetchTop(setTopGames, GAMES_STATISTICS_PATH, "games");
+    const loadStatistics = async () => {
+      const scores = await fetchTop(SCORE_STATISTICS_PATH);
+      const players = await fetchTop(PLAYERS_STATISTICS_PATH);
+      const games = await fetchTop(GAMES_STATISTICS_PATH);
+
+      if (scores) setTopScores(scores);
+      if (players) setTopPlayers(players);
+      if (games) setTopGames(games);
+    };
+
+    loadStatistics();
   }, []);
 
   return (
@@ -48,7 +56,7 @@ export default function Main() {
         title="Top Games"
         data={topGames}
         renderLeft={(game) => <span className="font-medium">{game.name}</span>}
-          renderRight={(item) => <span>{item.count} Matches</span>}
+        renderRight={(item) => <span>{item.count} Matches</span>}
       />
     </div>
   );
