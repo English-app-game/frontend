@@ -58,7 +58,7 @@ export default function LoginGuest() {
 
   return (
       <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-      <div className="pt-10 w-full">
+      <div className="pt-10 w-full flex items-center">
         <BlueBox className="pr-3 ">
           <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
           <div className="pt-7">
