@@ -3,6 +3,7 @@ import BlueBox from "../components/BlueBox";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/PrimaryButton";
 import Header from "../components/Header";
+import SkeletonAvatar from "../components/SkeletonAvatar";
 import * as avatars from "../../assets/index";
 import { useState, useEffect } from "react";
 import { handleRegister } from "../../utils/handleRegister";
@@ -21,26 +22,13 @@ export default function Register() {
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setshowPassword] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
 
-  useEffect(() => {
-    const imgPromises = Object.values(avatars).map(
-      (src) =>
-        new Promise((resolve) => {
-          const img = new Image();
-          img.src = src;
-          img.onload = resolve;
-          img.onerror = resolve;
-        })
-    );
-    Promise.all(imgPromises).then(() => setImagesLoaded(true));
-  }, []);
 
   return (
     <>
       <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-        <div className="pt-10 w-full">
-          <BlueBox className="pr-3 ">
+        <div className="pt-10 w-full flex items-center">
+          <BlueBox className="pr-3">
             <Header text="LETS MAKE YOUR ACCOUNT!" className="text-center" />
             <div className="pb-5">
               <InputField
@@ -66,7 +54,7 @@ export default function Register() {
                 />
                 <span
                   className="absolute top-10 right-19 cursor-pointer text-white"
-                  onClick={toggleShowPassword(showPassword, setshowPassword)}
+                    onClick={() => toggleShowPassword(showPassword, setshowPassword)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
@@ -85,7 +73,7 @@ export default function Register() {
               <PrimaryButton
                 text="REGISTER"
                 className="float-right mt-4 ml-4"
-                onClick={onSubmitRegister(dataform, setErrors, navigate)}
+                onClick={() => onSubmitRegister(dataform, setErrors, navigate)}
               />
             </div>
             <h3 className="text-white">Choose your Avatar:</h3>
@@ -93,17 +81,12 @@ export default function Register() {
               {Object.entries(avatars).map(([key, src]) => (
                 <div
                   key={key}
-                  onClick={handleAvatarClick(src, dataform, setDataform)}
+                  onClick={() => handleAvatarClick(src, dataform, setDataform)}
                   className={`cursor-pointer rounded-xl ${dataform.avatarImg === src ? "ring-4 ring-green-500" : ""
                     }`}
                 >
-                  {imagesLoaded ? (
-                    <AvatarImg src={src} alt={key} />
-                  ) : (
-                    <div className="aspect-square w-full bg-white/30 rounded-xl border-white border-2 flex items-center justify-center">
-                      <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  )}
+                 <SkeletonAvatar src={src} alt={key} />
+
                 </div>
               ))}
             </div>
