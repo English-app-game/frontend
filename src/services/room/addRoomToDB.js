@@ -1,9 +1,9 @@
 import { GameTypes } from "../../consts/gameTypes";
 import { formatDateAndTime } from "../../services/dateService";
-
+import { BASE_URL } from "../../consts/consts";
 export async function addRoomToDB(roomData, thunkAPI) {
   try {
-    const response = await fetch("http://localhost:5000/api/rooms/create", {
+    const response = await fetch(`${BASE_URL}/rooms/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
