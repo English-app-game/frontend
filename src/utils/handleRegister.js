@@ -1,6 +1,6 @@
 import { validateRegister } from "../utils/validateFields";
 import { registerUser } from "../services/service.js";
-import { LOGIN_API } from "../consts/api.js";
+import { LOGIN_API } from "../consts/consts.js";
 import { postAndStore } from "../services/auth.js"
 
 export const handleRegister = async (dataform, setErrors, navigate) => {

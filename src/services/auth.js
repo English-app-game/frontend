@@ -1,4 +1,4 @@
-import { BASE_URL, LOGIN_API, GUEST_API } from "../consts/api";
+import { BASE_URL, LOGIN_API, GUEST_API } from "../consts/consts";
 
 export async function postAndStore(endpoint, payload, storageType = "local") {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
