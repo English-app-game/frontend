@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LevelSelector from "./LevelSelector";
 import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
 import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createRoom } from "../../../store/thunks/createRoomThunk";
 import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,10 @@ const CreateRoom = () => {
   const [status, setStatus] = useState(null);
   const navigate = useNavigate();
 
+  const roomKey = useSelector((store) => store.room.key);
   const dispatch = useDispatch();
+
+  const user = useSelector((store) => store.user);
 
   const handleCreateRoom = () => {
     if (!level || !status) {
@@ -35,17 +38,16 @@ const CreateRoom = () => {
       return;
     }
 
-    const user = JSON.parse(
-      localStorage.getItem("user") || sessionStorage.getItem("user")
-    );
-
-    const key = crypto.randomUUID();
     dispatch(
-      createRoom({ key, users: user.id, level, status, admin: user.id })
+      createRoom({ key: null, users: user.id, level, status, admin: user.id })
     );
-
-    navigate(WAITING_ROOM(key));
   };
+
+  useEffect(() => {
+    if (!roomKey) return;
+
+    navigate(WAITING_ROOM(roomKey));
+  }, [roomKey, navigate]);
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
