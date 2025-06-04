@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { getAllGameTypes } from "../../services/room/roomType.js";
+import {BASE_GAMES_URL} from  "../../services/room/roomType.js";
+import GameTypeButton from "../components/GameTypeButton.jsx";
 
 const GameTypeSelector = ({ gameType, setGameType }) => {
   const [gameTypes, setGameTypes] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/game-types")
-      .then(res => res.json())
-      .then(data => {
-        console.log("🎮 Game types:", data); 
-        setGameTypes(data);
-      })
-      .catch(err => console.error("❌ Error fetching game types:", err));
+    getAllGameTypes()
+    .then(data => setGameTypes(data))
+    .catch(err => console.error(err));
   }, []);
+
+  const handleClick = (id) => {
+    setGameType(gameType === id ? null : id);
+  };
 
   return (
     <div className="mb-6 w-full">
@@ -22,17 +25,12 @@ const GameTypeSelector = ({ gameType, setGameType }) => {
           <p className="text-white">No game types found.</p>
         ) : (
           gameTypes.map(gt => (
-            <button
+            <GameTypeButton
               key={gt._id}
-              onClick={() => setGameType(gameType === gt._id ? null : gt._id)}
-              className={`px-4 py-2 rounded-lg font-bold text-white border-4 transition text-sm ${
-                gameType === gt._id
-                  ? "bg-blue-500 border-blue-700 ring-4 ring-blue-300 scale-105"
-                  : "bg-gray-500 border-gray-300"
-              }`}
-            >
-              {gt.name || "Unnamed Game"}
-            </button>
+              gameType={gt}
+              isSelected={gameType === gt._id}
+              onClick={handleClick}
+            />
           ))
         )}
       </div>
