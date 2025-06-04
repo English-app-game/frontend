@@ -1,4 +1,4 @@
-import { BASE_URL } from "../consts/consts";
+import { BASE_URL } from "../../consts/consts";
 
 export const fetchRooms = async () => {
   try {
