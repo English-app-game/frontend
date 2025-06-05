@@ -8,8 +8,11 @@ import { useState } from "react";
 import { handleRegister } from "../../utils/handleRegister";
 import { useNavigate } from "react-router-dom";
 import { handleInputChange, handleAvatarClick, onSubmitRegister, toggleShowPassword } from "../../utils/handleRegister";
+import useRedirectLoggedIn from "@hooks/useRedirectLoggedIn.js";
 
 export default function Register() {
+  useRedirectLoggedIn();
+
   const navigate = useNavigate();
   const [dataform, setDataform] = useState({
     name: "",

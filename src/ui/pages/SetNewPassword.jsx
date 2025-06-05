@@ -9,8 +9,11 @@ import {
   handleInputChange,
 } from "../../utils/handleRegister";
 import { onSubmitNewPassword } from "../../utils/handleReset";
+import useRedirectLoggedIn from "@hooks/useRedirectLoggedIn.js";
 
 export default function SetNewPassword() {
+  useRedirectLoggedIn();
+  
   const [searchParams] = useSearchParams();
   const [errors, setErrors] = useState({});
   const [serverMessage, setServerMessage] = useState(null);

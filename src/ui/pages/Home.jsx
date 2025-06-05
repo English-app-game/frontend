@@ -1,8 +1,11 @@
 import PrimaryButton from "../components/PrimaryButton" 
 import { useNavigate } from "react-router-dom";
+import useRedirectLoggedIn from "@hooks/useRedirectLoggedIn.js";
 
 
 export default function Home() {
+  useRedirectLoggedIn();
+  
   const navigate = useNavigate();
 
   return (
