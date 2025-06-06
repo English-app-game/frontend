@@ -11,6 +11,7 @@ import ActiveRoom from "../ui/pages/ActiveRoom";
 import ResetPassword from "../ui/pages/ResetPassword";
 import SetNewPassword from "../ui/pages/SetNewPassword";
 import Statistics from "../ui/pages/Statistics/index";
+import GameOver from "../ui/pages/GameOver";
 import { Error as ErrorPage } from "../ui/pages/Error";
 import { ROUTES } from "./routes_consts";
 
@@ -91,6 +92,11 @@ const router = createBrowserRouter([
         errorElement: (
           <ErrorPage error={new Error("Can't get into active room")} />
         ),
+      },
+      {
+        path: ROUTES.GAME_OVER,
+        element: <GameOver />,
+        errorElement: <ErrorPage error={new Error("Can't get into game over page")} />,
       },
     ],
   },

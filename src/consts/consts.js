@@ -8,3 +8,4 @@ export const GUEST_API = "/guest";
 export const SCORE_STATISTICS_PATH = "/statistics/scores";
 export const GAMES_STATISTICS_PATH = "/statistics/games";
 export const PLAYERS_STATISTICS_PATH = "/statistics/players";
+export const PLAYER_SCORE = "http://localhost:5000/api/score/last";
