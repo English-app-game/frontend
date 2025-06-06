@@ -10,6 +10,7 @@ import WaitingRoom from "../ui/pages/WaitingRoom/components/WaitingRoom";
 import ActiveRoom from "../ui/pages/ActiveRoom";
 import ResetPassword from "../ui/pages/ResetPassword";
 import SetNewPassword from "../ui/pages/SetNewPassword";
+import Statistics from "../ui/pages/Statistics/index";
 import { Error as ErrorPage } from "../ui/pages/Error";
 import { ROUTES } from "./routes_consts";
 
@@ -68,6 +69,13 @@ const router = createBrowserRouter([
         element: <CreateRoom />,
         errorElement: (
           <ErrorPage error={new Error("Can't get into create room page")} />
+        ),
+      },
+      {
+        path: ROUTES.STATISTICS,
+        element: <Statistics />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into statistics page")} />
         ),
       },
       {

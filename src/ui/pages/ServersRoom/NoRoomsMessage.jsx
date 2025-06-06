@@ -17,7 +17,7 @@ export default function NoRoomsMessage() {
         onClick={() => navigate(CREATE_ROOM)}
         className="bg-primary text-white px-6 py-3 rounded-2xl shadow-lg text-sm sm:text-base hover:bg-opacity-80 hover:scale-105 hover:cursor-pointer hover:shadow-2xl transition"
       >
-        🚀 Create a New Room
+        Create a New Room 🚀 
       </button>
     </div>
   );
