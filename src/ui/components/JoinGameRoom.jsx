@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
+import { joinUserToRoom } from "../../services/room/joinUserToRoom";
 
 const JoinGameRoom = ({
   id,
@@ -31,30 +32,8 @@ const JoinGameRoom = ({
       alert("User not found. Please log in.");
       return;
     }
-    try {
-      const res = await fetch("http://localhost:5000/api/rooms/players/join", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          roomKey: id,
-          userId: user.id,
-        }),
-      });
 
-      if (!res.ok) {
-        throw new Error("Failed to join the room");
-      }
-      console.log("test");
-
-      const data = await res.json();
-      console.log("Joined room successfully:", data);
-    } catch (err) {
-      console.error("❌ Error joining room:", err);
-      alert("Failed to join the room.");
-      return;
-    }
+    await joinUserToRoom(id, user.id);
 
     if (onJoinAttempt) {
       onJoinAttempt({ id, full: false });

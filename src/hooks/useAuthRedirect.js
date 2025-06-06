@@ -24,9 +24,8 @@ export default function useAuthRedirect() {
       try {
         const parsedUser = JSON.parse(storedUser);
         dispatch(setUser(parsedUser));
-      } catch (err) {
-        console.error("❌ Failed to parse stored user:", err);
-        navigate(LOGIN); // fallback in case user is corrupted
+      } catch (_err) {
+        navigate(LOGIN); 
       }
     }
   }, [dispatch, navigate]);

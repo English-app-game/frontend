@@ -1,19 +1,9 @@
-import { GameTypes } from "../../consts/gameTypes";
 import { formatDateAndTime } from "../../services/dateService";
 import { BASE_URL } from "../../consts/consts";
+import { getGameTypes } from "../getGameTypes";
 export async function addRoomToDB(roomData, thunkAPI) {
   try {
-    const gamesTypesRes = await fetch(`${BASE_URL}/game-types`);
-
-    if (!gamesTypesRes.ok) {
-      const errorData = await gamesTypesRes.json();
-      return thunkAPI.rejectWithValue(
-        errorData.error || "Failed to fetch game types"
-      );
-    }
-
-    const gameTypes = await gamesTypesRes.json();
-
+    const gameTypes = await getGameTypes(thunkAPI);
     const wordMatchGameType = gameTypes.find(
       (type) => type.name === "word match"
     );

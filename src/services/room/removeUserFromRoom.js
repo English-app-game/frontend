@@ -1,8 +1,8 @@
-import { BASE_URL } from "../../consts/consts";
+import { REMOVE_PLAYER_ROUTE } from "../../consts/consts";
 
 export default async function removeUserFromRoom(roomKey, userId) {
   try {
-    await fetch(`${BASE_URL}/rooms/players/remove`, {
+    await fetch(REMOVE_PLAYER_ROUTE, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
