@@ -10,6 +10,8 @@ import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
 import useAuthRedirect from "@hooks/useAuthRedirect";
 import GameTypeSelector from "../../components/GameTypeSelector";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const TEMP_USER = {
@@ -35,7 +37,7 @@ const CreateRoom = () => {
 
   const handleCreateRoom = () => {
     if (!level || !status|| !gameType) {
-      alert("Please select both level , status and game type");
+      toast.error("Please select game type, level and status!");
       return;
     }
 
@@ -44,7 +46,7 @@ const CreateRoom = () => {
 
     const key = crypto.randomUUID();
     dispatch(
-      createRoom({ key, users: TEMP_USER, level, status, admin: TEMP_USER })
+      createRoom({ key, users: TEMP_USER, level, status, gameType, admin: TEMP_USER })
     );
 
     navigate(WAITING_ROOM(key));
@@ -65,6 +67,7 @@ const CreateRoom = () => {
           onClick={handleCreateRoom}
           className="bg-green-400"
         />
+        <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       </BlueBox>
     </div>
   );
