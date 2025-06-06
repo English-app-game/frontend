@@ -5,3 +5,6 @@ export const SET_NEW_PASSWORD_PATH = "/users/resetPassword";
 export const GET_PLAYERS_ROUTE = `${BASE_URL}/rooms/players`
 export const LOGIN_API = "/login";
 export const GUEST_API = "/guest";
+export const SCORE_STATISTICS_PATH = "/statistics/scores";
+export const GAMES_STATISTICS_PATH = "/statistics/games";
+export const PLAYERS_STATISTICS_PATH = "/statistics/players";
