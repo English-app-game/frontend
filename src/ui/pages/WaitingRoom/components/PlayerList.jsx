@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
 import BlueBox from "../../../components/BlueBox";
 import WaitingPlayerListItem from "./WaitingPlayerListItem";
-import avatarImage from "../../../../assets/images/avatar.png";
 
-const PlayersList = ({ playersAtGame, host }) => {
+const PlayersList = ({ players, hostId }) => {
     return (
         <BlueBox
             size="large"
@@ -14,12 +13,12 @@ const PlayersList = ({ playersAtGame, host }) => {
                     Players In The Room:
                 </h1>
                 <ul className="space-y-4 text-white font-semibold">
-                    {playersAtGame.map((player, index ) => (
+                    {players.map(({ _id, avatarImg, name }) => (
                         <WaitingPlayerListItem
-                            key={player}
-                            avatarImage={avatarImage}
-                            player={player}
-                            host={host}
+                            key={_id}
+                            avatarImage={avatarImg}
+                            player={name}
+                            host={_id === hostId}
                         />
                     ))}
                 </ul>

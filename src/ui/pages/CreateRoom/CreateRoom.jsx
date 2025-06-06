@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LevelSelector from "./LevelSelector";
 import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
 import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createRoom } from "../../../store/thunks/createRoomThunk";
 import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +13,9 @@ import GameTypeSelector from "../../components/GameTypeSelector";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const TEMP_USER = {
   // this user ID has to be real ID from db.
-  _id: "681f7a077d51665473dbe491", 
+  _id: "681f7a077d51665473dbe491",
   name: "Alice Example",
   email: "alice@example.com",
   password: "securePassword123!",
@@ -33,7 +32,10 @@ const CreateRoom = () => {
 
   const navigate = useNavigate();
 
+  const roomKey = useSelector((store) => store.room.key);
   const dispatch = useDispatch();
+
+  const user = useSelector((store) => store.user);
 
   const handleCreateRoom = () => {
     if (!level || !status|| !gameType) {
@@ -41,16 +43,16 @@ const CreateRoom = () => {
       return;
     }
 
-    //TODO: Assuming user already exists here, because it passed check in './ServersRoom/Footer.handleCreateRoomClick'.
-    // console.log(level, status);
+    dispatch(createRoom({ key, users: TEMP_USER, level, status, gameType, admin: TEMP_USER })
 
-    const key = crypto.randomUUID();
-    dispatch(
-      createRoom({ key, users: TEMP_USER, level, status, gameType, admin: TEMP_USER })
     );
-
-    navigate(WAITING_ROOM(key));
   };
+
+  useEffect(() => {
+    if (!roomKey) return;
+
+    navigate(WAITING_ROOM(roomKey));
+  }, [roomKey, navigate]);
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">

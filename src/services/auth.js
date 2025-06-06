@@ -1,6 +1,6 @@
-import { BASE_URL, LOGIN_API, GUEST_API } from "../consts/api";
+import { BASE_URL, LOGIN_API, GUEST_API } from "../consts/consts";
 
-async function postAndStore(endpoint, payload, storageType = "local") {
+export async function postAndStore(endpoint, payload, storageType = "local") {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,3 +26,4 @@ export function loginUser(email, password) {
 export function loginGuest(name, avatarImg) {
   return postAndStore(GUEST_API, { name, avatarImg }, "session");
 }
+

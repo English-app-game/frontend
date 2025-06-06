@@ -2,11 +2,11 @@ import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
 import useAuthRedirect from "@hooks/useAuthRedirect";
+import { fetchPlayers } from "../../../../services/room/getPlayers";
 
 import { ROUTES } from "../../../../routes/routes_consts";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 
 export default function WaitingRoom() {
   useAuthRedirect();
@@ -14,27 +14,40 @@ export default function WaitingRoom() {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  const room = useSelector((store) => store.room);
-  console.log(room);
   const handleCopy = () => {
     navigator.clipboard.writeText("1KO4W7H");
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
 
-   const handleStart = () => {
+  const handleStart = () => {
     navigate(ROUTES.ACTIVE_ROOM(roomKey));
   };
-  
+
   const { id: roomKey } = useParams();
-  //for now it manualy. Itay and I need to solve something in the DB
-  const playersAtGame = ["Liad", "Tomer", "Itay"];
-  const host = "Liad";
+  const [players, setPlayers] = useState([]);
+  const [hostId, setHostId] = useState(null);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const data = await fetchPlayers(roomKey);
+        if (data.players.length !== players.length) {
+          setPlayers(data.players);
+          setHostId(data.admin._id);
+        }
+      } catch (err) {
+        console.error("Failed fetching players", err);
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
       <RoomHeader />
-      <PlayersList playersAtGame={playersAtGame} host={host} />
+      <PlayersList players={players} hostId={hostId} />
       <RoomFooter
         copied={copied}
         handleCopy={handleCopy}

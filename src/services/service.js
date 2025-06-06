@@ -3,21 +3,27 @@ import {
   RESET_PASSWORD_PATH,
   SET_NEW_PASSWORD_PATH,
   REGISTER_PATH
-} from "../assets/consts";
+} from "../consts/consts";
 import { validateEmail, validatePassword } from "../utils/validateFields";
 
 
 
 export async function registerUser(userToSend) {
-  const res = await fetch(`${BASE_URL}${REGISTER_PATH}`, {
+  try{
+    const res = await fetch(`${BASE_URL}${REGISTER_PATH}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(userToSend),
   });
+  
+ 
 
   const result = await res.json();
-
-  return { ok: res.ok, result };
+  return{ok: res.ok , result}
+}catch(err){
+  return { ok: false, result: {message:"Server error. Please try again later."} };
+}
+  
 
 }
 ///////////////////////////////////////////////

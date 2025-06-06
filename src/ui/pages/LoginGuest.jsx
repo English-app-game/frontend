@@ -58,7 +58,7 @@ export default function LoginGuest() {
 
   return (
       <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-      <div className="pt-10 w-full">
+      <div className="pt-10 w-full flex items-center">
         <BlueBox className="pr-3 ">
           <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
           <div className="pt-7">
@@ -69,7 +69,7 @@ export default function LoginGuest() {
               placeholder="Enter your name"
             />
             {usernameError && (
-              <p className="text-red-500 text-sm mt-1 ml-1">{usernameError}</p>
+              <p className="text-black text-sm mt-1 ml-1">{usernameError}</p>
             )}
           </div>
           <div className="pt-4">
@@ -84,10 +84,9 @@ export default function LoginGuest() {
                 <div
                   key={key}
                   onClick={() => setSelectedAvatar(src)}
-                  className={`cursor-pointer transition transform duration-200 rounded-xl overflow-hidden border-2 
-                  ${selectedAvatar === src
-                      ? "scale-110 border-transparent"
-                      : "opacity-80 hover:scale-105 border-transparent"
+                  className={`cursor-pointer rounded-xl
+                  ${selectedAvatar === src ?
+                      "ring-4 ring-green-500" : ""
                     }`}
                 >
                   <AvatarImg src={src} alt={key} />
@@ -95,7 +94,7 @@ export default function LoginGuest() {
               ))}
             </div>
               {avatarError && (
-              <p className="text-red-500 text-sm mt-2 ml-1">{avatarError}</p>
+              <p className="text-black text-sm mt-2 ml-1">{avatarError}</p>
             )}
           </div>
         </BlueBox>
