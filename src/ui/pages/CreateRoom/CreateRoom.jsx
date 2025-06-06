@@ -9,6 +9,9 @@ import { createRoom } from "../../../store/thunks/createRoomThunk";
 import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
 import useAuthRedirect from "@hooks/useAuthRedirect";
+import GameTypeSelector from "../../components/GameTypeSelector";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TEMP_USER = {
   // this user ID has to be real ID from db.
@@ -25,6 +28,8 @@ const CreateRoom = () => {
 
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
+  const [gameType, setGameType] = useState(null);
+
   const navigate = useNavigate();
 
   const roomKey = useSelector((store) => store.room.key);
@@ -33,13 +38,13 @@ const CreateRoom = () => {
   const user = useSelector((store) => store.user);
 
   const handleCreateRoom = () => {
-    if (!level || !status) {
-      alert("Please select both level and status");
+    if (!level || !status|| !gameType) {
+      toast.error("Please select game type, level and status!");
       return;
     }
 
-    dispatch(
-      createRoom({ key: null, users: user.id, level, status, admin: user.id })
+    dispatch(createRoom({ key, users: TEMP_USER, level, status, gameType, admin: TEMP_USER })
+
     );
   };
 
@@ -51,11 +56,12 @@ const CreateRoom = () => {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
-      <BlueBox size="large" className="text-center w-[50rem] h-[30rem]">
+     <BlueBox size="large" className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]">
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}
         ></Header>
+        <GameTypeSelector gameType={gameType} setGameType={setGameType} />
         <LevelSelector level={level} setLevel={setLevel} />
         <StatusSelector status={status} setStatus={setStatus} />
         <PrimaryButton
@@ -63,6 +69,7 @@ const CreateRoom = () => {
           onClick={handleCreateRoom}
           className="bg-green-400"
         />
+        <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       </BlueBox>
     </div>
   );

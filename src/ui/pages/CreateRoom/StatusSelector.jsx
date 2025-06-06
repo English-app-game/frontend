@@ -4,7 +4,7 @@ import { statusOptions } from "./config";
 
 const StatusSelector = ({ status, setStatus }) => (
   <div className="mb-6">
-    <h1 className="text-lg font-extrabold mb-2 text-[#f5f5dc] uppercase">2. Choose Status</h1>
+    <h1 className="text-lg font-extrabold mb-2 text-[#f5f5dc] uppercase">3. Choose Status</h1>
     <div className="flex justify-around">
       {Object.entries(statusOptions).map(([key, { type, bgColor, borderColor, hoverColor, ringColor }]) => (
         <PrimaryButton
