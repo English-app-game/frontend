@@ -12,13 +12,13 @@ import startGameService from "../../../../services/startGame";
 import useRoomPolling from "../../../../hooks/useRoomPolling";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { GameTypes } from "../../../../consts/gameTypes";
+import { useSocket } from "../../../../hooks/useSocket";
 
 export default function WaitingRoom() {
   useAuthRedirect();
 
   const [copied, setCopied] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const room = useSelector((store) => store.room);
   const userId = useSelector((store) => store.user.id);
   const gameType = useSelector((store) => store.room.gameType);
@@ -35,10 +35,10 @@ export default function WaitingRoom() {
   };
 
   const handleStart = async () => {
-    // if (room.players.length < 2) {
-    //   alert("At least 2 players are required to start the game.");
-    //   return;
-    // }
+    if (room.players.length < 2) {
+      alert("At least 2 players are required to start the game.");
+      return;
+    }
 
     if (userId !== room.admin) {
       alert("Only the host can start the game.");

@@ -6,9 +6,10 @@ import { store } from "./store/index";
 import { Provider } from "react-redux";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  // bugs socket connection if used with StrictMode
+  // <StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </StrictMode>
+  // </StrictMode>
 );
