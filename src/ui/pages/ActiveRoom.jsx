@@ -1,6 +1,6 @@
 import { useState } from "react";
 import WordCard from '../pages/MemoryGame/WordCard';
-import { shuffleArray, revealCardById, hideTwoCards, isMatch } from "../../utils/memoryGameLogic";
+import { shuffleArray, revealCardById, hideTwoCards, isMatch, handleMismatch } from "../../utils/memoryGameLogic";
 import ExitButton from "../../ui/components/ExitButton";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../src/routes/routes_consts";
@@ -54,12 +54,7 @@ export default function ActiveRoom() {
         if (isMatch(first, second)) {
           setSelectedCards([]); //the cards will not be hide along the game
         } else {
-          setLockBoard(true);
-          setTimeout(() => {
-            setCards(prev => hideTwoCards(prev, first.id, second.id));
-            setSelectedCards([]);
-            setLockBoard(false);
-          }, 1000);
+          handleMismatch({ setCards, setSelectedCards, setLockBoard, firstId: first.id, secondId: second.id});
         }
       }
     } catch (err) {
@@ -68,24 +63,25 @@ export default function ActiveRoom() {
   };
 
   return (
-  <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center relative">
-    <div className="absolute top-4 left-4">
-      <ExitButton onClick={handleExit} className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400">
-        EXIT ROOM
-      </ExitButton>
-    </div>
+    <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center relative">
+      <div className="absolute top-4 left-4">
+        <ExitButton onClick={handleExit} className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400">
+          EXIT ROOM
+        </ExitButton>
+      </div>
 
-   
-    <div className="flex flex-wrap w-[640px] gap-4 justify-center">
-      {cards.map((card) => (
-        <WordCard
-          key={card.id}
-          word={card.word}
-          isRevealed={card.isRevealed}
-          onClick={() => handleCardClick(card.id)}
-        />
-      ))}
+
+      <div className="flex flex-wrap w-[640px] gap-4 justify-center">
+        {cards.map((card) => (
+          <WordCard
+            key={card.id}
+            word={card.word}
+            isRevealed={card.isRevealed}
+            onClick={() => handleCardClick(card.id)}
+          />
+        ))}
+      </div>
     </div>
-  </div>
-  )};
+  )
+};
 

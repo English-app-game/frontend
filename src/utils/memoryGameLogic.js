@@ -23,5 +23,18 @@ export function isMatch(cardA, cardB) {
   return cardA.matchId === cardB.matchId;
 }
 
+export function handleMismatch({ setCards, setSelectedCards, setLockBoard, firstId, secondId }) {
+  setLockBoard(true);
+  setTimeout(() => {
+    setCards(prev => prev.map(card =>
+      card.id === firstId || card.id === secondId
+        ? { ...card, isRevealed: false }
+        : card
+    ));
+    setSelectedCards([]);
+    setLockBoard(false);
+  }, 1000);
+}
+
 
 
