@@ -58,7 +58,7 @@ export const handleInputChange = (field, dataform, setDataform) => (e) => {
   };
   
  export const toggleShowPassword = (showPassword, setShowPassword) => {
-  setShowPassword(!showPassword);
+  setShowPassword(prev => !prev);
 };
 
   
