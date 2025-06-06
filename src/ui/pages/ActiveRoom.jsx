@@ -1,53 +1,21 @@
-import { useState } from "react";
-import WordCard from '../pages/MemoryGame/WordCard';
-
+import useAuthRedirect from "@hooks/useAuthRedirect";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import TranslationGame from "../components/TranslationGame/TranslationGame";
 
 export default function ActiveRoom() {
-  
-  //it will change Gil!!!!!!!!!!!!!!!!!!!!
-  const wordPairs = [
-    { en: "apple", he: "תפוח" },
-    { en: "dog", he: "כלב" },
-    { en: "house", he: "בית" },
-    { en: "sun", he: "שמש" },
-    { en: "book", he: "ספר" },
-    { en: "car", he: "מכונית" },
-    { en: "tree", he: "עץ" },
-    { en: "water", he: "מים" },
-    { en: "music", he: "מוזיקה" },
-    { en: "school", he: "בית ספר" },
-  ];
+  useAuthRedirect();
+  const { id: roomKey, gameType } = useParams();
 
-  const [cards, setCards] = useState(() =>
-    wordPairs.flatMap((pair, index) => [
-      {
-        id: `en-${index}`,
-        word: pair.en,
-        matchId: index,
-        isRevealed: false,
-      },
-      {
-        id: `he-${index}`,
-        word: pair.he,
-        matchId: index,
-        isRevealed: false,
-      },
-    ])
-  );
+  const room = useSelector((store) => store.room);
+  console.log(room);
 
-  return (
-    <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center">
-      <div className="flex flex-wrap w-[640px] gap-4 justify-center">
-        {cards.map((card) => (
-          <WordCard
-            key={card.id}
-            word={card.word}
-            isRevealed={card.isRevealed}
-            onClick={() => console.log("clicked:", card.word)}
-          />
-        ))}
-      </div>
-    </div>
+  if (gameType.toLowerCase() == "translation")
+    return <TranslationGame roomKey={roomKey} />;
 
-  );
+  // TODO: Implement other game types (tomer?)
+  // if(gameType.toLowerCase() == 'memory')
+  //   return <MemoryGame />
+
+  return <h1>Unsupported game types! Please navigate back to rooms! </h1>;
 }
