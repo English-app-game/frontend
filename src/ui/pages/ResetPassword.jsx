@@ -13,7 +13,7 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-      <div className="pt-10 w-full">
+      <div className="pt-10 w-full flex items-center">
         <BlueBox>
           <Header text="PLEASE ENTER YOUR EMAIL" className="text-center" />
           <div className="mt-5 relative flex flex-col items-start gap-4">
