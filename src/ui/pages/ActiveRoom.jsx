@@ -1,6 +1,6 @@
 import { useState } from "react";
 import WordCard from '../pages/MemoryGame/WordCard';
-import { shuffleArray, revealCardById, hideTwoCards, isMatch, handleMismatch } from "../../utils/memoryGameLogic";
+import { shuffleArray, revealCardById, hideTwoCards, isMatch } from "../../utils/memoryGameLogic";
 import ExitButton from "../../ui/components/ExitButton";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../src/routes/routes_consts";
@@ -54,7 +54,12 @@ export default function ActiveRoom() {
         if (isMatch(first, second)) {
           setSelectedCards([]); //the cards will not be hide along the game
         } else {
-          handleMismatch({ setCards, setSelectedCards, setLockBoard, firstId: first.id, secondId: second.id});
+          setLockBoard(true);
+          setTimeout(() => {
+            setCards(prev => hideTwoCards(prev, first.id, second.id));
+            setSelectedCards([]);
+            setLockBoard(false);
+          }, 1000);
         }
       }
     } catch (err) {
