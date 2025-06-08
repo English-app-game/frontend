@@ -1,21 +1,12 @@
 import { formatDateAndTime } from "../../services/dateService";
 import { BASE_URL } from "../../consts/consts";
-import { getGameTypes } from "../getGameTypes";
+// import { getGameTypes } from "../getGameTypes";
 export async function addRoomToDB(roomData, thunkAPI) {
   try {
-    const gameTypes = await getGameTypes(thunkAPI);
-    const wordMatchGameType = gameTypes.find(
-      (type) => type.name === "word match"
-    );
-    if (!wordMatchGameType._id) {
-      return thunkAPI.rejectWithValue("Word match game type not found");
-    }
-    roomData.gameType = wordMatchGameType._id;
-    roomData.maxPlayers = wordMatchGameType.maxNumOfPlayers;
 
     const roomTemplate = {
       players: [],
-      isActive: true,
+      isActive: false,
       currentStatus: "waiting",
       createdAt: formatDateAndTime(new Date()),
       chat: [],

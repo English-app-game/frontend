@@ -4,7 +4,7 @@ import { socket } from "../sockets/sockets";
 export function useSocket() {
   const socketRef = useRef(socket);
 
-  const viewRoomDetailsTesting = useCallback(({ roomKey, users, word }) => {
+  const viewRoomDetailsTesting = useCallback(({ roomKey, users }) => {
     console.log(roomKey, users);
   }, []);
 
