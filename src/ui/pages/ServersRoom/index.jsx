@@ -8,16 +8,22 @@ import { fetchRooms } from "../../../services/room/getRooms";
 
 export default function ServersRoom() {
 
-   const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const getRooms = async () => {
       try {
         const data = await fetchRooms();
         console.log("📦 Rooms from service:", data);
-        setRooms(data);
+        setTimeout(() => {
+          setRooms(data);
+          setIsLoading(false);
+        }, 500);
       } catch (err) {
         console.error("Error loading rooms:", err);
+        setIsLoading(false);
       }
     };
 
@@ -31,7 +37,7 @@ export default function ServersRoom() {
       <Nav />
 
       {/* Scrollable Main Content */}
-      <Main rooms={rooms} />
+      <Main rooms={rooms} isLoading={ isLoading } />
 
       {/* Sticky Footer */}
       <Footer rooms={rooms} />

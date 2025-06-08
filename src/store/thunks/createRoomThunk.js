@@ -1,4 +1,3 @@
-// roomThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { addRoomToDB } from "../../services/room/addRoomToDB";
 
