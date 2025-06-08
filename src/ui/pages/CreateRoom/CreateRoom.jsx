@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { createRoom } from "../../../store/thunks/createRoomThunk";
 import { WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
-import useAuthRedirect from "@hooks/useAuthRedirect";
 
 
 const TEMP_USER = {
@@ -22,7 +21,6 @@ const TEMP_USER = {
 };
 
 const CreateRoom = () => {
-  useAuthRedirect();
 
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
