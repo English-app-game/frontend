@@ -25,7 +25,8 @@ export default function ActiveRoom() {
     return <TranslationGame roomKey={roomKey} />;
 
   // TODO: Implement other game types (tomer?)
-  // if(gameType.toLowerCase() == 'memory')
+  // Remove this comment when implementing other game types
+  // if(gameType.toLowerCase() == 'memorygame')
   //   return <MemoryGame />
 
   return <h1>Unsupported game types! Please navigate back to rooms! </h1>;
