@@ -6,7 +6,6 @@ export function useSocket() {
 
   const viewRoomDetailsTesting = useCallback(({ roomKey, users, word }) => {
     console.log(roomKey, users);
-    dispatch(lockWord(word))
   }, []);
 
   const startListeners = useCallback(() => {

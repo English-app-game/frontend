@@ -1,4 +1,3 @@
-import useAuthRedirect from "@hooks/useAuthRedirect";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
@@ -6,7 +5,6 @@ import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
 
 export default function ActiveRoom() {
-  useAuthRedirect();
   const { id: roomKey, gameType } = useParams();
   const { emit } = useSocket();
   const user = useSelector((store) => store.user);
