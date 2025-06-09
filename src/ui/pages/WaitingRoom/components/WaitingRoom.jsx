@@ -1,7 +1,6 @@
 import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
-import useAuthRedirect from "@hooks/useAuthRedirect";
 import { fetchPlayers } from "../../../../services/room/getPlayers";
 
 import { useParams } from "react-router-dom";
@@ -12,7 +11,6 @@ import startGameService from "../../../../services/startGame";
 import useRoomPolling from "../../../../hooks/useRoomPolling";
 
 export default function WaitingRoom() {
-  useAuthRedirect();
 
   const [copied, setCopied] = useState(false);
   const dispatch = useDispatch();
@@ -25,7 +23,7 @@ export default function WaitingRoom() {
   useRoomPolling(roomKey);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText("1KO4W7H");
+    navigator.clipboard.writeText(roomKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };

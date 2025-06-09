@@ -11,6 +11,7 @@ import {
 import { onSubmitNewPassword } from "../../utils/handleReset";
 
 export default function SetNewPassword() {
+  
   const [searchParams] = useSearchParams();
   const [errors, setErrors] = useState({});
   const [serverMessage, setServerMessage] = useState(null);
