@@ -1,6 +1,8 @@
 import JoinGameRoom from "../../components/JoinGameRoom";
-import NoRoomsMessage from "../../pages/ServersRoom/NoRoomsMessage";
+import React, { useState, useEffect } from "react";
+import NoRoomsMessage from "../ServersRoom/NoRoomsMessage";
 import RoomCardSkeleton from "../../components/RoomCardSkeleton"
+
 
 export default function Main({ rooms, isLoading }) {
 
