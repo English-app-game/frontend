@@ -48,6 +48,12 @@ const roomSlice = createSlice({
         chat: action.payload.chat || [],
       };
     },
+    startGame: (state) => {
+      state.isActive = true;
+      state.currentStatus = RoomStatus.PLAYING;
+      state.finishedAt = null;
+      state.chat = [];
+    },
     resetRoom: () => initialState,
   },
   extraReducers: (builder) => {
@@ -69,5 +75,5 @@ const roomSlice = createSlice({
   },
 });
 
-export const { setRoom, resetRoom } = roomSlice.actions;
+export const { setRoom, resetRoom, startGame } = roomSlice.actions;
 export default roomSlice.reducer;

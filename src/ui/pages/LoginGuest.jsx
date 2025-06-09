@@ -10,6 +10,7 @@ import { loginGuest } from "../../services/auth.js";
 import { ROOMS_LIST } from "../../routes/routes_consts.js"
 
 export default function LoginGuest() {
+
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(null);
@@ -57,8 +58,8 @@ export default function LoginGuest() {
 
 
   return (
-      <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-      <div className="pt-10 w-full flex items-center">
+      <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center items-center">
+      <div className="pt-10 w-full">
         <BlueBox className="pr-3 ">
           <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
           <div className="pt-7">
