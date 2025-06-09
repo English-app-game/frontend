@@ -1,10 +1,10 @@
-import { useState } from "react";
-import WordCard from '../pages/MemoryGame/WordCard';
+import { useState, useEffect } from "react";
+import WordCard from "../pages/MemoryGame/WordCard";
 import { shuffleArray, revealCardById, hideTwoCards, isMatch } from "../../utils/memoryGameLogic";
 import ExitButton from "../../ui/components/ExitButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../src/routes/routes_consts";
-
+import axios from "axios";
 
 export default function ActiveRoom() {
   const wordPairs = [
@@ -20,6 +20,7 @@ export default function ActiveRoom() {
     { en: "school", he: "בית ספר" },
   ];
 
+
   const [cards, setCards] = useState(() =>
     shuffleArray(
       wordPairs.flatMap((pair, index) => [
@@ -29,30 +30,37 @@ export default function ActiveRoom() {
     )
   );
 
-  const navigate = useNavigate();
-  const handleExit = () => {
-    navigate(ROUTES.ROOMS_LIST);
-  };
-
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
+  const navigate = useNavigate();
+  const { id: roomKey } = useParams();
 
-  const handleCardClick = (cardId) => {
+  const user = JSON.parse(localStorage.getItem("user") || sessionStorage.getItem("user"));
+
+  const handleCardClick = async (cardId) => {
     if (lockBoard) return;
 
-    const clickedCard = cards.find(card => card.id === cardId);
+    const clickedCard = cards.find((card) => card.id === cardId);
     if (clickedCard.isRevealed) return;
 
     try {
-      setCards(prev => revealCardById(prev, cardId)); //showing the card
+      setCards(prev => revealCardById(prev, cardId));
       const newSelected = [...selectedCards, clickedCard];
-      setSelectedCards(newSelected); //insert the card into an array of 2 selected cards
+      setSelectedCards(newSelected);
 
       if (newSelected.length === 2) {
         const [first, second] = newSelected;
 
         if (isMatch(first, second)) {
-          setSelectedCards([]); //the cards will not be hide along the game
+          console.log("✅ Match found!");
+          setSelectedCards([]);
+
+          await axios.post("http://localhost:5000/api/memorygame/update-score", {
+            roomKey,
+            userId: user._id,
+            points: 10
+          });
+
         } else {
           setLockBoard(true);
           setTimeout(() => {
@@ -62,9 +70,23 @@ export default function ActiveRoom() {
           }, 1000);
         }
       }
-    } catch (err) {
-      console.error("Error in handleCardClick:", err);
+
+      const allMatched = cards.every((card) => card.isRevealed || card.id === cardId);
+      if (allMatched) {
+        console.log("🏁 All cards matched, finalizing score...");
+        await axios.post("http://localhost:5000/api/memorygame/finalize-score", {
+          roomKey
+        });
+      }
+
+    } catch (error) {
+      console.error("❌ Error in game logic or API:", error);
     }
+  };
+
+  const handleExit = () => {
+    axios.post("http://localhost:5000/api/memorygame/clear-room", { roomKey });
+    navigate(ROUTES.ROOMS_LIST);
   };
 
   return (
@@ -74,7 +96,6 @@ export default function ActiveRoom() {
           EXIT ROOM
         </ExitButton>
       </div>
-
 
       <div className="flex flex-wrap w-[640px] gap-4 justify-center">
         {cards.map((card) => (
@@ -87,6 +108,5 @@ export default function ActiveRoom() {
         ))}
       </div>
     </div>
-  )
-};
-
+  );
+}

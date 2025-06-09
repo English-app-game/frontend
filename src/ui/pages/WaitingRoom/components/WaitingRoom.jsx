@@ -20,9 +20,34 @@ export default function WaitingRoom() {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const handleStart = () => {
+ const handleStart = async () => {
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || !storedUser._id) {
+      console.error("❌ User not found in localStorage");
+      return;
+    }
+
+    const res = await fetch("http://localhost:3000/api/memorygame/init-room", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        roomKey,
+        user: storedUser,
+      }),
+    });
+
+    const data = await res.json();
+    console.log("✅ init-room response:", data);
+
     navigate(ROUTES.ACTIVE_ROOM(roomKey));
-  };
+  } catch (err) {
+    console.error("Failed to initialize room", err);
+  }
+};
+
 
   const { id: roomKey } = useParams();
   const [players, setPlayers] = useState([]);
