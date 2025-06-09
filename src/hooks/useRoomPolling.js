@@ -1,10 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { GameTypes } from "../consts/gameTypes";
+import { GameTypes, RoomStatus } from "../consts/gameTypes";
 import { ROUTES } from "../routes/routes_consts";
 import { getRoom } from "../services/room/getRoom";
-import startGame from "../services/startGame";
 import { setRoom } from "../store/slices/roomSlice";
 export default function useRoomPolling(roomKey) {
   const navigate = useNavigate();
@@ -18,11 +17,9 @@ export default function useRoomPolling(roomKey) {
     const intervalId = setInterval(async () => {
       try {
         const room = await getRoom(roomKey);
-
-        console.log(room);
         if (
-          roomStatus.toLowerCase() === "playing" ||
-          room?.currentStatus?.toLowerCase() === "playing"
+          roomStatus.toLowerCase() === RoomStatus.PLAYING ||
+          room?.currentStatus?.toLowerCase() === RoomStatus.PLAYING
         ) {
           // TODO: create a feature to determine which game type should start.
           // For now, we assume that the game type is always translation.

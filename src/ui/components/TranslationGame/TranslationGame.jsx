@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { ROOMS_LIST, ROUTES } from "../../../routes/routes_consts";
+import { ROUTES } from "../../../routes/routes_consts";
 import { resetRoom } from "../../../store/slices/roomSlice";
 import removeUserFromRoom from "../../../services/room/removeUserFromRoom";
 
