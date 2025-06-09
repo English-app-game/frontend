@@ -31,10 +31,11 @@ export default function WaitingRoom() {
   };
 
   const handleStart = async () => {
-    // if (room.players.length < 2) {
-    //   alert("At least 2 players are required to start the game.");
-    //   return;
-    // }
+    // comment this check if this blocks starting the game
+    if (room.players.length < 2) {
+      alert("At least 2 players are required to start the game.");
+      return;
+    }
 
     if (userId !== room.admin) {
       alert("Only the host can start the game.");

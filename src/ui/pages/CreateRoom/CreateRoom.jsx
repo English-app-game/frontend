@@ -43,7 +43,6 @@ const CreateRoom = () => {
       return;
     }
     dispatch(createRoom({ key:null, users: user.id, level, status, gameType, admin: user.id })
-
     );
   };
 
