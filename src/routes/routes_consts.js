@@ -10,7 +10,7 @@ export const CREATE_ROOM = "/rooms/create";
 export const STATISTICS = "/statistics"
 export const GAME_OVER = "/gameover";
 export const WAITING_ROOM = (id = ":id") => `/rooms/${id}`;
-export const ACTIVE_ROOM = (id = ":id") => `/rooms/active/${id}`;
+export const ACTIVE_ROOM = (id = ":id", gameType = ":gameType") => `/rooms/active/${id}/${gameType}`;
 
 // This is for if we need all of our routes (like in router.jsx) and if we need looping capabilities.
 export const ROUTES = {

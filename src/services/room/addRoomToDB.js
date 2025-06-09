@@ -1,8 +1,18 @@
-import { GameTypes } from "../../consts/gameTypes";
 import { formatDateAndTime } from "../../services/dateService";
 import { BASE_URL } from "../../consts/consts";
+// import { getGameTypes } from "../getGameTypes";
 export async function addRoomToDB(roomData, thunkAPI) {
   try {
+
+    const roomTemplate = {
+      players: [],
+      isActive: false,
+      currentStatus: "waiting",
+      createdAt: formatDateAndTime(new Date()),
+      chat: [],
+      amountOfPlayers: 1,
+    };
+
     const response = await fetch(`${BASE_URL}/rooms/create`, {
       method: "POST",
       headers: {
@@ -10,15 +20,7 @@ export async function addRoomToDB(roomData, thunkAPI) {
       },
       body: JSON.stringify({
         ...roomData,
-        maxPlayers: 4,
-        players: [],
-        // i copied the id from db of translation type
-        gameType: "68245ead00dfdf81fed2c805",
-        isActive: true,
-        currentStatus: "waiting",
-        createdAt: formatDateAndTime(new Date()),
-        chat: [],
-        amountOfPlayers: 4,
+        ...roomTemplate,
       }),
     });
 
