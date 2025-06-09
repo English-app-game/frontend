@@ -4,8 +4,7 @@ import { createRoom as createRoomMiddleware } from "../thunks/createRoomThunk";
 
 // Initial State aligned with your GameRoom schema
 const initialState = {
-  // changeroomId to key
-  // roomId: "", //string, required
+  key: "", //string, required
   amountOfPlayers: 0, //int, required
   maxPlayers: 0, // int , required
   players: [
@@ -24,6 +23,7 @@ const initialState = {
     // User, required
     userId: "",
     name: "",
+    avatarImg: "",
   },
   currentStatus: RoomStatus.WAITING, // 'waiting' | 'playing' | 'finished' | 'error', required
   createdAt: "", // required
@@ -40,7 +40,22 @@ const initialState = {
 const roomSlice = createSlice({
   name: "room",
   initialState,
-  reducers: {},
+  reducers: {
+    setRoom: (state, action) => {
+      return {
+        ...action.payload,
+        finishedAt: action.payload.finishedAt || null,
+        chat: action.payload.chat || [],
+      };
+    },
+    startGame: (state) => {
+      state.isActive = true;
+      state.currentStatus = RoomStatus.PLAYING;
+      state.finishedAt = null;
+      state.chat = [];
+    },
+    resetRoom: () => initialState,
+  },
   extraReducers: (builder) => {
     builder.addCase(createRoomMiddleware.fulfilled, (state, action) => {
       const room = action.payload;
@@ -60,5 +75,5 @@ const roomSlice = createSlice({
   },
 });
 
-// export const { createRoom } = roomSlice.actions;
+export const { setRoom, resetRoom, startGame } = roomSlice.actions;
 export default roomSlice.reducer;

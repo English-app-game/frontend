@@ -1,5 +1,7 @@
 import { IoGameControllerOutline } from "react-icons/io5";
 import Header from "../../components/Header";
+import ButtonHeader from "../../components/ButtonHeader";
+import { STATISTICS } from "../../../routes/routes_consts";
 
 export default function Nav() {
   return (
@@ -9,6 +11,7 @@ export default function Nav() {
         className="text-primary uppercase text-[1.5rem] sm:text-4xl"
       />
       <IoGameControllerOutline size={80} />
+      <ButtonHeader navigateTo={STATISTICS} text={"Statistics"}/>
     </header>
   );
 }
