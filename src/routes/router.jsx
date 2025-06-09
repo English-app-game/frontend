@@ -13,6 +13,7 @@ import SetNewPassword from "../ui/pages/SetNewPassword";
 import Statistics from "../ui/pages/Statistics/index";
 import { Error as ErrorPage } from "../ui/pages/Error";
 import { ROUTES } from "./routes_consts";
+import Auth from "../ui/components/Auth";
 
 const router = createBrowserRouter([
   {
@@ -71,8 +72,14 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.ACTIVE_ROOM(),
-        element: <ActiveRoom />,
-        errorElement: <ErrorPage error={new Error("Can't get into active room")} />,
+        element: (
+          <Auth>
+            <ActiveRoom />
+          </Auth>
+        ),
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into active room")} />
+        ),
       },
     ],
   },

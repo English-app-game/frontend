@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetRoom, setRoom } from "../../../../store/slices/roomSlice";
-import { BASE_URL } from "../../../../consts/consts";
 import { getRoom } from "../../../../services/room/getRoom";
 import removeUserFromRoom from "../../../../services/room/removeUserFromRoom";
 
@@ -15,7 +14,6 @@ const RoomHeader = () => {
 
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
-  const room = useSelector((store) => store.room);
 
   useEffect(() => {
     if (!roomKey) return;
