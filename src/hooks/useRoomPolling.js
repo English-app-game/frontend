@@ -11,7 +11,6 @@ export default function useRoomPolling(roomKey) {
   const dispatch = useDispatch();
   const roomStatus = useSelector((state) => state.room.currentStatus);
   useEffect(() => {
-    console.log(roomKey, roomStatus);
     if (!roomKey) return;
 
     const intervalId = setInterval(async () => {
@@ -21,15 +20,20 @@ export default function useRoomPolling(roomKey) {
           roomStatus.toLowerCase() === RoomStatus.PLAYING ||
           room?.currentStatus?.toLowerCase() === RoomStatus.PLAYING
         ) {
-
           const gameTypes = await getAllGameTypes();
           const match = gameTypes.find((gt) => gt._id === room.gameType);
-          const gameType = match ? match.name.trim().split(' ').join('') : "Unknown";
+          let gameType = match
+            ? match.name.trim().split(" ").join("")
+            : "Unknown";
+
+          if (!gameType) {
+            console.error("Game type not found for room:", roomKey);
+            navigate(ROUTES.ROOMS_LIST);
+            return;
+          }
 
           dispatch(setRoom(room));
-          navigate(
-            ROUTES.ACTIVE_ROOM(roomKey, gameType || GameTypes.TRANSLATION)
-          );
+          navigate(ROUTES.ACTIVE_ROOM(roomKey, gameType));
         }
       } catch (err) {
         console.error("Error polling room:", err);

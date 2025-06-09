@@ -11,7 +11,6 @@ import startGameService from "../../../../services/startGame";
 import useRoomPolling from "../../../../hooks/useRoomPolling";
 
 export default function WaitingRoom() {
-
   const [copied, setCopied] = useState(false);
   const dispatch = useDispatch();
   const room = useSelector((store) => store.room);
