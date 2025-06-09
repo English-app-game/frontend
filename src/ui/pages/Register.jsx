@@ -12,6 +12,7 @@ import { handleInputChange, handleAvatarClick, onSubmitRegister, toggleShowPassw
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Register() {
+
   const navigate = useNavigate();
   const [dataform, setDataform] = useState({
     name: "",

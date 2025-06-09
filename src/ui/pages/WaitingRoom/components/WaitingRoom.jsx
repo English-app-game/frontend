@@ -1,7 +1,6 @@
 import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
-import useAuthRedirect from "@hooks/useAuthRedirect";
 import { fetchPlayers } from "../../../../services/room/getPlayers";
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,7 +14,6 @@ import { GameTypes } from "../../../../consts/gameTypes";
 import { useSocket } from "../../../../hooks/useSocket";
 
 export default function WaitingRoom() {
-  useAuthRedirect();
 
   const [copied, setCopied] = useState(false);
   const dispatch = useDispatch();

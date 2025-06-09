@@ -24,7 +24,6 @@ const TEMP_USER = {
 };
 
 const CreateRoom = () => {
-  useAuthRedirect();
 
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
