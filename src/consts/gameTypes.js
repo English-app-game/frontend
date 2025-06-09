@@ -4,6 +4,7 @@ export const GameTypes = Object.freeze({
 
 export const RoomStatus = Object.freeze({
   WAITING: "waiting",
+  PLAYING: "playing",
   ACTIVE: "active",
   ENDED: "ended",
 });
