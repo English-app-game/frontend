@@ -27,7 +27,7 @@ export default function WaitingRoom() {
   useRoomPolling(roomKey);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText("1KO4W7H");
+    navigator.clipboard.writeText(roomKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
