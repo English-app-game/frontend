@@ -42,9 +42,7 @@ const CreateRoom = () => {
       toast.error("Please select game type, level and status!");
       return;
     }
-
     dispatch(createRoom({ key:null, users: user.id, level, status, gameType, admin: user.id })
-
     );
   };
 
