@@ -1,18 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { HOME } from "../../routes/routes_consts";
+import { submitLogout, getStoredUser } from "../../hooks/useAuthRedirect";
+import TextButton from "./TextButton";
+import AvatarImg from "./AvatarImg";
 
 export default function UserInfoHeader({ isInsideSidebar = false }) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate(HOME);
-  };
-
-  const user = JSON.parse(
-    localStorage.getItem("user") || sessionStorage.getItem("user")
-  );
+  const user = getStoredUser();
 
   if (!user) return null;
 
@@ -26,15 +20,15 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
     >
       <div className="flex flex-col">
         <span className="text-white font-medium text-lg">{user.name}</span>
-        <a
-          onClick={handleLogout}
+        <TextButton
+          onClick={submitLogout(navigate)}
           className="text-white hover:cursor-pointer hover:underline"
         >
           Logout
-        </a>
+        </TextButton>
       </div>
 
-      <img
+      <AvatarImg
         src={user.avatarImg}
         alt="avatar"
         className="w-10 h-10 rounded-full border border-white"

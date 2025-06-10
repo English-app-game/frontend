@@ -9,6 +9,8 @@ import {
   REGISTER,
   RESET_PASSWORD,
   SET_NEW_PASSWORD,
+  ROOMS_LIST,
+  STATISTICS
 } from "../routes/routes_consts";
 
 const publicRoutes = [
@@ -24,7 +26,7 @@ export default function AppLayout() {
   const location = useLocation();
   const isPublic = publicRoutes.includes(location.pathname);
   const shouldShowHeader = !isPublic;
-  const hideInMobile = ["/rooms", "/statistics"].includes(location.pathname);
+  const hideInMobile = [ROOMS_LIST, STATISTICS].includes(location.pathname);
 
   useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
 

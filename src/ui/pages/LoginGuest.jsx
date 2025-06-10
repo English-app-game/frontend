@@ -90,7 +90,7 @@ export default function LoginGuest() {
                       "ring-4 ring-green-500" : ""
                     }`}
                 >
-                  <AvatarImg src={src} alt={key} />
+                  <AvatarImg src={src} alt={key} className={"w-full h-full border-white border-2 rounded-xl"} />
                 </div>
               ))}
             </div>

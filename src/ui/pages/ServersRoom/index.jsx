@@ -1,8 +1,10 @@
-import Nav from "./Nav";
+import { Nav } from "../../components/Nav";
 import Main from "./Main";
 import Footer from "./Footer";
 import { useState, useEffect } from "react";
 import { fetchRooms } from "../../../services/room/getRooms"; 
+import { IoGameControllerOutline } from "react-icons/io5";
+import { STATISTICS } from "../../../routes/routes_consts";
 
 
 
@@ -34,7 +36,7 @@ export default function ServersRoom() {
   return (
     <div className="flex flex-col h-screen bg-secondary relative">
       {/* Fixed Header */}
-      <Nav />
+      <Nav HeaderText={"Join a game room"} HeaderIcon={IoGameControllerOutline} page={STATISTICS} pageText={"Statistics"}/>
 
       {/* Scrollable Main Content */}
       <Main rooms={rooms} isLoading={ isLoading } />
