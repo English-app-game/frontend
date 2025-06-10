@@ -1,4 +1,4 @@
-export const SideBarButton = ({Icon, className, onClick}) => {
+export const IconButton = ({Icon, className, onClick}) => {
   return (
     <button
       className={className}

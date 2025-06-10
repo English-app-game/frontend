@@ -26,14 +26,15 @@ export default function AppLayout() {
   const location = useLocation();
   const isPublic = publicRoutes.includes(location.pathname);
   const shouldShowHeader = !isPublic;
-  const hideInMobile = [ROOMS_LIST, STATISTICS].includes(location.pathname);
+  const desktopOnlyHeaderRoutes = [ROOMS_LIST, STATISTICS];
+  const shouldShowHeaderOnlyOnDesktop = desktopOnlyHeaderRoutes.includes(location.pathname);
 
   useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
 
   return (
     <div className="h-screen w-screen relative">
       {shouldShowHeader && (
-        <div className={`${hideInMobile ? "hidden sm:block" : "block"}`}>
+        <div className={`${shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"}`}>
           <UserInfoHeader />
         </div>
       )}
