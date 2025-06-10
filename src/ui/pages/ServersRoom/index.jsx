@@ -16,9 +16,11 @@ export default function ServersRoom() {
     const getRooms = async () => {
       try {
         const data = await fetchRooms();
-        console.log("📦 Rooms from service:", data);
+        const publicRooms = data.filter(room => !room.isPrivate);
+
+        console.log("📦 Public rooms from service:", publicRooms);
         setTimeout(() => {
-          setRooms(data);
+          setRooms(publicRooms);
           setIsLoading(false);
         }, 500);
       } catch (err) {
