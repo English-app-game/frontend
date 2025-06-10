@@ -1,12 +1,10 @@
-import AvatarImg from "../components/AvatarImg";
 import BlueBox from "../components/BlueBox";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/PrimaryButton";
 import Header from "../components/Header";
 import SkeletonAvatar from "../components/SkeletonAvatar";
 import * as avatars from "../../assets/index";
-import { useState, useEffect } from "react";
-import { handleRegister } from "../../utils/handleRegister";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleInputChange, handleAvatarClick, onSubmitRegister, toggleShowPassword } from "../../utils/handleRegister";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -83,7 +81,7 @@ export default function Register() {
                 <div
                   key={key}
                   onClick={() => handleAvatarClick(src, dataform, setDataform)}
-                  className={`cursor-pointer rounded-xl ${dataform.avatarImg === src ? "ring-4 ring-green-500" : ""
+                  className={`cursor-pointer rounded-xl w-full h-full border-white ${dataform.avatarImg === src ? "ring-4 ring-green-500" : ""
                     }`}
                 >
                  <SkeletonAvatar src={src} alt={key} />
