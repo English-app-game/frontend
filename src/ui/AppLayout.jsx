@@ -21,11 +21,13 @@ const publicRoutes = [
 ];
 
 export default function AppLayout() {
+  console.log("AppLayout started rendering");
   const location = useLocation();
   const isPublic = publicRoutes.includes(location.pathname);
   const shouldShowHeader = !isPublic;
   const hideInMobile = ["/rooms", "/statistics"].includes(location.pathname);
 
+  console.log("location.pathname:", location.pathname);
   useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
 
   return (

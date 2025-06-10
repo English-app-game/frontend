@@ -1,18 +1,20 @@
-import AvatarImg from "../components/AvatarImg";
 import BlueBox from "../components/BlueBox";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/PrimaryButton";
 import Header from "../components/Header";
 import SkeletonAvatar from "../components/SkeletonAvatar";
-import * as avatars from "../../assets/index";
-import { useState, useEffect } from "react";
-import { handleRegister } from "../../utils/handleRegister";
+import { avatarList } from "../../assets/index.js";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleInputChange, handleAvatarClick, onSubmitRegister, toggleShowPassword } from "../../utils/handleRegister";
+import {
+  handleInputChange,
+  handleAvatarClick,
+  onSubmitRegister,
+  toggleShowPassword,
+} from "../../utils/handleRegister";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Register() {
-
   const navigate = useNavigate();
   const [dataform, setDataform] = useState({
     name: "",
@@ -24,7 +26,6 @@ export default function Register() {
   const [errors, setErrors] = useState({});
   const [showPassword, setshowPassword] = useState(false);
 
-
   return (
     <>
       <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
@@ -35,9 +36,7 @@ export default function Register() {
               <InputField
                 text="User"
                 value={dataform.name}
-                onChange={
-                  (handleInputChange("name", dataform, setDataform))
-                }
+                onChange={handleInputChange("name", dataform, setDataform)}
                 error={errors.name}
               />
               {errors.general === "User name already in use" && (
@@ -48,14 +47,18 @@ export default function Register() {
                   text="Password"
                   type={showPassword ? "text" : "password"}
                   value={dataform.password}
-                  onChange={
-                    (handleInputChange("password", dataform, setDataform))
-                  }
+                  onChange={handleInputChange(
+                    "password",
+                    dataform,
+                    setDataform
+                  )}
                   error={errors.password}
                 />
                 <span
                   className="absolute top-10 right-19 cursor-pointer text-white"
-                    onClick={() => toggleShowPassword(showPassword, setshowPassword)}
+                  onClick={() =>
+                    toggleShowPassword(showPassword, setshowPassword)
+                  }
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
@@ -63,9 +66,7 @@ export default function Register() {
               <InputField
                 text="Email"
                 value={dataform.email}
-                onChange={
-                  (handleInputChange("email", dataform, setDataform))
-                }
+                onChange={handleInputChange("email", dataform, setDataform)}
                 error={errors.email}
               />
               {errors.general === "Email already in use" && (
@@ -79,15 +80,21 @@ export default function Register() {
             </div>
             <h3 className="text-white">Choose your Avatar:</h3>
             <div className="grid grid-cols-5 gap-1">
-              {Object.entries(avatars).map(([key, src]) => (
+              {avatarList.map((src, index) => (
                 <div
-                  key={key}
-                  onClick={() => handleAvatarClick(src, dataform, setDataform)}
-                  className={`cursor-pointer rounded-xl ${dataform.avatarImg === src ? "ring-4 ring-green-500" : ""
-                    }`}
+                  key={index}
+                  onClick={() => {
+                    const relativePath = src.replace(
+                      window.location.origin,
+                      ""
+                    );
+                    handleAvatarClick(relativePath, dataform, setDataform);
+                  }}
+                  className={`cursor-pointer rounded-xl ${
+                    dataform.avatarImg === src.replace(window.location.origin, "") ? "ring-4 ring-green-500" : ""
+                  }`}
                 >
-                 <SkeletonAvatar src={src} alt={key} />
-
+                  <SkeletonAvatar src={src} alt={`avatar-${index}`} />
                 </div>
               ))}
             </div>
@@ -98,7 +105,6 @@ export default function Register() {
               <p className="text-white text-sm mt-3">{errors.general}</p>
             )}
           </BlueBox>
-
         </div>
       </div>
     </>
