@@ -13,23 +13,26 @@ export default function ServersRoom() {
   const [rooms, setRooms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-
-  useEffect(() => {
+ useEffect(() => {
     const getRooms = async () => {
       try {
         const data = await fetchRooms();
         console.log("📦 Rooms from service:", data);
-        setTimeout(() => {
-          setRooms(data);
-          setIsLoading(false);
-        }, 500);
+        setRooms(data);
+        setIsLoading(false);
       } catch (err) {
         console.error("Error loading rooms:", err);
         setIsLoading(false);
       }
     };
 
-    getRooms();
+    getRooms(); 
+
+    const interval = setInterval(() => {
+      getRooms(); 
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
 
