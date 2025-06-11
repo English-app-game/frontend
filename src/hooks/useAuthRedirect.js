@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 import { LOGIN, ROOMS_LIST } from "../routes/routes_consts";
+import { HOME } from "../routes/routes_consts";
 
 
 export default function useAuthRedirect({ mode }) {
@@ -34,4 +35,25 @@ export default function useAuthRedirect({ mode }) {
       navigate(ROOMS_LIST);
     }
   }, [mode, navigate, dispatch]);
+}
+
+
+const handleLogout = (navigate) => {
+  localStorage.clear();
+  sessionStorage.clear();
+  navigate(HOME);
+};
+
+export const submitLogout = (navigate) => {
+  return () => handleLogout(navigate);
+};
+
+export const getStoredUser = () => {
+  try{
+    const data =  localStorage.getItem("user") || sessionStorage.getItem("user");
+    return data ? JSON.parse(data) : null;
+  } catch (err) {
+    console.log("Failed to parse user from storage:",err)
+    return null;
+  }
 }

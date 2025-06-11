@@ -1,3 +1,5 @@
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function validateRegister(dataform) {
   const errors = {};
 
@@ -21,7 +23,7 @@ export function validateRegister(dataform) {
 export function validateEmail(email, errors) {
   if (!email.trim()) {
     errors.email = "Email is required";
-  } else if (!/^[^\s@]+@[^\s@]+\.com$/.test(email)) {
+  } else if (!emailRegex.test(email)) {
     errors.email = "Invalid Email";
   }
 }
@@ -33,3 +35,7 @@ export function validatePassword(password, errors) {
     errors.password = "Password must be 8–16 characters";
   }
 }
+
+export const isValidEmail = (email) => {
+  return emailRegex.test(email);
+};

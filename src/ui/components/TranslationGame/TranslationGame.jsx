@@ -1,26 +1,9 @@
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { ROUTES } from "../../../routes/routes_consts";
-import { resetRoom } from "../../../store/slices/roomSlice";
-import removeUserFromRoom from "../../../services/room/removeUserFromRoom";
+import {  useSelector } from "react-redux";
 
-export default function TranslationGame({roomKey}) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+export default function TranslationGame({roomKey, handleBack}) {
+
   const room = useSelector((store) => store.room);
-  const user = useSelector(store=> store.user);
-
-  const handleBack = async () => {
-    if (!user || !user.id || !roomKey) {
-      dispatch(resetRoom());
-      return navigate(ROUTES.ROOMS_LIST);
-    }
-
-    await removeUserFromRoom(roomKey, user.id);
-
-    dispatch(resetRoom());
-    navigate(ROUTES.ROOMS_LIST);
-  };
+ 
 
   // Basic ui in next steps will be replaced with actual game interface.
   // will seperate to components in later stages.

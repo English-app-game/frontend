@@ -1,26 +1,40 @@
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
 import MemoryGame from "../components/MemoryGame/MemoryGame";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
+import { ROOMS_LIST, ROUTES } from "../../routes/routes_consts";
+import { resetRoom } from "../../store/slices/roomSlice";
+import removeUserFromRoom from "../../services/room/removeUserFromRoom";
 
 export default function ActiveRoom() {
   const { id: roomKey, gameType } = useParams();
+  const navigate = useNavigate();
   const { emit } = useSocket();
   const user = useSelector((store) => store.user);
+  const dispatch = useDispatch();
+
+  const handleBack = async () => {
+    if (!user || !user.id || !roomKey) {
+      dispatch(resetRoom());
+      return navigate(ROUTES.ROOMS_LIST);
+    }
+
+    await removeUserFromRoom(roomKey, user.id);
+
+    dispatch(resetRoom());
+    navigate(ROUTES.ROOMS_LIST);
+  };
 
   useEffect(() => {
     if (!roomKey || !user.id) return;
-
     emit("join-room", {
       roomKey,
-      user
+      user,
     });
   }, [roomKey, emit, user]);
 
-  const room = useSelector((store) => store.room);
-  console.log(room);
 
   if (gameType.toLowerCase() === "translation") {
     return <TranslationGame roomKey={roomKey} />;
@@ -29,5 +43,15 @@ export default function ActiveRoom() {
     return <MemoryGame roomKey={roomKey} />;
   }
 
-  return <h1>Unsupported game types! Please navigate back to rooms! </h1>;
+  return (
+    <h1>
+      Unsupported game types! Please navigate back to rooms!{" "}
+      <button
+        className="bg-red-500 border-2 border-amber-500"
+        onClick={handleBack}
+      >
+        back to rooms
+      </button>
+    </h1>
+  );
 }

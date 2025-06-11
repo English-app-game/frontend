@@ -12,10 +12,9 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-      };
+      for (const key in action.payload) {
+        state[key] = action.payload[key];
+      }
     },
     resetUser: () => initialState,
   },

@@ -9,6 +9,8 @@ import {
   REGISTER,
   RESET_PASSWORD,
   SET_NEW_PASSWORD,
+  ROOMS_LIST,
+  STATISTICS
 } from "../routes/routes_consts";
 
 const publicRoutes = [
@@ -23,14 +25,19 @@ const publicRoutes = [
 export default function AppLayout() {
   const location = useLocation();
   const isPublic = publicRoutes.includes(location.pathname);
+  const shouldShowHeader = !isPublic;
+  const desktopOnlyHeaderRoutes = [ROOMS_LIST, STATISTICS];
+  const shouldShowHeaderOnlyOnDesktop = desktopOnlyHeaderRoutes.includes(location.pathname);
 
   useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
 
-  const shouldShowHeader = !isPublic;
-
   return (
     <div className="h-screen w-screen relative">
-      {shouldShowHeader && <UserInfoHeader />}
+      {shouldShowHeader && (
+        <div className={`${shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"}`}>
+          <UserInfoHeader />
+        </div>
+      )}
       <main className="w-full h-full">
         <Outlet />
       </main>
