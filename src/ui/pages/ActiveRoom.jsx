@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
+import MemoryGame from "../components/MemoryGame/MemoryGame";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
 
@@ -21,12 +22,12 @@ export default function ActiveRoom() {
   const room = useSelector((store) => store.room);
   console.log(room);
 
-  if (gameType.toLowerCase() == "translation")
+  if (gameType.toLowerCase() === "translation") {
     return <TranslationGame roomKey={roomKey} />;
-
-  // TODO: Implement other game types (tomer?)
-  // if(gameType.toLowerCase() == 'memory')
-  //   return <MemoryGame />
+  }
+  if (gameType.toLowerCase() === "memory game") {
+    return <MemoryGame roomKey={roomKey} />;
+  }
 
   return <h1>Unsupported game types! Please navigate back to rooms! </h1>;
 }
