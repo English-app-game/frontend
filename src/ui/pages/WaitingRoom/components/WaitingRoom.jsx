@@ -113,7 +113,7 @@ export default function WaitingRoom() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
       <RoomHeader />
       <PlayersList players={players} hostId={hostId} />
       <RoomFooter

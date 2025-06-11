@@ -6,9 +6,9 @@ const PlayersList = ({ players, hostId }) => {
     return (
         <BlueBox
             size="large"
-            className="px-10 py-8 border-4 border-dashed border-white flex justify-between items-center"
+            className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 border-4 border-dashed border-white px-4 py-6 max-w-4xl"
         >
-            <div className="ml-4">
+            <div className="w-full sm:w-2/3">
                 <h1 className="text-white text-lg font-semibold mb-4 underline">
                     Players In The Room:
                 </h1>
@@ -25,7 +25,7 @@ const PlayersList = ({ players, hostId }) => {
                 </ul>
             </div>
 
-            <div className="mr-3">
+            <div className="w-full sm:w-1/3 flex justify-center sm:justify-end">
                 <div className="bg-teal-200 text-teal-600 rounded-full px-5 py-4 font-semibold">
                     MAX PLAYERS: 5
                 </div>
