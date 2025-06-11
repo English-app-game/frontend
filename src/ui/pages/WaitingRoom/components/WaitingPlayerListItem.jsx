@@ -22,6 +22,7 @@ WaitingPlayerListItem.propTypes = {
     player: PropTypes.string.isRequired,
     host: PropTypes.bool.isRequired,
     avatarImage: PropTypes.string.isRequired,
+    isGuest: PropTypes.bool,
 };
 
 export default WaitingPlayerListItem;

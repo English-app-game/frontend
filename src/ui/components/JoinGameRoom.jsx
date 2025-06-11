@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 import { joinUserToRoom } from "../../services/room/joinUserToRoom";
+import { getStoredUser } from "../../hooks/useAuthRedirect";
 
 const JoinGameRoom = ({
   id,
@@ -24,16 +25,25 @@ const JoinGameRoom = ({
       return;
     }
 
-    const user =
-      JSON.parse(localStorage.getItem("user")) ||
-      JSON.parse(sessionStorage.getItem("user"));
+    const user = getStoredUser();
 
     if (!user || !user.id) {
       alert("User not found. Please log in.");
       return;
     }
 
-    await joinUserToRoom(id, user.id);
+    const isGuest = user.isGuest || typeof user.id === 'string' && user.id.length !== 24;
+    
+    if (isGuest) {
+      const guestData = {
+        id: user.id,
+        name: user.name,
+        avatarImg: user.avatarImg
+      };
+      await joinUserToRoom(id, user.id, guestData);
+    } else {
+      await joinUserToRoom(id, user.id);
+    }
 
     if (onJoinAttempt) {
       onJoinAttempt({ id, full: false });
