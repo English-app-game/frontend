@@ -46,7 +46,7 @@ const RoomHeader = () => {
           EXIT ROOM
         </ExitButton>
       </div>
-      <h1 className="text-4xl font-extrabold text-teal-600 mb-10 uppercase drop-shadow-md text-center">
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-teal-600 mb-10 uppercase drop-shadow-md text-center px-2 break-words">
         WAITING ROOM
       </h1>
     </>
