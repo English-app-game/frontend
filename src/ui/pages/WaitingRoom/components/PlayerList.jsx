@@ -13,12 +13,13 @@ const PlayersList = ({ players, hostId }) => {
                     Players In The Room:
                 </h1>
                 <ul className="space-y-4 text-white font-semibold">
-                    {players.map(({ _id, avatarImg, name }) => (
+                    {players.map(({ _id, avatarImg, name, isGuest }) => (
                         <WaitingPlayerListItem
                             key={_id}
                             avatarImage={avatarImg}
                             player={name}
                             host={_id === hostId}
+                            isGuest={isGuest || false}
                         />
                     ))}
                 </ul>
@@ -34,8 +35,8 @@ const PlayersList = ({ players, hostId }) => {
 };
 
 PlayersList.propTypes = {
-    playersAtGame: PropTypes.array.isRequired,
-    host: PropTypes.string.isRequired,
+    players: PropTypes.array.isRequired,
+    hostId: PropTypes.string.isRequired,
 };
 
 export default PlayersList;
