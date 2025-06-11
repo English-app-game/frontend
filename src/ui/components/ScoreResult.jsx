@@ -13,7 +13,7 @@ export default function ScoreResult({ score, gameName, loading }) {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
-      <BlueBox size="large" className="text-center w-[35rem] h-[28rem] flex flex-col justify-center items-center gap-4 shadow-xl">
+    <BlueBox size="large" className="text-center w-[90%] max-w-md h-auto py-8 px-4 flex flex-col justify-center items-center gap-4 shadow-xl">
         <Header text="🎉 GAME OVER 🎉" className="text-4xl font-extrabold uppercase text-white drop-shadow" />
 
         {!loading ? (
@@ -32,7 +32,7 @@ export default function ScoreResult({ score, gameName, loading }) {
         <PrimaryButton
           text="Back to Rooms"
           onClick={handleBack}
-          className="mt-8 bg-green-400 hover:scale-105 transition-transform"
+          className="mt-8 w-full max-w-xs bg-green-400 hover:scale-105 transition-transform"
         />
       </BlueBox>
     </div>
