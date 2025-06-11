@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetRoom, setRoom } from "../../../../store/slices/roomSlice";
 import { getRoom } from "../../../../services/room/getRoom";
 import removeUserFromRoom from "../../../../services/room/removeUserFromRoom";
+import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket";
 
 const RoomHeader = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const RoomHeader = () => {
 
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+  const { emit } = useWaitingRoomSocket();
 
   useEffect(() => {
     if (!roomKey) return;
@@ -30,7 +32,9 @@ const RoomHeader = () => {
       return navigate(ROUTES.ROOMS_LIST);
     }
 
-   await removeUserFromRoom(roomKey, user.id)
+    await removeUserFromRoom(roomKey, user.id);
+    
+    emit("leave-waiting-room", { roomKey, userId: user.id });
 
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);

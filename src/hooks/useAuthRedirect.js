@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
+import { resetRoom } from "../store/slices/roomSlice";
 import { LOGIN, ROOMS_LIST } from "../routes/routes_consts";
 import { HOME } from "../routes/routes_consts";
+import removeUserFromRoom from "../services/room/removeUserFromRoom";
 
 
 export default function useAuthRedirect({ mode }) {
@@ -38,14 +40,41 @@ export default function useAuthRedirect({ mode }) {
 }
 
 
-const handleLogout = (navigate) => {
-  localStorage.clear();
-  sessionStorage.clear();
-  navigate(HOME);
+const handleLogout = async (navigate, socket = null, currentRoomKey = null, dispatch = null) => {
+  try {
+    const user = getStoredUser();
+    
+    if (user && user.id && currentRoomKey) {
+      await removeUserFromRoom(currentRoomKey, user.id);
+      
+      if (socket) {
+        socket.emit("leave-waiting-room", { roomKey: currentRoomKey, userId: user.id });
+        socket.emit("remove-from-waiting-room", { roomKey: currentRoomKey, userId: user.id });
+      }
+      
+      if (dispatch) {
+        dispatch(resetRoom());
+      }
+    }
+    
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    if (socket && socket.connected) {
+      socket.disconnect();
+    }
+    
+    navigate(HOME);
+  } catch (error) {
+    console.error("Error during logout:", error);
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate(HOME);
+  }
 };
 
-export const submitLogout = (navigate) => {
-  return () => handleLogout(navigate);
+export const submitLogout = (navigate, socket = null, currentRoomKey = null, dispatch = null) => {
+  return () => handleLogout(navigate, socket, currentRoomKey, dispatch);
 };
 
 export const getStoredUser = () => {

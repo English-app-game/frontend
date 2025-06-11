@@ -1,14 +1,23 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { submitLogout, getStoredUser } from "../../hooks/useAuthRedirect";
+import { useSocket } from "../../hooks/useSocket";
+import { useDispatch } from "react-redux";
 import TextButton from "./TextButton";
 import AvatarImg from "./AvatarImg";
 
 export default function UserInfoHeader({ isInsideSidebar = false }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
+  const dispatch = useDispatch();
+  const { socket } = useSocket();
 
   const user = getStoredUser();
 
   if (!user) return null;
+
+  const isInWaitingRoom = location.pathname.includes('/rooms/') && params.id;
+  const currentRoomKey = isInWaitingRoom ? params.id : null;
 
   return (
     <div
@@ -21,7 +30,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
       <div className="flex flex-col">
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
-          onClick={submitLogout(navigate)}
+          onClick={submitLogout(navigate, socket, currentRoomKey, dispatch)}
           className="text-white hover:cursor-pointer hover:underline"
         >
           Logout
