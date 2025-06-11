@@ -2,8 +2,7 @@ import RoomHeader from "./RoomHeader";
 import PlayersList from "./PlayerList";
 import RoomFooter from "./RoomFooter";
 import { fetchPlayers } from "../../../../services/room/getPlayers";
-
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startGame } from "../../../../store/slices/roomSlice";
@@ -29,7 +28,7 @@ export default function WaitingRoom() {
 
   const handleStart = async () => {
     // comment this check if this blocks starting the game
-    if (room.players.length < 2) {
+    if (players.length < 2) {
       alert("At least 2 players are required to start the game.");
       return;
     }
@@ -40,7 +39,7 @@ export default function WaitingRoom() {
     }
 
     try {
-      const updatedRoom = await startGameService(roomKey);
+      const updatedRoom = await startGameService(roomKey, userId);
       // assuming gametype translation..
       dispatch(startGame(updatedRoom.currentStatus));
     } catch (error) {

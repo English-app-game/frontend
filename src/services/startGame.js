@@ -1,13 +1,15 @@
 import { START_GAME_ROUTE } from "../consts/consts";
 
-export default async function startGame(roomKey) {
+export default async function startGame(roomKey, userId) {
   try {
     const response = await fetch(START_GAME_ROUTE(roomKey), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ userId }),
     });
+
 
     if (!response.ok) {
       const error = await response.json();

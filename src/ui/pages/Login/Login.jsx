@@ -2,8 +2,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../../../services/auth.js";
-import { LOGIN_GUEST, REGISTER, ROOMS_LIST } from "../../../routes/routes_consts.js";
-import { isValidEmail } from "../../../utils/helpers.js";
+import { ROOMS_LIST } from "../../../routes/routes_consts.js";
+import { isValidEmail } from "../../../utils/validateFields.js";
 import BlueBox from "../../components/BlueBox.jsx";
 import LoginFormHeader from "./LoginFormHeader.jsx";
 import LoginFormFields from "./LoginFormFields.jsx";
