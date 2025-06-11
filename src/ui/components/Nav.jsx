@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { IoGameControllerOutline } from "react-icons/io5";
-import { FiMenu, FiX } from "react-icons/fi"; 
-import Header from "../../components/Header";
-import ButtonHeader from "../../components/ButtonHeader";
-import { STATISTICS } from "../../../routes/routes_consts";
-import UserInfoHeader from "../../components/UserInfoHeader";
+import { FiMenu, FiX } from "react-icons/fi";
+import Header from "../components/Header";
+import ButtonHeader from "../components/ButtonHeader";
+import UserInfoHeader from "./UserInfoHeader";
+import { IconButton } from "./IconButton";
+import { WindowBody } from "./WindowBody";
 
-export default function Nav() {
+export const Nav = ({ HeaderText, HeaderIcon, page, pageText }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -14,19 +14,18 @@ export default function Nav() {
       <div className="flex items-center justify-center w-full sm:justify-center relative">
         <div className="flex items-center justify-center gap-2">
           <Header
-            text="Join a game room"
+            text={HeaderText}
             className="text-primary uppercase text-[1.5rem] sm:text-4xl"
           />
-          <IoGameControllerOutline size={60} className="text-primary" />
+          <HeaderIcon size={60} className="text-primary" />
         </div>
-        <button
-          className="sm:hidden text-primary text-3xl ml-1"
+        <IconButton
+          className={"sm:hidden text-primary text-3xl ml-1"}
           onClick={() => setIsOpen(true)}
-        >
-          <FiMenu />
-        </button>
+          Icon={FiMenu}
+        />
         <div className="hidden sm:flex items-center left-8 top-4">
-          <ButtonHeader navigateTo={STATISTICS} text="Statistics" />
+          <ButtonHeader navigateTo={page} text={pageText} />
         </div>
       </div>
       <div
@@ -34,21 +33,20 @@ export default function Nav() {
           isOpen ? "translate-x-0" : "translate-x-full"
         } sm:hidden border border-primary rounded-xl`}
       >
-        <button
-          className="text-primary text-3xl mb-6 ml-auto"
+        <IconButton
+          className={"text-primary text-3xl mb-6 ml-auto"}
           onClick={() => setIsOpen(false)}
-        >
-          <FiX />
-        </button>
-        <div className="flex flex-col items-end gap-4">
+          Icon={FiX}
+        />
+        <WindowBody className={"flex flex-col items-end gap-4"}>
           <UserInfoHeader isInsideSidebar={true} />
           <ButtonHeader
-            navigateTo={STATISTICS}
-            text="Statistics"
+            navigateTo={page}
+            text={pageText}
             isInsideSidebar={true}
           />
-        </div>
+        </WindowBody>
       </div>
     </header>
   );
-}
+};

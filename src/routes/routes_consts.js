@@ -8,6 +8,7 @@ export const REGISTER = "/register";
 export const ROOMS_LIST = "/rooms";
 export const CREATE_ROOM = "/rooms/create";
 export const STATISTICS = "/statistics"
+export const GAME_OVER = "/gameover";
 export const WAITING_ROOM = (id = ":id") => `/rooms/${id}`;
 export const ACTIVE_ROOM = (id = ":id", gameType = ":gameType") => `/rooms/active/${id}/${gameType}`;
 
@@ -16,6 +17,7 @@ export const ROUTES = {
   HOME,
   LOGIN,
   LOGIN_GUEST,
+  GAME_OVER,
   REGISTER,
   ROOMS_LIST,
   CREATE_ROOM,

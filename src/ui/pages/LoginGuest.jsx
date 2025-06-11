@@ -96,7 +96,7 @@ export default function LoginGuest() {
                     selectedAvatar === src ? "ring-4 ring-green-500" : ""
                   }`}
                 >
-                  <AvatarImg src={src} alt={`avatar-${index}`} />
+                  <AvatarImg src={src} alt={`avatar-${index}`} className={"w-full h-full border-white border-2 rounded-xl"}/>
                 </div>
               ))}
             </div>

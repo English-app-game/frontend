@@ -10,7 +10,9 @@ export const GUEST_API = "/guest";
 export const SCORE_STATISTICS_PATH = "/statistics/scores";
 export const GAMES_STATISTICS_PATH = "/statistics/games";
 export const PLAYERS_STATISTICS_PATH = "/statistics/players";
+export const PLAYER_SCORE = `${BASE_URL}/score/last`;
 export const REMOVE_PLAYER_ROUTE = `${BASE_URL}/rooms/players/remove`;
 export const JOIN_USER_ROOM_ROUTE = `${BASE_URL}/rooms/players/join`;
 export const START_GAME_ROUTE = (roomKey = "") =>
   `${BASE_URL}/rooms/${roomKey}/start`;
+
