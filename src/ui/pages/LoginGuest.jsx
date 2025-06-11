@@ -1,4 +1,4 @@
-import * as avatars from "../../assets/index";
+import { avatarList } from "../../assets/index.js";
 import Header from "../components/Header";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/PrimaryButton";
@@ -7,17 +7,21 @@ import AvatarImg from "../components/AvatarImg.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginGuest } from "../../services/auth.js";
-import { ROOMS_LIST } from "../../routes/routes_consts.js"
+import { ROOMS_LIST } from "../../routes/routes_consts.js";
 
 export default function LoginGuest() {
-
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [usernameError, setUsernameError] = useState("");
   const [avatarError, setAvatarError] = useState("");
 
-  const validateGuestFields = (username, selectedAvatar, setUsernameError, setAvatarError) => {
+  const validateGuestFields = (
+    username,
+    selectedAvatar,
+    setUsernameError,
+    setAvatarError
+  ) => {
     let hasError = false;
 
     if (!username.trim()) {
@@ -38,7 +42,12 @@ export default function LoginGuest() {
   };
 
   const handleGuestLogin = async () => {
-    const isValid = validateGuestFields(username, selectedAvatar, setUsernameError, setAvatarError);
+    const isValid = validateGuestFields(
+      username,
+      selectedAvatar,
+      setUsernameError,
+      setAvatarError
+    );
     if (!isValid) return;
 
     try {
@@ -55,10 +64,8 @@ export default function LoginGuest() {
     }
   };
 
-
-
   return (
-      <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center items-center">
+    <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center items-center">
       <div className="pt-10 w-full">
         <BlueBox className="pr-3 ">
           <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
@@ -75,26 +82,25 @@ export default function LoginGuest() {
           </div>
           <div className="pt-4">
             <PrimaryButton
-                text="LET'S GO!"
+              text="LET'S GO!"
               className="float-right mt-4 ml-4"
               onClick={handleGuestLogin}
             />
             <h3 className="text-white mb-2">Choose your Avatar:</h3>
             <div className="grid grid-cols-5 gap-1">
-              {Object.entries(avatars).map(([key, src]) => (
+              {avatarList.map((src, index) => (
                 <div
-                  key={key}
+                  key={index}
                   onClick={() => setSelectedAvatar(src)}
-                  className={`cursor-pointer rounded-xl
-                  ${selectedAvatar === src ?
-                      "ring-4 ring-green-500" : ""
-                    }`}
+                  className={`cursor-pointer rounded-xl ${
+                    selectedAvatar === src ? "ring-4 ring-green-500" : ""
+                  }`}
                 >
-                  <AvatarImg src={src} alt={key} className={"w-full h-full border-white border-2 rounded-xl"} />
+                  <AvatarImg src={src} alt={`avatar-${index}`} className={"w-full h-full border-white border-2 rounded-xl"}/>
                 </div>
               ))}
             </div>
-              {avatarError && (
+            {avatarError && (
               <p className="text-black text-sm mt-2 ml-1">{avatarError}</p>
             )}
           </div>
