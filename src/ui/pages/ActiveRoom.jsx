@@ -36,7 +36,7 @@ export default function ActiveRoom() {
   }, [roomKey, emit, user]);
 
 
-  
+  //or look at it
   console.log("gameType from params:", gameType);
   const normalizedGameType = gameType.toLowerCase().replace(/[_ ]/g, "");
 
