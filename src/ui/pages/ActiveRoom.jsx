@@ -36,10 +36,14 @@ export default function ActiveRoom() {
   }, [roomKey, emit, user]);
 
 
-  if (gameType.toLowerCase() === "translation") {
+  
+  console.log("gameType from params:", gameType);
+  const normalizedGameType = gameType.toLowerCase().replace(/[_ ]/g, "");
+
+  if (normalizedGameType === "translation") {
     return <TranslationGame roomKey={roomKey} />;
   }
-  if (gameType.toLowerCase() === "memory game") {
+  if (normalizedGameType === "memorygame") {
     return <MemoryGame roomKey={roomKey} />;
   }
 
