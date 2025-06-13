@@ -65,10 +65,10 @@ export default function LoginGuest() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center items-center">
+    <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
       <div className="pt-10 w-full">
-        <BlueBox className="pr-3 ">
-          <Header text="WELCOME GUEST!" className="pl-2 pt-4" />
+        <BlueBox className="pr-3">
+          <Header text="WELCOME GUEST!" className="pl-2 pt-2 pt-4" />
           <div className="pt-7">
             <InputField
               text="User Name"
@@ -83,7 +83,7 @@ export default function LoginGuest() {
           <div className="pt-4">
             <PrimaryButton
               text="LET'S GO!"
-              className="float-right mt-4 ml-4"
+              className="float-right mt-4 ml-4 px-4 py-2"
               onClick={handleGuestLogin}
             />
             <h3 className="text-white mb-2">Choose your Avatar:</h3>
@@ -96,7 +96,11 @@ export default function LoginGuest() {
                     selectedAvatar === src ? "ring-4 ring-green-500" : ""
                   }`}
                 >
-                  <AvatarImg src={src} alt={`avatar-${index}`} className={"w-full h-full border-white border-2 rounded-xl"}/>
+                  <AvatarImg
+                    src={src}
+                    alt={`avatar-${index}`}
+                    className={"w-full h-full border-white border-2 rounded-xl"}
+                  />
                 </div>
               ))}
             </div>
