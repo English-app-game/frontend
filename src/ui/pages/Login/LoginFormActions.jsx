@@ -7,7 +7,7 @@ export default function LoginFormActions({ handleLogin, navigate }) {
     <>
       <PrimaryButton
         text="LOGIN"
-        className="float-right mt-4 ml-4"
+        className="float-right mt-4 ml-4 px-4 py-2"
         onClick={handleLogin}
       />
       <div className="flex flex-col items-start">
@@ -24,7 +24,7 @@ export default function LoginFormActions({ handleLogin, navigate }) {
       </div>
       <PrimaryButton
         text="SIGN UP"
-        className="mt-4 bg-gray"
+        className="mt-4 bg-gray px-4 py-2"
         onClick={() => navigate(REGISTER)}
       />
     </>
