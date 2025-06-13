@@ -11,11 +11,9 @@ export function useWaitingRoomSocket() {
     } else {
       console.warn("Waiting room socket not connected, attempting to reconnect...");
       ref.connect();
-      setTimeout(() => {
-        if (ref.connected) {
-          ref.emit(event, payload, callback);
-        }
-      }, 100);
+      ref.once('connect', () => {
+        ref.emit(event, payload, callback);
+      });
     }
   }, []);
 

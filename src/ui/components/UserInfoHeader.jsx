@@ -30,7 +30,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
       <div className="flex flex-col">
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
-          onClick={submitLogout(navigate, socket, currentRoomKey, dispatch)}
+          onClick={() => submitLogout(navigate, socket, currentRoomKey, dispatch)()}
           className="text-white hover:cursor-pointer hover:underline"
         >
           Logout

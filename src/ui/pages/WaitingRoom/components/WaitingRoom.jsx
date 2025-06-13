@@ -13,6 +13,7 @@ import startGameService from "../../../../services/startGame";
 import { RoomStatus } from "../../../../consts/gameTypes";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { getAllGameTypes } from "../../../../services/room/roomType";
+import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -77,7 +78,7 @@ export default function WaitingRoom() {
           await joinUserToRoom(roomKey, user.id);
         }
         
-        emit("join-waiting-room", { 
+        emit(WAITING_ROOM_EVENTS.JOIN, { 
           roomKey, 
           user: {
             id: user.id,
@@ -110,7 +111,7 @@ export default function WaitingRoom() {
       setPlayers(transformedPlayers);
     };
 
-    socket.on('waiting-room-players-updated', handlePlayersUpdate);
+    socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
 
     const fetchInitialData = async () => {
       try {
@@ -136,7 +137,7 @@ export default function WaitingRoom() {
     fetchInitialData();
 
     return () => {
-      socket.off('waiting-room-players-updated', handlePlayersUpdate);
+      socket.off(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
     };
   }, [socket, roomKey]);
 
@@ -169,7 +170,7 @@ export default function WaitingRoom() {
   useEffect(() => {
     return () => {
       if (hasJoinedRoom && roomKey && userId) {
-        emit("leave-waiting-room", { roomKey, userId });
+        emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId });
       }
     };
   }, [hasJoinedRoom, roomKey, userId, emit]);

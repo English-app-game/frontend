@@ -6,6 +6,7 @@ import { resetRoom } from "../store/slices/roomSlice";
 import { LOGIN, ROOMS_LIST } from "../routes/routes_consts";
 import { HOME } from "../routes/routes_consts";
 import removeUserFromRoom from "../services/room/removeUserFromRoom";
+import { WAITING_ROOM_EVENTS } from "../consts/socketEvents";
 
 
 export default function useAuthRedirect({ mode }) {
@@ -39,8 +40,7 @@ export default function useAuthRedirect({ mode }) {
   }, [mode, navigate, dispatch]);
 }
 
-
-const handleLogout = async (navigate, socket = null, currentRoomKey = null, dispatch = null) => {
+export const handleLogout = async (navigate, socket = null, currentRoomKey = null, dispatch = null) => {
   try {
     const user = getStoredUser();
     
@@ -48,8 +48,8 @@ const handleLogout = async (navigate, socket = null, currentRoomKey = null, disp
       await removeUserFromRoom(currentRoomKey, user.id);
       
       if (socket) {
-        socket.emit("leave-waiting-room", { roomKey: currentRoomKey, userId: user.id });
-        socket.emit("remove-from-waiting-room", { roomKey: currentRoomKey, userId: user.id });
+        socket.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey: currentRoomKey, userId: user.id });
+        socket.emit(WAITING_ROOM_EVENTS.REMOVE, { roomKey: currentRoomKey, userId: user.id });
       }
       
       if (dispatch) {
