@@ -4,11 +4,8 @@ import BlueBox from "../components/BlueBox";
 import InputField from "../components/InputField";
 import PrimaryButton from "../components/PrimaryButton";
 import Header from "../components/Header";
-import {
-  toggleShowPassword,
-  handleInputChange,
-} from "../../utils/handleRegister";
-import { onSubmitNewPassword } from "../../utils/handleReset";
+import { toggleShowPassword, handleInputChange } from "../../utils/handleRegister";
+import { handleSubmitNewPassword } from "../../services/service";
 
 export default function SetNewPassword() {
   
@@ -33,6 +30,8 @@ export default function SetNewPassword() {
       setToken(tokenFromUrl);
     }
   }, [searchParams]);
+  
+
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
@@ -50,7 +49,8 @@ export default function SetNewPassword() {
               />
               <span
                 className="absolute top-9 right-19 cursor-pointer text-gray-600"
-                onClick={toggleShowPassword(showPassword, setshowPassword)}
+                onClick={()=>toggleShowPassword(showPassword, setshowPassword)}
+
               >
                 👁️
               </span>
@@ -65,10 +65,11 @@ export default function SetNewPassword() {
               />
               <span
                 className="absolute top-9 right-19 cursor-pointer text-gray-600"
-                onClick={toggleShowPassword(
+                onClick={()=>toggleShowPassword(
                   showConfirmedPassword,
                   setshowConfirmedPassword
                 )}
+
               >
                 👁️
               </span>
@@ -78,7 +79,7 @@ export default function SetNewPassword() {
             )}
             <PrimaryButton
               text={"CHANGE"}
-              onClick={onSubmitNewPassword(
+              onClick={() => handleSubmitNewPassword(
                 { password: form.newPassword },
                 { password: form.confirmPassword },
                 setErrors,
