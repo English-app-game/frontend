@@ -1,5 +1,5 @@
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { submitLogout, getStoredUser } from "../../hooks/useAuthRedirect";
+import { handleLogout, getStoredUser } from "../../hooks/useAuthRedirect";
 import { useSocket } from "../../hooks/useSocket";
 import { useDispatch } from "react-redux";
 import TextButton from "./TextButton";
@@ -30,7 +30,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
       <div className="flex flex-col">
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
-          onClick={() => submitLogout(navigate, socket, currentRoomKey, dispatch)()}
+          onClick={() => handleLogout(navigate, socket, currentRoomKey, dispatch)}
           className="text-white hover:cursor-pointer hover:underline"
         >
           Logout

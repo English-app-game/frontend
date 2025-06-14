@@ -8,7 +8,6 @@ import { HOME } from "../routes/routes_consts";
 import removeUserFromRoom from "../services/room/removeUserFromRoom";
 import { WAITING_ROOM_EVENTS } from "../consts/socketEvents";
 
-
 export default function useAuthRedirect({ mode }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,10 +70,6 @@ export const handleLogout = async (navigate, socket = null, currentRoomKey = nul
     sessionStorage.clear();
     navigate(HOME);
   }
-};
-
-export const submitLogout = (navigate, socket = null, currentRoomKey = null, dispatch = null) => {
-  return () => handleLogout(navigate, socket, currentRoomKey, dispatch);
 };
 
 export const getStoredUser = () => {
