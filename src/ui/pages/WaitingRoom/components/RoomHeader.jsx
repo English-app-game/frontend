@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetRoom, setRoom } from "../../../../store/slices/roomSlice";
 import { getRoom } from "../../../../services/room/getRoom";
+import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket";
+import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
 import removeUserFromRoom from "../../../../services/room/removeUserFromRoom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { WindowBody } from "../../../components/WindowBody";
@@ -17,7 +19,9 @@ const RoomHeader = () => {
   const { id: roomKey } = useParams();
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+  const { socket } = useWaitingRoomSocket()
   const [isOpen, setIsOpen] = useState(false);
+
 
   useEffect(() => {
     if (!roomKey) return;
@@ -34,6 +38,7 @@ const RoomHeader = () => {
     }
 
     await removeUserFromRoom(roomKey, user.id);
+    socket.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId: user.id });
 
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
