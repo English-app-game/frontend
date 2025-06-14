@@ -1,15 +1,13 @@
 import { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
-import { LOGIN, ROOMS_LIST, SET_NEW_PASSWORD } from "../routes/routes_consts";
+import { LOGIN, ROOMS_LIST } from "../routes/routes_consts";
 import { HOME } from "../routes/routes_consts";
 
 export default function useAuthRedirect({ mode }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-    const location = useLocation();
-
 
   useEffect(() => {
     const token =
@@ -28,19 +26,13 @@ export default function useAuthRedirect({ mode }) {
       }
     }
 
-    const currentPath = location.pathname;
-    const isResetPasswordPage = currentPath.startsWith(`/${SET_NEW_PASSWORD}`);
-
-     if (mode === "loggedIn") {
-      if (!token && !isResetPasswordPage) {
-        navigate(LOGIN);
-      }
+    if (mode === "loggedIn" && !token) {
+      navigate(LOGIN);
     }
 
-
-      if (mode === "loggedOut" && token) {
-        navigate(ROOMS_LIST);
-      }
+    if (mode === "loggedOut" && token) {
+      navigate(ROOMS_LIST);
+    }
   }, [mode, navigate, dispatch]);
 }
 
