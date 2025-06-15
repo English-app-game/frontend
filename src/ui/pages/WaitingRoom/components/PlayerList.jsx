@@ -6,7 +6,6 @@ const PlayersList = ({ players, hostId }) => {
   return (
     <BlueBox
       size="large"
-      // className="w-full flex flex-col sm:flex-row items-center justify-between gap-6 border-4 border-dashed border-white px-4 py-6 max-w-4xl"
       className="flex max-w-full flex-col gap-6 border-4 border-dashed border-white sm:flex-row sm:justify-between sm:items-center"
     >
       <div className="w-full sm:w-2/3">
