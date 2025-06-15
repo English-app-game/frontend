@@ -1,22 +1,28 @@
 import { useCallback, useEffect, useRef } from "react";
 import { socket } from "../sockets/sockets";
+import { useDispatch } from "react-redux";
+import { setTranslationGameState } from "../store/slices/translationGameSlice";
 
 export function useSocket() {
   const socketRef = useRef(socket);
+  const dispatch = useDispatch();
 
-  const viewRoomDetailsTesting = useCallback(({ roomKey, users }) => {
-    console.log(roomKey, users);
-  }, []);
+  const updateTranslationGameState = useCallback(
+    (room) => {
+      dispatch(setTranslationGameState(room));
+    },
+    [dispatch]
+  );
 
   const startListeners = useCallback(() => {
     const ref = socketRef.current;
-    ref.on("room-details", viewRoomDetailsTesting);
-  }, [viewRoomDetailsTesting]);
+    ref.on("set-translation-game-state", updateTranslationGameState);
+  }, [updateTranslationGameState]);
 
   const stopListeners = useCallback(() => {
     const ref = socketRef.current;
-    ref.off("room-details", viewRoomDetailsTesting);
-  }, [viewRoomDetailsTesting]);
+    ref.off("set-translation-game-state", updateTranslationGameState);
+  }, [updateTranslationGameState]);
 
   const socketDispatcher = useCallback((event, payload, callback) => {
     socket.emit(event, payload, callback);

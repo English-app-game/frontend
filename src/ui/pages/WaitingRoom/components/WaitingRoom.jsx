@@ -14,6 +14,7 @@ import { RoomStatus } from "../../../../consts/gameTypes";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { getAllGameTypes } from "../../../../services/room/roomType";
 import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
+import useRoomPolling from "../../../../hooks/useRoomPolling";
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -28,6 +29,8 @@ export default function WaitingRoom() {
   const { socket, emit } = useWaitingRoomSocket();
   const navigate = useNavigate();
 
+  useRoomPolling(roomKey);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(roomKey);
     setCopied(true);
@@ -36,10 +39,10 @@ export default function WaitingRoom() {
 
   const handleStart = async () => {
     // comment this check if this blocks starting the game
-    if (players.length < 2) {
-      alert("At least 2 players are required to start the game.");
-      return;
-    }
+    // if (players.length < 2) {
+    //   alert("At least 2 players are required to start the game.");
+    //   return;
+    // }
 
     if (userId !== room.admin) {
       alert("Only the host can start the game.");
@@ -62,32 +65,34 @@ export default function WaitingRoom() {
     const joinRoom = async () => {
       try {
         const user = getStoredUser();
-        
+
         if (!user) return;
 
-        const isGuest = user.isGuest || typeof user.id === 'string' && user.id.length !== 24;
-        
+        const isGuest =
+          user.isGuest ||
+          (typeof user.id === "string" && user.id.length !== 24);
+
         if (isGuest) {
           const guestData = {
             id: user.id,
             name: user.name,
-            avatarImg: user.avatarImg
+            avatarImg: user.avatarImg,
           };
           await joinUserToRoom(roomKey, user.id, guestData);
         } else {
           await joinUserToRoom(roomKey, user.id);
         }
-        
-        emit(WAITING_ROOM_EVENTS.JOIN, { 
-          roomKey, 
+
+        emit(WAITING_ROOM_EVENTS.JOIN, {
+          roomKey,
           user: {
             id: user.id,
             name: user.name,
             avatarImg: user.avatarImg,
-            isGuest: isGuest
-          }
+            isGuest: isGuest,
+          },
         });
-        
+
         setHasJoinedRoom(true);
       } catch (error) {
         console.error("Failed to join room:", error);
@@ -102,11 +107,11 @@ export default function WaitingRoom() {
 
     const handlePlayersUpdate = ({ players, count }) => {
       console.log("📋 Received player list update:", players);
-      const transformedPlayers = players.map(player => ({
-        _id: player.id, 
+      const transformedPlayers = players.map((player) => ({
+        _id: player.id,
         name: player.name,
         avatarImg: player.avatarImg,
-        isGuest: player.isGuest || false
+        isGuest: player.isGuest || false,
       }));
       setPlayers(transformedPlayers);
     };
@@ -118,14 +123,14 @@ export default function WaitingRoom() {
         const data = await fetchPlayers(roomKey);
         const registeredPlayers = data.players || [];
         const guestPlayers = data.guestPlayers || [];
-        
-        const transformedGuestPlayers = guestPlayers.map(guest => ({
-          _id: guest.id, 
+
+        const transformedGuestPlayers = guestPlayers.map((guest) => ({
+          _id: guest.id,
           name: guest.name,
           avatarImg: guest.avatarImg,
-          isGuest: true 
+          isGuest: true,
         }));
-        
+
         const allPlayers = [...registeredPlayers, ...transformedGuestPlayers];
         setPlayers(allPlayers);
         setHostId(data.admin._id);
@@ -149,7 +154,9 @@ export default function WaitingRoom() {
         try {
           const gameTypes = await getAllGameTypes();
           const match = gameTypes.find((gt) => gt._id === room.gameType);
-          let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
+          let gameType = match
+            ? match.name.trim().split(" ").join("")
+            : "Unknown";
 
           if (!gameType) {
             console.error("Game type not found for room:", roomKey);
