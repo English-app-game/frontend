@@ -52,7 +52,7 @@ const CreateRoom = () => {
   }, [roomKey, navigate]);
 
   return (
-    <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
+    <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
      <BlueBox size="large" className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]">
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
@@ -64,7 +64,7 @@ const CreateRoom = () => {
         <PrimaryButton
           text="LET'S GO"
           onClick={handleCreateRoom}
-          className="bg-green-400"
+          className="bg-green-400 px-4 py-2"
         />
         <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       </BlueBox>
