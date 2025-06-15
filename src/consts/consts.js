@@ -1,5 +1,7 @@
 export const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+
+import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+export const CLIENT_URL = window.location.origin;
 export const REGISTER_PATH = "/users/register";
 export const RESET_PASSWORD_PATH = "/users/login/resetPassword";
 export const SET_NEW_PASSWORD_PATH = "/users/resetPassword";

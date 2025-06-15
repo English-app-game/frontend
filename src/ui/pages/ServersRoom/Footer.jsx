@@ -9,35 +9,38 @@ import { useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import PrimaryButton from "../../components/PrimaryButton";
 import InputField from "../../components/InputField";
-import { checkRoomAvailabilityByKey} from "../../../services/room/getRooms"; 
-
+import { checkRoomAvailabilityByKey } from "../../../services/room/getRooms";
+import { useSelector } from "react-redux";
+import { joinUserToRoom } from "../../../services/room/joinUserToRoom";
 
 export default function Footer({ rooms }) {
+  const userId = useSelector((store) => store.user.id);
+
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-   async function handleJoinRoom(e) { 
+  async function handleJoinRoom(e) {
     e.preventDefault();
-      setError("");
+    setError("");
 
-   const formData = new FormData(e.target);
-   const roomCode = formData.get("roomCode").trim();
+    const formData = new FormData(e.target);
+    const roomCode = formData.get("roomCode").trim();
 
-   console.log("🔍 Room code sent to server:", roomCode);
-
+    console.log("🔍 Room code sent to server:", roomCode);
 
     if (!roomCode) {
-    setError("Please enter a room code");
-    return;
-   }
+      setError("Please enter a room code");
+      return;
+    }
 
-   try {
-    const data = await checkRoomAvailabilityByKey(roomCode);
-    navigate(WAITING_ROOM(data.roomId)); 
-  } catch (err) {
-    setError(err.message);
-  }
+    try {
+      const data = await checkRoomAvailabilityByKey(roomCode);
+      await joinUserToRoom(data.roomKey, userId);
 
+      navigate(WAITING_ROOM(data.roomKey));
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   function handleCreateRoomClick(e) {
@@ -88,9 +91,7 @@ export default function Footer({ rooms }) {
               name="roomCode"
               className={"w-48"}
             />
-            {error && (
-              <p className="bg-red-200 rounded-full px-2">{error}</p>
-            )}
+            {error && <p className="bg-red-200 rounded-full px-2">{error}</p>}
           </div>
           <PrimaryButton type="submit" className="p-2">
             <FaPlay />

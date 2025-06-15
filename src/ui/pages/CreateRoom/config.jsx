@@ -1,6 +1,6 @@
-import easyImg from '../../../assets/images/easy-level.png';
-import mediumImg from '../../../assets/images/medium-level.png';
-import hardImg from '../../../assets/images/hard-level.png';
+import easyImg from '../../../assets/images/easyLevelIcon.png';
+import mediumImg from '../../../assets/images/mediumLevelIcon.png';
+import hardImg from '../../../assets/images/hardLevelIcon.png';
 
 export const levelOptions = {
     easy: {
