@@ -24,7 +24,6 @@ const TEMP_USER = {
 };
 
 const CreateRoom = () => {
-
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
   const [gameType, setGameType] = useState(null);
@@ -37,11 +36,19 @@ const CreateRoom = () => {
   const user = useSelector((store) => store.user);
 
   const handleCreateRoom = () => {
-    if (!level || !status|| !gameType) {
+    if (!level || !status || !gameType) {
       toast.error("Please select game type, level and status!");
       return;
     }
-    dispatch(createRoom({ key:null, users: user.id, level, status, gameType, admin: user.id })
+    dispatch(
+      createRoom({
+        key: null,
+        users: user.id,
+        level,
+        status,
+        gameType,
+        admin: user.id,
+      })
     );
   };
 
@@ -53,7 +60,10 @@ const CreateRoom = () => {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center">
-     <BlueBox size="large" className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]">
+      <BlueBox
+        size="large"
+        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"
+      >
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}
@@ -66,7 +76,6 @@ const CreateRoom = () => {
           onClick={handleCreateRoom}
           className="bg-green-400"
         />
-        <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       </BlueBox>
     </div>
   );

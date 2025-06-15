@@ -1,9 +1,21 @@
 import { useSelector } from "react-redux";
-import ScoreBoard from "./Scoreboard";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSocket } from "../../../hooks/useSocket";
+import ScoreBoard from "./Scoreboard";
 import EnglishWords from "./EnglishWords";
 import HebrewWords from "./HebrewWords";
+import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
+import { joinTranslationGameRoom } from "../../../services/translationGame";
+
+// Utility: Fisher-Yates shuffle
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export default function TranslationGame({ roomKey, handleBack }) {
   const { emit } = useSocket();
@@ -11,59 +23,70 @@ export default function TranslationGame({ roomKey, handleBack }) {
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
 
-  // For Testing
-  const room = useSelector((store) => store.translationGame);
-  // console.log(room);
+  const enWords = useSelector((store) => store.translationGame.enWords);
+  const hebWords = useSelector((store) => store.translationGame.hebWords);
 
-  const wordsSelector = useSelector((store) => store.translationGame.words);
-  // show at most 20 words
-  const words = useMemo(() => {
-    return wordsSelector.slice(0, 20).sort((a, b) => a.id.localeCompare(b.id));
-  }, [wordsSelector]);
-
-  const englishWords = useMemo(
-    () =>
-      words.map((word) => ({
-        word: word.eng.word,
-        id: word.id,
-      })),
-    [words]
+  const availableEnWords = useMemo(
+    () => enWords?.filter((word) => !word.disabled).slice(0, 15),
+    [enWords]
   );
 
-  const hebrewWords = useMemo(
-    () =>
-      words.map((word) => ({
-        word: word.heb.word,
-        id: word.id,
-      })),
-    [words]
+  const renderedIds = useMemo(
+    () => new Set(availableEnWords?.map((word) => word.id)),
+    [availableEnWords]
   );
 
+  const availableHeWords = useMemo(
+    () =>
+      hebWords?.filter((word) => !word.disabled && renderedIds.has(word.id)),
+    [hebWords, renderedIds]
+  );
+
+  const [selectedHebrewWordId, setSelectedHebrewWord] = useState(null);
+
+  const compareWordIds = useCallback(
+    (engWordId) =>
+      engWordId === selectedHebrewWordId ? selectedHebrewWordId : false,
+    [selectedHebrewWordId]
+  );
+
+  // extract to joinRoom service void joinRoom(Emitter emit, Obj obj)
   useEffect(() => {
     if (!roomKey || !userId) return;
-    emit("join-room", {
-      roomKey,
-      user,
-    });
+    joinTranslationGameRoom(emit, { roomKey, user });
   }, [roomKey, userId, emit, user]);
 
   return (
-    <section className="relative z-[9999] min-h-screen grow grid grid-rows-6">
-      <div className="row-span-1 bg-red-100 flex justify-between items-center px-6 py-4 rounded-b-xl shadow">
+    <section className="relative z-[1] h-screen grid grid-rows-6 overflow-hidden">
+      {/* Scoreboard & Exit */}
+      <div className="row-span-1 bg-red-50 flex justify-between items-center px-6 py-3 shadow">
         <ScoreBoard />
         <button
           onClick={handleBack}
-          className="bg-white text-red-600 border border-red-300 px-4 py-2 rounded-xl hover:bg-red-50 transition font-medium"
+          className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow"
         >
           יציאה מהמשחק
         </button>
       </div>
 
-      <div className="row-span-3 bg-gray-300">
-        <EnglishWords words={englishWords} />
+      {/* English Words */}
+      <div className="row-span-3 text-sm bg-gray-300 overflow-y-auto">
+        <EnglishWords
+          words={availableEnWords}
+          emit={emit}
+          compareWordIds={compareWordIds}
+          hebWordSelected={selectedHebrewWordId}
+          setHebWordSelected={setSelectedHebrewWord}
+        />
       </div>
-      <div className="row-span-2 bg-blue-100">
-        <HebrewWords words={hebrewWords} />
+
+      {/* Hebrew Words */}
+      <div className="row-span-2 text-sm bg-blue-100 overflow-y-auto">
+        <HebrewWords
+          words={availableHeWords}
+          emit={emit}
+          setSelectedHebrewWord={setSelectedHebrewWord}
+        />
       </div>
     </section>
   );

@@ -7,11 +7,11 @@ export default function ScoreBoard() {
   const currentUser = scoreboard.find((entry) => entry.userId === userId);
 
   return (
-    <div className="bg-red-100 px-6 py-4 w-full rounded-b-xl shadow">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-red-800">לוח תוצאות</h2>
+    <div className="flex flex-col gap-3 px-4 py-3 w-full">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-red-800">לוח תוצאות</h2>
         {currentUser && (
-          <div className="bg-white text-red-700 px-4 py-2 rounded-xl shadow text-sm font-medium">
+          <div className="bg-white text-red-700 px-3 py-1 rounded-md shadow text-sm font-medium">
             הציון שלך: <span className="font-bold">{currentUser.score}</span>
           </div>
         )}
@@ -23,12 +23,12 @@ export default function ScoreBoard() {
           return (
             <li
               key={userId}
-              className={`flex items-center gap-x-2 px-3 py-2 rounded-xl shadow-sm ${
-                isCurrent ? "border-2 border-red-600" : ""
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg shadow-sm text-sm font-medium ${
+                isCurrent ? "ring-2 ring-red-600" : ""
               }`}
-              style={{ backgroundColor: color }}
+              style={{ backgroundColor: color || "#f0f0f0" }}
             >
-              <span className="font-medium">{name}</span>
+              <span>{name}</span>
               <span className="font-bold">{score}</span>
             </li>
           );
