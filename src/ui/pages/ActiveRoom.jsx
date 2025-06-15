@@ -1,38 +1,28 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
-import { useSocket } from "../../hooks/useSocket";
-import { useEffect } from "react";
-import { ROOMS_LIST, ROUTES } from "../../routes/routes_consts";
+import {  ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
 
 export default function ActiveRoom() {
   const { id: roomKey, gameType } = useParams();
   const navigate = useNavigate();
-  const { emit } = useSocket();
   const user = useSelector((store) => store.user);
+  const { id: userId } = user;
   const dispatch = useDispatch();
 
   const handleBack = async () => {
-    if (!user || !user.id || !roomKey) {
+    if (!userId || !roomKey) {
       dispatch(resetRoom());
       return navigate(ROUTES.ROOMS_LIST);
     }
 
-    await removeUserFromRoom(roomKey, user.id);
+    await removeUserFromRoom(roomKey, userId);
 
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };
-
-  useEffect(() => {
-    if (!roomKey || !user.id) return;
-    emit("join-room", {
-      roomKey,
-      user,
-    });
-  }, [roomKey, emit, user]);
 
 
   if (gameType.toLowerCase() == "translation")

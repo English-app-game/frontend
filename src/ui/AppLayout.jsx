@@ -31,12 +31,13 @@ export default function AppLayout() {
   const shouldShowHeaderOnlyOnDesktop = desktopOnlyHeaderRoutes.some((route) =>
     matchPath(route, location.pathname)
   );
+  const isActiveRoom = matchPath("/rooms/active/*", location.pathname);
 
   useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
 
   return (
     <div className="h-screen w-screen relative">
-      {shouldShowHeader && (
+      {shouldShowHeader && !isActiveRoom && (
         <div
           className={`${
             shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"

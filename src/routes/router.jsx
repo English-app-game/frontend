@@ -34,49 +34,65 @@ const router = createBrowserRouter([
       {
         path: ROUTES.REGISTER,
         element: <Register />,
-        errorElement: <ErrorPage error={new Error("Can't get into register page")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into register page")} />
+        ),
       },
       {
         path: ROUTES.LOGIN_GUEST,
         element: <LoginGuest />,
-        errorElement: <ErrorPage error={new Error("Can't get into login guest page")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into login guest page")} />
+        ),
       },
       {
         path: ROUTES.RESET_PASSWORD,
         element: <ResetPassword />,
-        errorElement: <ErrorPage error={new Error("Can't get into reset password room")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into reset password room")} />
+        ),
       },
       {
         path: ROUTES.SET_NEW_PASSWORD,
         element: <SetNewPassword />,
-        errorElement: <ErrorPage error={new Error("Can't get into reset password room")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into reset password room")} />
+        ),
       },
       {
         path: ROUTES.ROOMS_LIST,
         element: <ServersRoom />,
-        errorElement: <ErrorPage error={new Error("Can't get into rooms list page")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into rooms list page")} />
+        ),
       },
       {
         path: ROUTES.CREATE_ROOM,
         element: <CreateRoom />,
-        errorElement: <ErrorPage error={new Error("Can't get into create room page")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into create room page")} />
+        ),
       },
       {
         path: ROUTES.STATISTICS,
         element: <Statistics />,
-        errorElement: <ErrorPage error={new Error("Can't get into statistics page")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into statistics page")} />
+        ),
       },
       {
         path: ROUTES.WAITING_ROOM(),
         element: <WaitingRoom />,
-        errorElement: <ErrorPage error={new Error("Can't get into waiting room")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into waiting room")} />
+        ),
       },
       {
         path: ROUTES.ACTIVE_ROOM(),
         element: (
-          <Auth>
-            <ActiveRoom />
-          </Auth>
+          // <Auth>
+          <ActiveRoom />
+          // </Auth>
         ),
         errorElement: (
           <ErrorPage error={new Error("Can't get into active room")} />
@@ -85,7 +101,9 @@ const router = createBrowserRouter([
       {
         path: ROUTES.GAME_OVER,
         element: <GameOver />,
-        errorElement: <ErrorPage error={new Error("Can't get into game over page")} />,
+        errorElement: (
+          <ErrorPage error={new Error("Can't get into game over page")} />
+        ),
       },
     ],
   },

@@ -40,6 +40,7 @@ export function useWaitingRoomSocket() {
     }
 
     return () => {
+      ref.disconnect();
       console.log("🔌 Waiting room socket disconnecting...");
     };
   }, []);

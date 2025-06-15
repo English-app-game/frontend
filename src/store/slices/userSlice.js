@@ -12,6 +12,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
+      if (state.id === action.payload.id) return state;
       for (const key in action.payload) {
         state[key] = action.payload[key];
       }
