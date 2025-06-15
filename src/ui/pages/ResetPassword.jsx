@@ -13,8 +13,8 @@ export default function ResetPassword() {
   const [serverMessage, setServerMessage] = useState(null);
 
   return (
-    <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-      <div className="pt-10 w-full flex items-center">
+    <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
+      <div className="pt-10 w-full">
         <BlueBox>
           <Header text="PLEASE ENTER YOUR EMAIL" className="text-center" />
           <div className="mt-5 relative flex flex-col items-start gap-4">
@@ -29,7 +29,7 @@ export default function ResetPassword() {
             )}
             <PrimaryButton
               text="SEND RESET LINK"
-              className="mt-20 float-right"
+              className="mt-20 float-right px-4 py-2"
               onClick={onSubmitReset(
                 Email,
                 setEmail,
