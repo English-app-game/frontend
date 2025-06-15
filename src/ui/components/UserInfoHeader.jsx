@@ -27,7 +27,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
           : "absolute top-2 right-8 flex items-center gap-3 z-100 bg-primary rounded-2xl p-2 px-4"
       }`}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col max-w-[140px] truncate">
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
           onClick={() => handleLogout(navigate, socket, currentRoomKey, dispatch)}
