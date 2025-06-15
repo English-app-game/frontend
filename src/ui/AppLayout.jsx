@@ -20,11 +20,11 @@ const publicRoutes = [
   LOGIN_GUEST,
   REGISTER,
   RESET_PASSWORD,
-  SET_NEW_PASSWORD,
 ];
 
 export default function AppLayout() {
   const location = useLocation();
+  const isResetPasswordPage = location.pathname.startsWith(`/${SET_NEW_PASSWORD}`);
   const isPublic = publicRoutes.includes(location.pathname);
   const shouldShowHeader = !isPublic;
   const desktopOnlyHeaderRoutes = [ROOMS_LIST, STATISTICS, WAITING_ROOM()];
@@ -32,7 +32,9 @@ export default function AppLayout() {
     matchPath(route, location.pathname)
   );
 
-  useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
+  if (!isResetPasswordPage) {
+    useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
+  }
 
   return (
     <div className="h-screen w-screen relative">

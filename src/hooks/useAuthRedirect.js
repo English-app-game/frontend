@@ -73,11 +73,11 @@ export const handleLogout = async (navigate, socket = null, currentRoomKey = nul
 };
 
 export const getStoredUser = () => {
-  try{
-    const data =  localStorage.getItem("user") || sessionStorage.getItem("user");
+  try {
+    const data = localStorage.getItem("user") || sessionStorage.getItem("user");
     return data ? JSON.parse(data) : null;
   } catch (err) {
-    console.log("Failed to parse user from storage:",err)
+    console.log("Failed to parse user from storage:", err);
     return null;
   }
-}
+};
