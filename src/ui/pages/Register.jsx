@@ -28,10 +28,10 @@ export default function Register() {
 
   return (
     <>
-      <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-        <div className="pt-10 w-full flex items-center">
+      <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
+        <div className="pt-10 w-full">
           <BlueBox className="pr-3">
-            <Header text="LETS MAKE YOUR ACCOUNT!" className="text-center" />
+            <Header text="LETS MAKE YOUR ACCOUNT!" className="text-center pr-3" />
             <div className="pb-5">
               <InputField
                 text="User"
@@ -55,7 +55,7 @@ export default function Register() {
                   error={errors.password}
                 />
                 <span
-                  className="absolute top-10 right-19 cursor-pointer text-white"
+                  className="absolute top-10 right-20 cursor-pointer text-white"
                   onClick={() =>
                     toggleShowPassword(showPassword, setshowPassword)
                   }
@@ -74,7 +74,7 @@ export default function Register() {
               )}
               <PrimaryButton
                 text="REGISTER"
-                className="float-right mt-4 ml-4"
+                className="float-right mt-4 ml-4 px-4 py-2 mb-5"
                 onClick={() => onSubmitRegister(dataform, setErrors, navigate)}
               />
             </div>

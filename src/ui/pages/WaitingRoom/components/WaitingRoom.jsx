@@ -4,12 +4,16 @@ import RoomFooter from "./RoomFooter";
 import { fetchPlayers } from "../../../../services/room/getPlayers";
 import { joinUserToRoom } from "../../../../services/room/joinUserToRoom";
 import { getStoredUser } from "../../../../hooks/useAuthRedirect";
+import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startGame } from "../../../../store/slices/roomSlice";
 import startGameService from "../../../../services/startGame";
-import useRoomPolling from "../../../../hooks/useRoomPolling";
+import { RoomStatus } from "../../../../consts/gameTypes";
+import { ROUTES } from "../../../../routes/routes_consts";
+import { getAllGameTypes } from "../../../../services/room/roomType";
+import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -20,8 +24,9 @@ export default function WaitingRoom() {
   const [players, setPlayers] = useState([]);
   const [hostId, setHostId] = useState(null);
   const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
-
-  useRoomPolling(roomKey);
+  const [gameStarted, setGameStarted] = useState(false);
+  const { socket, emit } = useWaitingRoomSocket();
+  const navigate = useNavigate();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(roomKey);
@@ -43,7 +48,7 @@ export default function WaitingRoom() {
 
     try {
       const updatedRoom = await startGameService(roomKey, userId);
-      // assuming gametype translation..
+      setGameStarted(true);
       dispatch(startGame(updatedRoom.currentStatus));
     } catch (error) {
       console.error(error);
@@ -51,7 +56,6 @@ export default function WaitingRoom() {
     }
   };
 
-  // Effect to join user to room when they enter the waiting room
   useEffect(() => {
     if (!roomKey || !userId || hasJoinedRoom) return;
 
@@ -74,6 +78,16 @@ export default function WaitingRoom() {
           await joinUserToRoom(roomKey, user.id);
         }
         
+        emit(WAITING_ROOM_EVENTS.JOIN, { 
+          roomKey, 
+          user: {
+            id: user.id,
+            name: user.name,
+            avatarImg: user.avatarImg,
+            isGuest: isGuest
+          }
+        });
+        
         setHasJoinedRoom(true);
       } catch (error) {
         console.error("Failed to join room:", error);
@@ -81,13 +95,27 @@ export default function WaitingRoom() {
     };
 
     joinRoom();
-  }, [roomKey, userId, hasJoinedRoom]);
+  }, [roomKey, userId, hasJoinedRoom, emit]);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    if (!socket) return;
+
+    const handlePlayersUpdate = ({ players, count }) => {
+      console.log("📋 Received player list update:", players);
+      const transformedPlayers = players.map(player => ({
+        _id: player.id, 
+        name: player.name,
+        avatarImg: player.avatarImg,
+        isGuest: player.isGuest || false
+      }));
+      setPlayers(transformedPlayers);
+    };
+
+    socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
+
+    const fetchInitialData = async () => {
       try {
         const data = await fetchPlayers(roomKey);
-        
         const registeredPlayers = data.players || [];
         const guestPlayers = data.guestPlayers || [];
         
@@ -99,18 +127,53 @@ export default function WaitingRoom() {
         }));
         
         const allPlayers = [...registeredPlayers, ...transformedGuestPlayers];
-        
-        if (allPlayers.length !== players.length) {
-          setPlayers(allPlayers);
-          setHostId(data.admin._id);
-        }
+        setPlayers(allPlayers);
+        setHostId(data.admin._id);
       } catch (err) {
-        console.error("Failed fetching players", err);
+        console.error("Failed fetching initial players", err);
       }
-    }, 500);
+    };
 
-    return () => clearInterval(interval);
-  }, []);
+    fetchInitialData();
+
+    return () => {
+      socket.off(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
+    };
+  }, [socket, roomKey]);
+
+  useEffect(() => {
+    if (!gameStarted || !room.currentStatus) return;
+
+    const checkGameStart = async () => {
+      if (room.currentStatus.toLowerCase() === RoomStatus.PLAYING) {
+        try {
+          const gameTypes = await getAllGameTypes();
+          const match = gameTypes.find((gt) => gt._id === room.gameType);
+          let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
+
+          if (!gameType) {
+            console.error("Game type not found for room:", roomKey);
+            navigate(ROUTES.ROOMS_LIST);
+            return;
+          }
+
+          navigate(ROUTES.ACTIVE_ROOM(roomKey, gameType));
+        } catch (error) {
+          console.error("Error navigating to active room:", error);
+        }
+      }
+    };
+
+    checkGameStart();
+  }, [gameStarted, room.currentStatus, room.gameType, roomKey, navigate]);
+
+  useEffect(() => {
+    return () => {
+      if (hasJoinedRoom && roomKey && userId) {
+        emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId });
+      }
+    };
+  }, [hasJoinedRoom, roomKey, userId, emit]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">

@@ -5,6 +5,7 @@ import ButtonHeader from "../components/ButtonHeader";
 import UserInfoHeader from "./UserInfoHeader";
 import { IconButton } from "./IconButton";
 import { WindowBody } from "./WindowBody";
+import { MobileSideBar } from "./MobileSideBar";
 
 export const Nav = ({ HeaderText, HeaderIcon, page, pageText }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,11 +29,7 @@ export const Nav = ({ HeaderText, HeaderIcon, page, pageText }) => {
           <ButtonHeader navigateTo={page} text={pageText} />
         </div>
       </div>
-      <div
-        className={`fixed top-0 right-0 h-65 w-60 bg-secondary shadow-lg p-6 z-[100] transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } sm:hidden border border-primary rounded-xl`}
-      >
+      <MobileSideBar isOpen={isOpen}>
         <IconButton
           className={"text-primary text-3xl mb-6 ml-auto"}
           onClick={() => setIsOpen(false)}
@@ -46,7 +43,7 @@ export const Nav = ({ HeaderText, HeaderIcon, page, pageText }) => {
             isInsideSidebar={true}
           />
         </WindowBody>
-      </div>
+      </MobileSideBar>
     </header>
   );
 };

@@ -55,8 +55,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
-      <div className="pt-10 w-full flex items-center">
+    <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
+      <div className="pt-10 w-full">
         <BlueBox className="pr-3 mb-5">
           <LoginFormHeader />
           <LoginFormFields

@@ -1,5 +1,5 @@
 import useAuthRedirect from "../hooks/useAuthRedirect";
-import { useLocation } from "react-router-dom";
+import { useLocation, matchPath } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import UserInfoHeader from "./components/UserInfoHeader";
 import {
@@ -10,7 +10,8 @@ import {
   RESET_PASSWORD,
   SET_NEW_PASSWORD,
   ROOMS_LIST,
-  STATISTICS
+  STATISTICS,
+  WAITING_ROOM,
 } from "../routes/routes_consts";
 
 const publicRoutes = [
@@ -26,8 +27,10 @@ export default function AppLayout() {
   const isResetPasswordPage = location.pathname.startsWith(`/${SET_NEW_PASSWORD}`);
   const isPublic = publicRoutes.includes(location.pathname);
   const shouldShowHeader = !isPublic;
-  const desktopOnlyHeaderRoutes = [ROOMS_LIST, STATISTICS];
-  const shouldShowHeaderOnlyOnDesktop = desktopOnlyHeaderRoutes.includes(location.pathname);
+  const desktopOnlyHeaderRoutes = [ROOMS_LIST, STATISTICS, WAITING_ROOM()];
+  const shouldShowHeaderOnlyOnDesktop = desktopOnlyHeaderRoutes.some((route) =>
+    matchPath(route, location.pathname)
+  );
 
   if (!isResetPasswordPage) {
     useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
@@ -36,7 +39,11 @@ export default function AppLayout() {
   return (
     <div className="h-screen w-screen relative">
       {shouldShowHeader && (
-        <div className={`${shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"}`}>
+        <div
+          className={`${
+            shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"
+          }`}
+        >
           <UserInfoHeader />
         </div>
       )}
