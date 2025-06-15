@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { getAllGameTypes } from "../../services/room/roomType.js";
-import {BASE_GAMES_URL} from  "../../services/room/roomType.js";
 import GameTypeButton from "../components/GameTypeButton.jsx";
 
 const GameTypeSelector = ({ gameType, setGameType }) => {
