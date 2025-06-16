@@ -15,6 +15,7 @@ import GameOver from "../ui/pages/GameOver";
 import { Error as ErrorPage } from "../ui/pages/Error";
 import { ROUTES } from "./routes_consts";
 import Auth from "../ui/components/Auth";
+import MemoryGame  from "../ui/components/MemoryGame/MemoryGame";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +88,7 @@ const router = createBrowserRouter([
         element: <GameOver />,
         errorElement: <ErrorPage error={new Error("Can't get into game over page")} />,
       },
+
     ],
   },
 ]);
