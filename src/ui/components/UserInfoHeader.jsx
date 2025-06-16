@@ -6,6 +6,7 @@ import TextButton from "./TextButton";
 import AvatarImg from "./AvatarImg";
 
 export default function UserInfoHeader({ isInsideSidebar = false }) {
+
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -14,9 +15,10 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
 
   const user = getStoredUser();
 
+  
   if (!user) return null;
 
-  const isInWaitingRoom = location.pathname.includes('/rooms/') && params.id;
+  const isInWaitingRoom = location.pathname.includes("/rooms/") && params.id;
   const currentRoomKey = isInWaitingRoom ? params.id : null;
 
   return (
@@ -27,10 +29,12 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
           : "absolute top-2 right-8 flex items-center gap-3 z-100 bg-primary rounded-2xl p-2 px-4"
       }`}
     >
-      <div className="flex flex-col">
+      <div className="flex flex-col max-w-[140px] truncate">
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
-          onClick={() => handleLogout(navigate, socket, currentRoomKey, dispatch)}
+          onClick={() =>
+            handleLogout(navigate, socket, currentRoomKey, dispatch)
+          }
           className="text-white hover:cursor-pointer hover:underline"
         >
           Logout
