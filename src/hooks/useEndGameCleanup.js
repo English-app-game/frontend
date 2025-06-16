@@ -1,23 +1,32 @@
 import { useEffect } from "react";
-import { saveScoreToServer } from "../services/scoreService"; 
-import { DELETE_ROOM_ROUTE } from "../consts/consts"; 
+import { saveScoreToServer } from "../services/scoreService";
+import { DELETE_ROOM_ROUTE } from "../consts/consts";
 
-export function useEndGameCleanup({ roomKey, userId, hostId, scoreboard, gameType }) {
+export function useEndGameCleanup({
+  roomKey,
+  userId,
+  hostId,
+  scoreboard,
+  gameType,
+}) {
   useEffect(() => {
     if (!roomKey || !userId || !hostId || userId !== hostId) return;
 
     const cleanup = async () => {
       try {
-        const response = await fetch(DELETE_ROOM_ROUTE(roomKey), {
+        const key = roomKey.split("/")[0];
+
+        const response = await fetch(DELETE_ROOM_ROUTE(key), {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ roomKey, userId }),
+          body: JSON.stringify({ roomKey: key, userId }),
         });
 
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message || "Failed to delete room");
+        if (!response.ok)
+          throw new Error(result.message || "Failed to delete room");
 
         const [winner] = [...scoreboard].sort((a, b) => b.score - a.score);
         if (winner && !winner.isGuest) {

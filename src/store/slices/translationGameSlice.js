@@ -7,6 +7,7 @@ const initialState = {
   scoreboard: [], // [{ userId, name, score }]
   words: [], // [{ id, heb, eng, lock, disabled, heldBy }]
   end: false,
+  gameTypeId: ""
 };
 
 const translationGameSlice = createSlice({
