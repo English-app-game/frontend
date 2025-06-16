@@ -1,4 +1,6 @@
 import { JOIN_USER_ROOM_ROUTE } from "../../consts/consts";
+import { toast } from 'react-toastify';
+
 
 export async function joinUserToRoom(roomKey, userId, guestData = null) {
   try {
@@ -27,7 +29,7 @@ export async function joinUserToRoom(roomKey, userId, guestData = null) {
     console.log("Joined room successfully:", data);
   } catch (err) {
     console.error("❌ Error joining room:", err);
-    alert("Failed to join the room.");
+    toast.error("Failed to join the room.");
     return;
   }
 }

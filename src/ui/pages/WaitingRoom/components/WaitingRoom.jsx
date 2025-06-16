@@ -14,6 +14,7 @@ import { RoomStatus } from "../../../../consts/gameTypes";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { getAllGameTypes } from "../../../../services/room/roomType";
 import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
+import { toast } from 'react-toastify';
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -37,12 +38,12 @@ export default function WaitingRoom() {
   const handleStart = async () => {
     // comment this check if this blocks starting the game
     if (players.length < 2) {
-      alert("At least 2 players are required to start the game.");
+      toast.error("At least 2 players are required to start the game.");
       return;
     }
 
     if (userId !== room.admin) {
-      alert("Only the host can start the game.");
+      toast.error("Only the host can start the game.");
       return;
     }
 
@@ -52,7 +53,7 @@ export default function WaitingRoom() {
       dispatch(startGame(updatedRoom.currentStatus));
     } catch (error) {
       console.error(error);
-      alert("Failed to start the game. Please try again later.");
+      toast.error("Failed to start the game. Please try again later.");
     }
   };
 
