@@ -20,11 +20,10 @@ export default function EndGame() {
   const userId = useSelector((store) => store.user.id);
   const hostId = useSelector((store) => store.translationGame.host.id);
 
-  const gameType = useSelector((store) => store.room.gameType);
+  const gameType = useSelector((store) => store.translationGame.gameTypeId);
 
   // To keep scoreboard snapshot
   const scoreboard = useMemo(() => dynamicScoreboard.slice(), []);
-
   useEndGameCleanup({ roomKey, userId, hostId, scoreboard, gameType });
 
   return (
