@@ -1,6 +1,6 @@
-const ROOMS_API_URL = "http://localhost:5000/api/rooms";
-const ROOM_BY_KEY_ROUTE= "check";
 import { BASE_URL } from "../../consts/consts";
+
+const ROOM_BY_KEY_ROUTE = "check";
 
 export const fetchRooms = async () => {
   try {
@@ -16,7 +16,7 @@ export const fetchRooms = async () => {
 };
 
 export const checkRoomAvailabilityByKey = async (roomKey) => {
-  const res = await fetch(`${ROOMS_API_URL}/${ROOM_BY_KEY_ROUTE}/${roomKey}`);
+  const res = await fetch(`${BASE_URL}/rooms/${ROOM_BY_KEY_ROUTE}/${roomKey}`);
 
   const data = await res.json();
 

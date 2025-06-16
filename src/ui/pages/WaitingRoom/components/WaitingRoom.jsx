@@ -14,6 +14,7 @@ import { RoomStatus } from "../../../../consts/gameTypes";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { getAllGameTypes } from "../../../../services/room/roomType";
 import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
+import useRoomPolling from "../../../../hooks/useRoomPolling";
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -29,6 +30,8 @@ export default function WaitingRoom() {
   const navigate = useNavigate();
   const [showHostLeftModal, setShowHostLeftModal] = useState(false);
 
+  useRoomPolling(roomKey);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(roomKey);
     setCopied(true);
@@ -37,10 +40,10 @@ export default function WaitingRoom() {
 
   const handleStart = async () => {
     // comment this check if this blocks starting the game
-    if (players.length < 2) {
-      alert("At least 2 players are required to start the game.");
-      return;
-    }
+    // if (players.length < 2) {
+    //   alert("At least 2 players are required to start the game.");
+    //   return;
+    // }
 
     if (userId !== room.admin) {
       alert("Only the host can start the game.");
