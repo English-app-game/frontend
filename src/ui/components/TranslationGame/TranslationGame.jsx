@@ -6,7 +6,7 @@ import EnglishWords from "./EnglishWords";
 import HebrewWords from "./HebrewWords";
 import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
 import { joinTranslationGameRoom } from "../../../services/translationGame";
-import EndGame from "./endGame";
+import EndGame from "./EndGame/EndGame";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -61,7 +61,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
     joinTranslationGameRoom(emit, { roomKey, user });
   }, [roomKey, userId, emit, user]);
 
-  if (gameEnded) return <EndGame />
+  if (gameEnded) return <EndGame />;
 
   return (
     <section className="relative z-[1] h-screen grid grid-rows-6 overflow-hidden">
