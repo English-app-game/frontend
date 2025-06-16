@@ -1,11 +1,12 @@
 import { useSelector } from "react-redux";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSocket } from "../../../hooks/useSocket";
 import ScoreBoard from "./Scoreboard";
 import EnglishWords from "./EnglishWords";
 import HebrewWords from "./HebrewWords";
 import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
 import { joinTranslationGameRoom } from "../../../services/translationGame";
+import EndGame from "./EndGame/EndGame";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -23,6 +24,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
 
+  const gameEnded = useSelector((store) => store.translationGame.end);
   const enWords = useSelector((store) => store.translationGame.enWords);
   const hebWords = useSelector((store) => store.translationGame.hebWords);
 
@@ -50,11 +52,16 @@ export default function TranslationGame({ roomKey, handleBack }) {
     [selectedHebrewWordId]
   );
 
+  const game = useSelector((store) => store.translationGame);
+  console.log(game);
+
   // extract to joinRoom service void joinRoom(Emitter emit, Obj obj)
   useEffect(() => {
     if (!roomKey || !userId) return;
     joinTranslationGameRoom(emit, { roomKey, user });
   }, [roomKey, userId, emit, user]);
+
+  if (gameEnded) return <EndGame />;
 
   return (
     <section className="relative z-[1] h-screen grid grid-rows-6 overflow-hidden">
