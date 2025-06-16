@@ -49,7 +49,7 @@ const RoomHeader = () => {
       <div className="flex sm:block px-4 py-4 sm:py-6">
         <ExitButton
           onClick={handleExit}
-          className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400 text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 
+          className="bg-rose-600 border-4 border-rose-400 hover:bg-rose-400 text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 
         sm:absolute sm:left-4"
         >
           EXIT ROOM

@@ -20,8 +20,8 @@ export const levelOptions = {
   export const statusOptions = {
     private: {
       type: 'PRIVATE',
-      bgColor: 'bg-rose-400',
-      borderColor: 'border-rose-600',
+      bgColor: 'bg-rose-600',
+      borderColor: 'border-rose-400',
       hoverColor: 'hover:bg-rose-300',
       ringColor: 'ring-rose-600',
     },
