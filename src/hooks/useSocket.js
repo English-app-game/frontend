@@ -11,7 +11,6 @@ export function useSocket() {
 
   const updateTranslationGameState = useCallback(
     (room) => {
-      console.log(room);
       dispatch(setTranslationGameState(room));
     },
     [dispatch]
@@ -25,17 +24,28 @@ export function useSocket() {
     }
   }, []);
 
+  const handleEndGame = useCallback(
+    ({ message, finalState }) => {
+      toast.info(message || "🏁 The game has ended!");
+      dispatch(setTranslationGameState({ ...finalState, end: true }));
+      // Optionally: navigate to a summary page or trigger some game end UI
+    },
+    [dispatch]
+  );
+
   const startListeners = useCallback(() => {
     const ref = socketRef.current;
     ref.on(TRANSLATION_GAME_EVENTS.SET_STATE, updateTranslationGameState);
     ref.on(TRANSLATION_GAME_EVENTS.MATCH_FEEDBACK, handleMatchFeedback);
-  }, [updateTranslationGameState, handleMatchFeedback]);
+    ref.on(TRANSLATION_GAME_EVENTS.END, handleEndGame);
+  }, [updateTranslationGameState, handleMatchFeedback, handleEndGame]);
 
   const stopListeners = useCallback(() => {
     const ref = socketRef.current;
     ref.off(TRANSLATION_GAME_EVENTS.SET_STATE, updateTranslationGameState);
     ref.off(TRANSLATION_GAME_EVENTS.MATCH_FEEDBACK, handleMatchFeedback);
-  }, [updateTranslationGameState, handleMatchFeedback]);
+    ref.off(TRANSLATION_GAME_EVENTS.END, handleEndGame);
+  }, [updateTranslationGameState, handleMatchFeedback, handleEndGame]);
 
   const socketDispatcher = useCallback((event, payload, callback) => {
     socket.emit(event, payload, callback);

@@ -1,5 +1,6 @@
 export const PORT = 5000;
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || `http://localhost:${PORT}/api`;
+export const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || `http://localhost:${PORT}/api`;
 export const CLIENT_URL = window.location.origin;
 export const REGISTER_PATH = "/users/register";
 export const RESET_PASSWORD_PATH = "/users/login/resetPassword";
@@ -15,4 +16,6 @@ export const REMOVE_PLAYER_ROUTE = `${BASE_URL}/rooms/players/remove`;
 export const JOIN_USER_ROOM_ROUTE = `${BASE_URL}/rooms/players/join`;
 export const START_GAME_ROUTE = (roomKey = "") =>
   `${BASE_URL}/rooms/${roomKey}/start`;
-
+export const DELETE_ROOM_ROUTE = (roomKey = "") =>
+  `${BASE_URL}/rooms/${roomKey}`;
+export const SAVE_USER_SCORE_ROUTE = `${BASE_URL}/score/save`
