@@ -24,7 +24,6 @@ const TEMP_USER = {
 };
 
 const CreateRoom = () => {
-
   const [level, setLevel] = useState(null);
   const [status, setStatus] = useState(null);
   const [gameType, setGameType] = useState(null);
@@ -37,11 +36,19 @@ const CreateRoom = () => {
   const user = useSelector((store) => store.user);
 
   const handleCreateRoom = () => {
-    if (!level || !status|| !gameType) {
+    if (!level || !status || !gameType) {
       toast.error("Please select game type, level and status!");
       return;
     }
-    dispatch(createRoom({ key:null, users: user.id, level, status, gameType, admin: user.id })
+    dispatch(
+      createRoom({
+        key: null,
+        users: user.id,
+        level,
+        status,
+        gameType,
+        admin: user.id,
+      })
     );
   };
 
@@ -66,7 +73,6 @@ const CreateRoom = () => {
           onClick={handleCreateRoom}
           className="bg-green-400 px-4 py-2"
         />
-        <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
       </BlueBox>
     </div>
   );

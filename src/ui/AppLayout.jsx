@@ -13,6 +13,7 @@ import {
   STATISTICS,
   WAITING_ROOM,
 } from "../routes/routes_consts";
+import { ToastContainer } from "react-toastify";
 
 const publicRoutes = [
   HOME,
@@ -31,6 +32,7 @@ export default function AppLayout() {
   const shouldShowHeaderOnlyOnDesktop = desktopOnlyHeaderRoutes.some((route) =>
     matchPath(route, location.pathname)
   );
+  const isActiveRoom = matchPath("/rooms/active/*", location.pathname);
 
   if (!isResetPasswordPage) {
     useAuthRedirect({ mode: isPublic ? "loggedOut" : "loggedIn" });
@@ -38,7 +40,17 @@ export default function AppLayout() {
 
   return (
     <div className="h-screen w-screen relative">
-      {shouldShowHeader && (
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        pauseOnHover={false}
+        draggable={false}
+        style={{ zIndex: 99999 }}
+      />
+      {shouldShowHeader && !isActiveRoom && (
         <div
           className={`${
             shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"
