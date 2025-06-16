@@ -7,6 +7,7 @@ import HebrewWords from "./HebrewWords";
 import { joinTranslationGameRoom } from "../../../services/translationGame";
 import EndGame from "./EndGame/EndGame";
 import { GameTypes } from "../../../consts/gameTypes";
+import RotateNotice from "../RotateNotice";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -108,6 +109,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
           setSelectedHebrewWord={setSelectedHebrewWord}
         />
       </div>
+      <RotateNotice />
     </section>
   );
 }
