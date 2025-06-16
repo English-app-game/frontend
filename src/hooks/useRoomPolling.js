@@ -37,6 +37,13 @@ export default function useRoomPolling(roomKey) {
         }
       } catch (err) {
         console.error("Error polling room:", err);
+        // If room not found (404), stop polling and redirect to rooms list
+        if (err.message === "Room not found") {
+          console.log("🚫 Room deleted, stopping polling and redirecting");
+          clearInterval(intervalId);
+          navigate(ROUTES.ROOMS_LIST);
+          return;
+        }
       }
     }, 1000);
 
