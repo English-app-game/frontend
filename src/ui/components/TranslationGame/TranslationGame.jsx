@@ -7,6 +7,7 @@ import HebrewWords from "./HebrewWords";
 import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
 import { joinTranslationGameRoom } from "../../../services/translationGame";
 import EndGame from "./endGame";
+import { GameTypes } from "../../../consts/gameTypes";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -55,10 +56,9 @@ export default function TranslationGame({ roomKey, handleBack }) {
   const game = useSelector((store) => store.translationGame);
   console.log(game);
 
-  // extract to joinRoom service void joinRoom(Emitter emit, Obj obj)
   useEffect(() => {
     if (!roomKey || !userId) return;
-    joinTranslationGameRoom(emit, { roomKey, user });
+    joinTranslationGameRoom(emit, { roomKey:`${roomKey}/${GameTypes.TRANSLATION}`, user });
   }, [roomKey, userId, emit, user]);
 
   if (gameEnded) return <EndGame />

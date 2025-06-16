@@ -38,7 +38,7 @@ export default function useRoomPolling(roomKey) {
       } catch (err) {
         console.error("Error polling room:", err);
       }
-    }, 500);
+    }, 1000);
 
     return () => clearInterval(intervalId);
   }, [roomKey, roomStatus, navigate]);
