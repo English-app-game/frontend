@@ -28,6 +28,7 @@ export default function WaitingRoom() {
   const [gameStarted, setGameStarted] = useState(false);
   const { socket, emit } = useWaitingRoomSocket();
   const navigate = useNavigate();
+  const [showHostLeftModal, setShowHostLeftModal] = useState(false);
 
   useRoomPolling(roomKey);
 
@@ -60,25 +61,23 @@ export default function WaitingRoom() {
   };
 
   useEffect(() => {
-    if (!roomKey || !userId || hasJoinedRoom) return;
+    if (!roomKey || !userId || !socket || hasJoinedRoom) return;
+
+    const user = getStoredUser();
+    if (!user) return;
 
     const joinRoom = async () => {
       try {
-        const user = getStoredUser();
-
-        if (!user) return;
-
         const isGuest =
           user.isGuest ||
           (typeof user.id === "string" && user.id.length !== 24);
 
         if (isGuest) {
-          const guestData = {
+          await joinUserToRoom(roomKey, user.id, {
             id: user.id,
             name: user.name,
             avatarImg: user.avatarImg,
-          };
-          await joinUserToRoom(roomKey, user.id, guestData);
+          });
         } else {
           await joinUserToRoom(roomKey, user.id);
         }
@@ -93,6 +92,7 @@ export default function WaitingRoom() {
           },
         });
 
+        console.log("🚀 JOIN emitted from", socket.id);
         setHasJoinedRoom(true);
       } catch (error) {
         console.error("Failed to join room:", error);
@@ -100,12 +100,32 @@ export default function WaitingRoom() {
     };
 
     joinRoom();
-  }, [roomKey, userId, hasJoinedRoom, emit]);
+  }, [roomKey, userId, socket, hasJoinedRoom, emit]);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !roomKey) return;
 
-    const handlePlayersUpdate = ({ players, count }) => {
+    const fetchInitialData = async () => {
+      try {
+        const data = await fetchPlayers(roomKey);
+        const registeredPlayers = data.players || [];
+        const guestPlayers = (data.guestPlayers || []).map((guest) => ({
+          _id: guest.id,
+          name: guest.name,
+          avatarImg: guest.avatarImg,
+          isGuest: true,
+        }));
+        const allPlayers = [...registeredPlayers, ...guestPlayers];
+        setPlayers(allPlayers);
+        setHostId(data.admin._id);
+      } catch (err) {
+        console.error("Failed fetching initial players", err);
+      }
+    };
+
+    fetchInitialData();
+
+    const handlePlayersUpdate = ({ players }) => {
       console.log("📋 Received player list update:", players);
       const transformedPlayers = players.map((player) => ({
         _id: player.id,
@@ -117,29 +137,6 @@ export default function WaitingRoom() {
     };
 
     socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
-
-    const fetchInitialData = async () => {
-      try {
-        const data = await fetchPlayers(roomKey);
-        const registeredPlayers = data.players || [];
-        const guestPlayers = data.guestPlayers || [];
-
-        const transformedGuestPlayers = guestPlayers.map((guest) => ({
-          _id: guest.id,
-          name: guest.name,
-          avatarImg: guest.avatarImg,
-          isGuest: true,
-        }));
-
-        const allPlayers = [...registeredPlayers, ...transformedGuestPlayers];
-        setPlayers(allPlayers);
-        setHostId(data.admin._id);
-      } catch (err) {
-        console.error("Failed fetching initial players", err);
-      }
-    };
-
-    fetchInitialData();
 
     return () => {
       socket.off(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
@@ -175,6 +172,23 @@ export default function WaitingRoom() {
   }, [gameStarted, room.currentStatus, room.gameType, roomKey, navigate]);
 
   useEffect(() => {
+    if (!socket) return;
+
+    const onHostLeft = () => {
+      setShowHostLeftModal(true);
+      setTimeout(() => {
+        navigate(ROUTES.ROOMS_LIST);
+      }, 3000);
+    };
+
+    socket.on("host-left", onHostLeft);
+
+    return () => {
+      socket.off("host-left", onHostLeft);
+    };
+  }, [socket, navigate]);
+
+  useEffect(() => {
     return () => {
       if (hasJoinedRoom && roomKey && userId) {
         emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId });
@@ -183,7 +197,19 @@ export default function WaitingRoom() {
   }, [hasJoinedRoom, roomKey, userId, emit]);
 
   return (
-    <div className="flex flex-col items-center justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
+      {showHostLeftModal && (
+        <div className="fixed flex items-center justify-center">
+          <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white z-50">
+            <h2 className="text-xl font-semibold mb-2">
+              The host has left the room
+            </h2>
+            <p className="text-sm">
+              You will be redirect to the rooms page in a few seconds...
+            </p>
+          </div>
+        </div>
+      )}
       <RoomHeader />
       <PlayersList players={players} hostId={hostId} />
       <RoomFooter
