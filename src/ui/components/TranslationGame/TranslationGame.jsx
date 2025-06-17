@@ -1,11 +1,13 @@
 import { useSelector } from "react-redux";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSocket } from "../../../hooks/useSocket";
 import ScoreBoard from "./Scoreboard";
 import EnglishWords from "./EnglishWords";
 import HebrewWords from "./HebrewWords";
-import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
 import { joinTranslationGameRoom } from "../../../services/translationGame";
+import EndGame from "./EndGame/EndGame";
+import { GameTypes } from "../../../consts/gameTypes";
+import RotateNotice from "../RotateNotice";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -23,6 +25,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
 
+  const gameEnded = useSelector((store) => store.translationGame.end);
   const enWords = useSelector((store) => store.translationGame.enWords);
   const hebWords = useSelector((store) => store.translationGame.hebWords);
 
@@ -50,11 +53,29 @@ export default function TranslationGame({ roomKey, handleBack }) {
     [selectedHebrewWordId]
   );
 
-  // extract to joinRoom service void joinRoom(Emitter emit, Obj obj)
+  const game = useSelector((store) => store.translationGame);
+  const gameTypeId = useSelector((store) => store.room.gameType);
+  console.log(game);
+  console.log(gameTypeId);
+
   useEffect(() => {
-    if (!roomKey || !userId) return;
-    joinTranslationGameRoom(emit, { roomKey, user });
+    if (!roomKey || !userId || !gameTypeId) return;
+    joinTranslationGameRoom(emit, {
+      roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
+      user,
+      gameTypeId,
+    });
   }, [roomKey, userId, emit, user]);
+
+  // sync the held hebrew word if user refreshed.
+  useEffect(() => {
+    const heldWord = hebWords?.find(
+      (word) => word.heldBy === userId && word.lock
+    );
+    setSelectedHebrewWord(heldWord ? heldWord.id : null);
+  }, [userId, hebWords]);
+
+  if (gameEnded) return <EndGame />;
 
   return (
     <section className="relative z-[1] h-screen grid grid-rows-6 overflow-hidden">
@@ -88,6 +109,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
           setSelectedHebrewWord={setSelectedHebrewWord}
         />
       </div>
+      <RotateNotice />
     </section>
   );
 }

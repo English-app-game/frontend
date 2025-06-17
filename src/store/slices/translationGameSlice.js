@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   roomKey: "",
-  host: null,
+  host: {},
   users: {}, // { [userId]: { socketId, id, name, email, avatarImg, color } }
   scoreboard: [], // [{ userId, name, score }]
   words: [], // [{ id, heb, eng, lock, disabled, heldBy }]
+  end: false,
+  gameTypeId: ""
 };
 
 const translationGameSlice = createSlice({
@@ -15,12 +17,12 @@ const translationGameSlice = createSlice({
     setTranslationGameState: (state, { payload }) => {
       Object.assign(state, payload);
 
-
       state.scoreboard = Object.entries(state.users).map(([userId, user]) => ({
         userId,
         name: user.name,
         score: user.score || 0,
         color: user.color || "#000000",
+        isGuest: user.isGuest ? true : false,
       }));
     },
     lockHebrewWord: (state, action) => {
@@ -41,6 +43,9 @@ const translationGameSlice = createSlice({
   },
 });
 
-export const { setTranslationGameState, resetTranslationGameState, lockHebrewWord } =
-  translationGameSlice.actions;
+export const {
+  setTranslationGameState,
+  resetTranslationGameState,
+  lockHebrewWord,
+} = translationGameSlice.actions;
 export default translationGameSlice.reducer;
