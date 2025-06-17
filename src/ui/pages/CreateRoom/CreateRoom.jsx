@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import LevelSelector from "./LevelSelector";
 import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
@@ -6,12 +6,12 @@ import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { createRoom } from "../../../store/thunks/createRoomThunk";
-import { WAITING_ROOM } from "../../../routes/routes_consts";
+import { ROOMS_LIST, WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
-import useAuthRedirect from "@hooks/useAuthRedirect";
 import GameTypeSelector from "../../components/GameTypeSelector";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ExitButton from "../../components/ExitButton";
 
 const TEMP_USER = {
   // this user ID has to be real ID from db.
@@ -58,9 +58,20 @@ const CreateRoom = () => {
     navigate(WAITING_ROOM(roomKey));
   }, [roomKey, navigate]);
 
+  const handleExitCreateRoom = () => {
+    navigate(ROOMS_LIST);
+  }
+
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
-     <BlueBox size="large" className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]">
+      <ExitButton className="bg-rose-600 border-4 border-rose-400 hover:bg-rose-400 text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 absolute top-4 left-4"
+      onClick={handleExitCreateRoom}>
+        EXIT ROOM
+      </ExitButton>
+      <BlueBox
+        size="large"
+        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"
+      >
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}
