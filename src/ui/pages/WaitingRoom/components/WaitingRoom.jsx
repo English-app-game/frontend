@@ -197,11 +197,11 @@ export default function WaitingRoom() {
   }, [hasJoinedRoom, roomKey, userId, emit]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
+    <div className="flex flex-col items-center justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
       {showHostLeftModal && (
-        <div className="fixed flex items-center justify-center">
-          <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white z-50">
-            <h2 className="text-xl font-semibold mb-2">
+        <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+          <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white max-w-xs sm:max-w-md w-full">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2">
               The host has left the room
             </h2>
             <p className="text-sm">
