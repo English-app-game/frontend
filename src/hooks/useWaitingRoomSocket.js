@@ -9,7 +9,6 @@ export function useWaitingRoomSocket() {
     if (ref.connected) {
       ref.emit(event, payload, callback);
     } else {
-      console.warn("Waiting room socket not connected, attempting to reconnect...");
       ref.connect();
       ref.once('connect', () => {
         ref.emit(event, payload, callback);
@@ -36,11 +35,10 @@ export function useWaitingRoomSocket() {
     
     if (!ref.connected) {
       ref.connect();
-      console.log("🔌 Waiting room socket connected");
     }
 
     return () => {
-      console.log("🔌 Waiting room socket disconnecting...");
+      ref.disconnect();
     };
   }, []);
 

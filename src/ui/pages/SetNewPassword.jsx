@@ -8,10 +8,10 @@ import {
   toggleShowPassword,
   handleInputChange,
 } from "../../utils/handleRegister";
-import { onSubmitNewPassword } from "../../utils/handleReset";
+import { handleSubmitNewPassword } from "../../services/service";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function SetNewPassword() {
-  
   const [searchParams] = useSearchParams();
   const [errors, setErrors] = useState({});
   const [serverMessage, setServerMessage] = useState(null);
@@ -35,12 +35,12 @@ export default function SetNewPassword() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-[url('/homePage.png')] flex justify-center">
+    <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
       <div className="pt-10 w-full">
         <BlueBox>
           <Header text="RESET YOUR PASSWORD" className="text-center" />
           <div className="mt-5 relative flex flex-col items-start">
-            <div className="relative w-full">
+            <div className="relative w-96">
               <InputField
                 text="Enter your new password"
                 value={form.newPassword}
@@ -49,13 +49,15 @@ export default function SetNewPassword() {
                 error={errors.password}
               />
               <span
-                className="absolute top-9 right-19 cursor-pointer text-gray-600"
-                onClick={toggleShowPassword(showPassword, setshowPassword)}
+                className="absolute top-10 right-20 cursor-pointer text-white"
+                onClick={() =>
+                  toggleShowPassword(showPassword, setshowPassword)
+                }
               >
-                👁️
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            <div className="relative w-full">
+            <div className="relative w-96">
               <InputField
                 text="confirm your new password"
                 value={form.confirmPassword}
@@ -64,13 +66,15 @@ export default function SetNewPassword() {
                 error={errors.confirmPassword}
               />
               <span
-                className="absolute top-9 right-19 cursor-pointer text-gray-600"
-                onClick={toggleShowPassword(
-                  showConfirmedPassword,
-                  setshowConfirmedPassword
-                )}
+                className="absolute top-10 right-20 cursor-pointer text-white"
+                onClick={() =>
+                  toggleShowPassword(
+                    showConfirmedPassword,
+                    setshowConfirmedPassword
+                  )
+                }
               >
-                👁️
+                {showConfirmedPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
             {serverMessage && (
@@ -78,15 +82,17 @@ export default function SetNewPassword() {
             )}
             <PrimaryButton
               text={"CHANGE"}
-              onClick={onSubmitNewPassword(
-                { password: form.newPassword },
-                { password: form.confirmPassword },
-                setErrors,
-                setServerMessage,
-                token,
-                navigate
-              )}
-              className="mt-10 float-right"
+              onClick={() =>
+                handleSubmitNewPassword(
+                  { password: form.newPassword },
+                  { password: form.confirmPassword },
+                  setErrors,
+                  setServerMessage,
+                  token,
+                  navigate
+                )
+              }
+              className="mt-10 float-right px-4 py-2"
             />
           </div>
         </BlueBox>

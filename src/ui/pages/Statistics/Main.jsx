@@ -23,7 +23,7 @@ export default function Main() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row gap-5 mt-8 items-center md:items-start justify-center">
+    <div className="bg-secondary flex flex-col md:flex-row gap-5 mt-8 items-center md:items-start justify-center">
       <StatisticBox
         title="Top Scores"
         data={topScores}

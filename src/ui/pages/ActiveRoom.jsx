@@ -11,17 +11,17 @@ import removeUserFromRoom from "../../services/room/removeUserFromRoom";
 export default function ActiveRoom() {
   const { id: roomKey, gameType } = useParams();
   const navigate = useNavigate();
-  const { emit } = useSocket();
   const user = useSelector((store) => store.user);
+  const { id: userId } = user;
   const dispatch = useDispatch();
 
   const handleBack = async () => {
-    if (!user || !user.id || !roomKey) {
+    if (!userId || !roomKey) {
       dispatch(resetRoom());
       return navigate(ROUTES.ROOMS_LIST);
     }
 
-    await removeUserFromRoom(roomKey, user.id);
+    await removeUserFromRoom(roomKey, userId);
 
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);

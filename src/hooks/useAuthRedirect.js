@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../store/slices/userSlice";
 import { resetRoom } from "../store/slices/roomSlice";
 import { LOGIN, ROOMS_LIST } from "../routes/routes_consts";
@@ -36,33 +36,44 @@ export default function useAuthRedirect({ mode }) {
     if (mode === "loggedOut" && token) {
       navigate(ROOMS_LIST);
     }
-  }, [mode, navigate, dispatch]);
+  }, []);
 }
 
-export const handleLogout = async (navigate, socket = null, currentRoomKey = null, dispatch = null) => {
+export const handleLogout = async (
+  navigate,
+  socket = null,
+  currentRoomKey = null,
+  dispatch = null
+) => {
   try {
     const user = getStoredUser();
-    
+
     if (user && user.id && currentRoomKey) {
       await removeUserFromRoom(currentRoomKey, user.id);
-      
+
       if (socket) {
-        socket.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey: currentRoomKey, userId: user.id });
-        socket.emit(WAITING_ROOM_EVENTS.REMOVE, { roomKey: currentRoomKey, userId: user.id });
+        socket.emit(WAITING_ROOM_EVENTS.LEAVE, {
+          roomKey: currentRoomKey,
+          userId: user.id,
+        });
+        socket.emit(WAITING_ROOM_EVENTS.REMOVE, {
+          roomKey: currentRoomKey,
+          userId: user.id,
+        });
       }
-      
+
       if (dispatch) {
         dispatch(resetRoom());
       }
     }
-    
+
     localStorage.clear();
     sessionStorage.clear();
-    
+
     if (socket && socket.connected) {
       socket.disconnect();
     }
-    
+
     navigate(HOME);
   } catch (error) {
     console.error("Error during logout:", error);
@@ -73,11 +84,11 @@ export const handleLogout = async (navigate, socket = null, currentRoomKey = nul
 };
 
 export const getStoredUser = () => {
-  try{
-    const data =  localStorage.getItem("user") || sessionStorage.getItem("user");
+  try {
+    const data = localStorage.getItem("user") || sessionStorage.getItem("user");
     return data ? JSON.parse(data) : null;
   } catch (err) {
-    console.log("Failed to parse user from storage:",err)
+    console.log("Failed to parse user from storage:", err);
     return null;
   }
-}
+};
