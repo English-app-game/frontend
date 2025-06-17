@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
+import GuessWordGame from "../components/GuessWordGame/GuessWordGame"; 
+import { GameTypes } from "../../consts/gameTypes";
 import {  ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
@@ -24,9 +26,13 @@ export default function ActiveRoom() {
     navigate(ROUTES.ROOMS_LIST);
   };
 
+  console.log("the game type is" + gameType.toLowerCase());
 
-  if (gameType.toLowerCase() == "translation")
+  if (gameType.toLowerCase() === GameTypes.TRANSLATION)
     return <TranslationGame handleBack={handleBack} roomKey={roomKey} />;
+
+  if (gameType.toLowerCase() === GameTypes.GUESS_WORD_GAME)
+    return <GuessWordGame handleBack={handleBack} roomKey={roomKey} />;
 
   // TODO: Implement other game types (tomer?)
   // Remove this comment when implementing other game types
