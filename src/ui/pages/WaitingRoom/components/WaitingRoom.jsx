@@ -138,8 +138,26 @@ export default function WaitingRoom() {
 
     socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
 
+    const handleHostLeft = () => {
+      console.log("🚪 Host left the room");
+      setShowHostLeftModal(true);
+      setTimeout(() => {
+        navigate(ROUTES.ROOMS_LIST);
+      }, 2000);
+    };
+
+    const handleRoomClosed = () => {
+      console.log("🔒 Room has been closed");
+      navigate(ROUTES.ROOMS_LIST);
+    };
+
+    socket.on(WAITING_ROOM_EVENTS.HOST_LEFT, handleHostLeft);
+    socket.on(WAITING_ROOM_EVENTS.ROOM_CLOSED, handleRoomClosed);
+
     return () => {
       socket.off(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
+      socket.off(WAITING_ROOM_EVENTS.HOST_LEFT, handleHostLeft);
+      socket.off(WAITING_ROOM_EVENTS.ROOM_CLOSED, handleRoomClosed);
     };
   }, [socket, roomKey]);
 
@@ -171,22 +189,7 @@ export default function WaitingRoom() {
     checkGameStart();
   }, [gameStarted, room.currentStatus, room.gameType, roomKey, navigate]);
 
-  useEffect(() => {
-    if (!socket) return;
 
-    const onHostLeft = () => {
-      setShowHostLeftModal(true);
-      setTimeout(() => {
-        navigate(ROUTES.ROOMS_LIST);
-      }, 3000);
-    };
-
-    socket.on("host-left", onHostLeft);
-
-    return () => {
-      socket.off("host-left", onHostLeft);
-    };
-  }, [socket, navigate]);
 
   useEffect(() => {
     return () => {
