@@ -40,18 +40,7 @@ export default function WaitingRoom() {
 
   const handleStart = async () => {
     // comment this check if this blocks starting the game
-    // if (players.length < 2) {
-    //   alert("At least 2 players are required to start the game.");
-    //   return;
-    // }
-
-    const gameTypes = await getAllGameTypes();
-    const match = gameTypes.find((gt) => gt._id === room.gameType);
-    let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
-    console.log("Game type is:", gameType, "- starting game");
-    
-    if (players.length < 2 && gameType !== "guesstheword") {
-      console.log("Too few players and gameType is:", gameType);
+    if (players.length < 2) {
       alert("At least 2 players are required to start the game.");
       return;
     }
@@ -79,9 +68,11 @@ export default function WaitingRoom() {
 
     const joinRoom = async () => {
       try {
-        const isGuest =
-          user.isGuest ||
-          (typeof user.id === "string" && user.id.length !== 24);
+        const user = getStoredUser();
+
+        if (!user) return;
+
+        const isGuest = user.isGuest || typeof user.id === 'string' && user.id.length !== 24;
 
         if (isGuest) {
           await joinUserToRoom(roomKey, user.id, {
@@ -93,21 +84,6 @@ export default function WaitingRoom() {
           await joinUserToRoom(roomKey, user.id);
         }
 
-        // Wait for socket to be connected before emitting JOIN
-        const waitForConnection = () => {
-          return new Promise((resolve) => {
-            if (socket.connected) {
-              resolve();
-            } else {
-              socket.once('connect', () => {
-                resolve();
-              });
-            }
-          });
-        };
-
-        await waitForConnection();
-
         emit(WAITING_ROOM_EVENTS.JOIN, {
           roomKey,
           user: {
@@ -117,6 +93,7 @@ export default function WaitingRoom() {
             isGuest: isGuest,
           },
         });
+
         setHasJoinedRoom(true);
       } catch (error) {
         console.error("Failed to join room:", error);
@@ -127,19 +104,35 @@ export default function WaitingRoom() {
   }, [roomKey, userId, socket, hasJoinedRoom, emit]);
 
   useEffect(() => {
-    if (!socket || !roomKey) return;
+    if (!socket) return;
+
+    const handlePlayersUpdate = ({ players, count }) => {
+      console.log("📋 Received player list update:", players);
+      const transformedPlayers = players.map(player => ({
+        _id: player.id,
+        name: player.name,
+        avatarImg: player.avatarImg,
+        isGuest: player.isGuest || false
+      }));
+      setPlayers(transformedPlayers);
+    };
+
+    socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
 
     const fetchInitialData = async () => {
       try {
         const data = await fetchPlayers(roomKey);
         const registeredPlayers = data.players || [];
-        const guestPlayers = (data.guestPlayers || []).map((guest) => ({
+        const guestPlayers = data.guestPlayers || [];
+
+        const transformedGuestPlayers = guestPlayers.map(guest => ({
           _id: guest.id,
           name: guest.name,
           avatarImg: guest.avatarImg,
-          isGuest: true,
+          isGuest: true
         }));
-        const allPlayers = [...registeredPlayers, ...guestPlayers];
+
+        const allPlayers = [...registeredPlayers, ...transformedGuestPlayers];
         setPlayers(allPlayers);
         setHostId(data.admin._id);
       } catch (err) {
