@@ -5,15 +5,23 @@ import PrimaryButton from "../components/PrimaryButton";
 import { handleInputChange } from "../../utils/handleRegister";
 import { onSubmitReset } from "../../utils/handleReset";
 import { useState } from "react";
+import SecondaryButton from "../components/SecondaryButton";
+import { LOGIN } from "../../routes/routes_consts";
+import { useNavigate } from "react-router-dom";
 
 export default function ResetPassword() {
-  
   const [Email, setEmail] = useState({ email: "" });
   const [errors, setErrors] = useState({});
   const [serverMessage, setServerMessage] = useState(null);
+  const navigate = useNavigate();
+
+  const handleExitRoom = () => {
+    navigate(LOGIN);
+  };
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
+      <SecondaryButton text={"BACK"} onclick={handleExitRoom} />
       <div className="pt-10 w-full">
         <BlueBox>
           <Header text="PLEASE ENTER YOUR EMAIL" className="text-center" />
@@ -24,9 +32,7 @@ export default function ResetPassword() {
               onChange={handleInputChange("email", Email, setEmail)}
               error={errors.email}
             />
-            {serverMessage && (
-              <p className="text-white">{serverMessage}</p>
-            )}
+            {serverMessage && <p className="text-white">{serverMessage}</p>}
             <PrimaryButton
               text="SEND RESET LINK"
               className="mt-20 float-right px-4 py-2"

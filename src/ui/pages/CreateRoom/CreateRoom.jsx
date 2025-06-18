@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import GameTypeSelector from "../../components/GameTypeSelector";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ExitButton from "../../components/ExitButton";
+import SecondaryButton from "../../components/SecondaryButton";
 
 const TEMP_USER = {
   // this user ID has to be real ID from db.
@@ -64,10 +64,7 @@ const CreateRoom = () => {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
-      <ExitButton className="bg-rose-600 border-4 border-rose-400 hover:bg-rose-400 text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 absolute top-4 left-4"
-      onClick={handleExitCreateRoom}>
-        EXIT ROOM
-      </ExitButton>
+      <SecondaryButton text={"EXIT"} onclick={handleExitCreateRoom}/>
       <BlueBox
         size="large"
         className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"
