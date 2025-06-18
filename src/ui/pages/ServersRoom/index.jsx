@@ -22,7 +22,7 @@ export default function ServersRoom() {
         
         // Filter out rooms that are currently playing
         const availableRooms = data.filter(room => 
-          room.currentStatus !== RoomStatus.PLAYING
+        !room.isPrivate && room.currentStatus === RoomStatus.WAITING 
         );
         
         setRooms(availableRooms);
