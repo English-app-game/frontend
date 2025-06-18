@@ -64,9 +64,9 @@ const CreateRoom = () => {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
-      <ExitButton className="bg-rose-600 border-4 border-rose-400 hover:bg-rose-400 text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 absolute top-4 left-4"
+      <ExitButton className="bg-rose-600 border-4 border-rose-400 hover:bg-rose-400 cursor-pointer text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 absolute top-4 left-4"
       onClick={handleExitCreateRoom}>
-        EXIT ROOM
+        BACK TO YOUR ROOMS
       </ExitButton>
       <BlueBox
         size="large"
@@ -82,7 +82,7 @@ const CreateRoom = () => {
         <PrimaryButton
           text="LET'S GO"
           onClick={handleCreateRoom}
-          className="bg-green-400 px-4 py-2"
+          className="bg-green-400 cursor-pointer "
         />
       </BlueBox>
     </div>

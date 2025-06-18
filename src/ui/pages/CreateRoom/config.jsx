@@ -21,16 +21,10 @@ export const levelOptions = {
     private: {
       type: 'PRIVATE',
       bgColor: 'bg-rose-600',
-      borderColor: 'border-rose-400',
-      hoverColor: 'hover:bg-rose-300',
-      ringColor: 'ring-rose-600',
     },
     public: {
       type: 'PUBLIC',
       bgColor: 'bg-green-400',
-      borderColor: 'border-green-600',
-      hoverColor: 'hover:bg-green-300',
-      ringColor: 'ring-green-600',
     },
   };
   
