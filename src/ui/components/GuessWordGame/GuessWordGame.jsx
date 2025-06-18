@@ -23,14 +23,14 @@ export default function GuessWordGame({ handleBack }) {
   const { width, height } = useWindowSize(); //for the confeti 
   const navigate = useNavigate();
 
-  const currentWord = words[index] || "";
+  const currentPresentedWord = words[index] || "";
 
   //new word - new turn
   const setupNewWord = useCallback(() => {
     setGuesses([]); //restarts the keyboard
-    setMissingIdxs(pickMissingIndexes(currentWord, Math.random() < 0.5 ? 1 : 2));
+    setMissingIdxs(pickMissingIndexes(currentPresentedWord, Math.random() < 0.5 ? 1 : 2));
     setIsCompleted(false);
-  }, [currentWord]);
+  }, [currentPresentedWord]);
 
   useEffect(() => {
   if (!words.length) {
@@ -50,7 +50,7 @@ export default function GuessWordGame({ handleBack }) {
     const updated = [...guesses, lower];
     setGuesses(updated);
 
-    if (isGuessComplete(currentWord, missingIdxs, updated)) {
+    if (isGuessComplete(currentPresentedWord, missingIdxs, updated)) {
       setIsCompleted(true);
       setTimeout(() => setIndex((i) => (i + 1) % words.length), 4000); //move to the next word
     }
@@ -58,7 +58,7 @@ export default function GuessWordGame({ handleBack }) {
 
   const handleHint = () => {
     const remaining = missingIdxs
-      .map((i) => currentWord[i].toLowerCase())
+      .map((i) => currentPresentedWord[i].toLowerCase())
       .filter((ch) => !guesses.includes(ch));
 
     if (!remaining.length) return;
@@ -67,7 +67,7 @@ export default function GuessWordGame({ handleBack }) {
     const updated = [...guesses, hintLetter];
     setGuesses(updated);
 
-    if (isGuessComplete(currentWord, missingIdxs, updated)) {
+    if (isGuessComplete(currentPresentedWord, missingIdxs, updated)) {
       setIsCompleted(true);
       setTimeout(() => setIndex((i) => (i + 1) % words.length), 4000); //move to the next word
     }
@@ -109,7 +109,7 @@ export default function GuessWordGame({ handleBack }) {
         <div> <UserInfoHeader /></div>
 
         <div className="flex justify-center items-center flex-1">
-          <WordDisplay word={currentWord} missingIdxs={missingIdxs} guesses={guesses} />
+          <WordDisplay word={currentPresentedWord} missingIdxs={missingIdxs} guesses={guesses} />
         </div>
 
         <div className="flex justify-center gap-6 mb-6">

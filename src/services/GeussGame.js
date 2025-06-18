@@ -1,7 +1,11 @@
-export async function fetchRandomWords(amount = 500) {
-  const response = await fetch(`https://random-word-api.vercel.app/api?words=${amount}&swear=0`);
+import { RANDOM_WORD_API_URL, DEFAULT_WORD_AMOUNT } from "../consts/consts.js";
+
+export async function fetchRandomWords(amount = DEFAULT_WORD_AMOUNT) {
+  const response = await fetch(`${RANDOM_WORD_API_URL}?words=${amount}&swear=0`);
+
   if (!response.ok) {
     throw new Error("Failed to fetch words");
   }
+
   return await response.json();
 }
