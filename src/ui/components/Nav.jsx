@@ -11,24 +11,24 @@ export const Nav = ({ HeaderText, HeaderIcon, page, pageText }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="flex items-center justify-center gap-5 h-16 py-7 sm:py-10 bg-secondary z-50 shadow-md">
-      <div className="flex items-center justify-center w-full sm:justify-center relative">
+    <header className="flex items-center justify-center gap-5 h-16 py-7 md:py-10 bg-secondary z-50 shadow-md relative">
+      <div className="flex items-center justify-center w-full md:justify-center">
         <div className="flex items-center justify-center gap-2">
           <Header
             text={HeaderText}
-            className="text-primary uppercase text-[1.5rem] sm:text-4xl"
+            className="text-primary uppercase text-[1.5rem] md:text-4xl"
           />
           <HeaderIcon size={60} className="text-primary" />
         </div>
-        <IconButton
-          className={"sm:hidden text-primary text-3xl ml-1"}
-          onClick={() => setIsOpen(true)}
-          Icon={FiMenu}
-        />
-        <div className="hidden sm:flex items-center left-8 top-4">
+        <div className="hidden md:flex items-center absolute left-8 top-1/2 -translate-y-1/2">
           <ButtonHeader navigateTo={page} text={pageText} />
         </div>
       </div>
+      <IconButton
+        className={"md:hidden text-primary text-3xl absolute right-4 top-1/2 -translate-y-1/2"}
+        onClick={() => setIsOpen(true)}
+        Icon={FiMenu}
+      />
       <MobileSideBar isOpen={isOpen}>
         <IconButton
           className={"text-primary text-3xl mb-6 ml-auto"}
