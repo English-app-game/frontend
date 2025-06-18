@@ -10,20 +10,6 @@ const initialState = {
   gameTypeId: ""
 };
 
-const getRandomPlayerColor = () => {
-  const playerColors = [
-    "#fde047", 
-    "#fca5a5", 
-    "#ddd6fe", 
-    "#86efac", 
-    "#bae6fd", 
-    "#e5e7eb", 
-    "#67e8f9", 
-  ];
-
-  return playerColors[Math.floor(Math.random() * playerColors.length)];
-};
-
 const translationGameSlice = createSlice({
   name: "translationGame",
   initialState,
