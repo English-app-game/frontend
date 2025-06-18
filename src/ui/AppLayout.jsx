@@ -53,7 +53,7 @@ export default function AppLayout() {
       {shouldShowHeader && !isActiveRoom && (
         <div
           className={`${
-            shouldShowHeaderOnlyOnDesktop ? "hidden sm:block" : "block"
+            shouldShowHeaderOnlyOnDesktop ? "hidden md:block" : "block"
           }`}
         >
           <UserInfoHeader />
