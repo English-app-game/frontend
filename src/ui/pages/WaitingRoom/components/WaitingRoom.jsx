@@ -82,6 +82,21 @@ export default function WaitingRoom() {
           await joinUserToRoom(roomKey, user.id);
         }
 
+        // Wait for socket to be connected before emitting JOIN
+        const waitForConnection = () => {
+          return new Promise((resolve) => {
+            if (socket.connected) {
+              resolve();
+            } else {
+              socket.once('connect', () => {
+                resolve();
+              });
+            }
+          });
+        };
+
+        await waitForConnection();
+
         emit(WAITING_ROOM_EVENTS.JOIN, {
           roomKey,
           user: {
@@ -91,8 +106,6 @@ export default function WaitingRoom() {
             isGuest: isGuest,
           },
         });
-
-        console.log("🚀 JOIN emitted from", socket.id);
         setHasJoinedRoom(true);
       } catch (error) {
         console.error("Failed to join room:", error);
@@ -125,8 +138,7 @@ export default function WaitingRoom() {
 
     fetchInitialData();
 
-    const handlePlayersUpdate = ({ players }) => {
-      console.log("📋 Received player list update:", players);
+    const handlePlayersUpdate = ({ players, hostId: socketHostId }) => {
       const transformedPlayers = players.map((player) => ({
         _id: player.id,
         name: player.name,
@@ -134,6 +146,9 @@ export default function WaitingRoom() {
         isGuest: player.isGuest || false,
       }));
       setPlayers(transformedPlayers);
+      if (socketHostId) {
+        setHostId(socketHostId);
+      }
     };
 
     socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
@@ -181,10 +196,19 @@ export default function WaitingRoom() {
       }, 3000);
     };
 
-    socket.on("host-left", onHostLeft);
+    const onRoomClosed = () => {
+      setShowHostLeftModal(true);
+      setTimeout(() => {
+        navigate(ROUTES.ROOMS_LIST);
+      }, 3000);
+    };
+
+    socket.on(WAITING_ROOM_EVENTS.HOST_LEFT, onHostLeft);
+    socket.on(WAITING_ROOM_EVENTS.ROOM_CLOSED, onRoomClosed);
 
     return () => {
-      socket.off("host-left", onHostLeft);
+      socket.off(WAITING_ROOM_EVENTS.HOST_LEFT, onHostLeft);
+      socket.off(WAITING_ROOM_EVENTS.ROOM_CLOSED, onRoomClosed);
     };
   }, [socket, navigate]);
 
@@ -197,11 +221,11 @@ export default function WaitingRoom() {
   }, [hasJoinedRoom, roomKey, userId, emit]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
+    <div className="flex flex-col items-center justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
       {showHostLeftModal && (
-        <div className="fixed flex items-center justify-center">
-          <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white z-50">
-            <h2 className="text-xl font-semibold mb-2">
+        <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+          <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white max-w-xs sm:max-w-md w-full">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2">
               The host has left the room
             </h2>
             <p className="text-sm">

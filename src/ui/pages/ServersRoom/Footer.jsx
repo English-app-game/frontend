@@ -55,7 +55,7 @@ export default function Footer({ rooms }) {
 
     const isUserLoggedIn = validateLogin();
     if (!isUserLoggedIn) {
-      setCreateError("Guest can't start a game!");
+      setCreateError("Guest can't create a game!");
       return;
     }
     navigate(CREATE_ROOM);
