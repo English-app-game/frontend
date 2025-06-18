@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import StatisticBox from "../../components/StatisticBox";
 import { fetchTop } from "../../../utils/handleStatistics";
-import { GAMES_STATISTICS_PATH, PLAYERS_STATISTICS_PATH, SCORE_STATISTICS_PATH } from "../../../consts/consts";
+import {
+  GAMES_STATISTICS_PATH,
+  PLAYERS_STATISTICS_PATH,
+  SCORE_STATISTICS_PATH,
+} from "../../../consts/consts";
 
 export default function Main() {
   const [topScores, setTopScores] = useState([]);
@@ -28,29 +32,64 @@ export default function Main() {
         title="Top Scores"
         data={topScores}
         units="Points"
-        renderLeft={(player) => (
-          <>
-            <img
-              className="w-8 h-8 border-white border rounded-xl"
-              src={player.avatar}
-            />
-            <span className="font-medium">{player.name}</span>
-          </>
-        )}
+        renderLeft={(player) => {
+          const isLongName = player.name.length > 9;
+          const displayName = isLongName
+            ? player.name.slice(0, 9) + "..."
+            : player.name;
+
+          return (
+            <div className="relative group flex items-center gap-2">
+              <img
+                className="w-8 h-8 border-white border rounded-xl"
+                src={player.avatar}
+                alt={player.name}
+              />
+              <span className="relative">
+                {displayName}
+
+                {isLongName && (
+                  <span
+                    className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#106c7f] text-white text-xs px-2 py-1 rounded 
+                    shadow-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-10 whitespace-nowrap"
+                  >
+                    {player.name}
+                  </span>
+                )}
+              </span>
+            </div>
+          );
+        }}
       />
+
       <StatisticBox
         title="Top Players"
         data={topPlayers}
         units="Wins"
-        renderLeft={(player) => (
-          <>
-            <img
-              className="w-8 h-8 border-white border rounded-xl"
-              src={player.avatar}
-            />
-            <span className="font-medium">{player.name}</span>
-          </>
-        )}
+        renderLeft={(player) => {
+          const isLongName = player.name.length > 9;
+          const displayName = isLongName
+            ? player.name.slice(0, 9) + "..."
+            : player.name;
+
+          return (
+            <div className="relative group flex items-center gap-2">
+              <img
+                className="w-8 h-8 border-white border rounded-xl"
+                src={player.avatar}
+                alt={player.name}
+              />
+              <span className="relative">
+                {displayName}
+                {isLongName && (
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#106c7f] text-white text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-10 whitespace-nowrap">
+                    {player.name}
+                  </span>
+                )}
+              </span>
+            </div>
+          );
+        }}
       />
       <StatisticBox
         title="Top Games"

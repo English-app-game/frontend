@@ -56,8 +56,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
-      <div className="pt-10 w-full">
-        <BlueBox className="pr-3 mb-5">
+      <div className="w-full max-w-md">
+        <BlueBox className="p-6">
           <LoginFormHeader />
           <LoginFormFields
             email={email} setEmail={setEmail} emailError={emailError}
