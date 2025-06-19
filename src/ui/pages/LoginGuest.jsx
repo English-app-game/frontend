@@ -7,7 +7,8 @@ import AvatarImg from "../components/AvatarImg.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginGuest } from "../../services/auth.js";
-import { ROOMS_LIST } from "../../routes/routes_consts.js";
+import { ROOMS_LIST, LOGIN } from "../../routes/routes_consts.js";
+import SecondaryButton from "../components/SecondaryButton.jsx";
 
 export default function LoginGuest() {
   const navigate = useNavigate();
@@ -41,6 +42,10 @@ export default function LoginGuest() {
     return !hasError;
   };
 
+  const handleExitRoom = () => {
+    navigate(LOGIN);
+  };
+
   const handleGuestLogin = async () => {
     const isValid = validateGuestFields(
       username,
@@ -66,6 +71,7 @@ export default function LoginGuest() {
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
+      <SecondaryButton text={"BACK"} onclick={handleExitRoom} />
       <div className="pt-10 w-full">
         <BlueBox className="pr-3">
           <Header text="WELCOME GUEST!" className="pl-2 pt-2 pt-4" />
