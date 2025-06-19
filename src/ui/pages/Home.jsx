@@ -5,7 +5,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[url('/homePage.png')] h-screen">
+    <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
       <div className="relative z-10 flex flex-col text-center items-center justify-center h-full">
         <div className=" px-8 py-6 flex flex-col items-center justify-center rounded-xl">
           <h1 className="text-[#000080] bg-[#9CF2F9] text-6xl font-bold pb-6">

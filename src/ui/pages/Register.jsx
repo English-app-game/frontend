@@ -13,6 +13,8 @@ import {
   toggleShowPassword,
 } from "../../utils/handleRegister";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { LOGIN } from "../../routes/routes_consts.js";
+import SecondaryButton from "../components/SecondaryButton.jsx";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -26,12 +28,20 @@ export default function Register() {
   const [errors, setErrors] = useState({});
   const [showPassword, setshowPassword] = useState(false);
 
+  const handleExitRoom = () => {
+    navigate(LOGIN);
+  };
+
   return (
     <>
       <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
+        <SecondaryButton text={"BACK"} onclick={handleExitRoom}/>
         <div className="pt-10 w-full">
           <BlueBox className="pr-3">
-            <Header text="LETS MAKE YOUR ACCOUNT!" className="text-center pr-3" />
+            <Header
+              text="LETS MAKE YOUR ACCOUNT!"
+              className="text-center pr-3"
+            />
             <div className="pb-5">
               <InputField
                 text="User"
@@ -91,7 +101,10 @@ export default function Register() {
                     handleAvatarClick(relativePath, dataform, setDataform);
                   }}
                   className={`cursor-pointer rounded-xl ${
-                    dataform.avatarImg === src.replace(window.location.origin, "") ? "ring-4 ring-green-500" : ""
+                    dataform.avatarImg ===
+                    src.replace(window.location.origin, "")
+                      ? "ring-4 ring-green-500"
+                      : ""
                   }`}
                 >
                   <SkeletonAvatar src={src} alt={`avatar-${index}`} />
