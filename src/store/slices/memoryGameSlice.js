@@ -16,7 +16,7 @@ const memoryGameSlice = createSlice({
   name: "memoryGame",
   initialState,
   reducers: {
-    setMemoryGameState: (state, payload ) => {
+    setMemoryGameState: (state, {payload} ) => {
       console.log("📥 Updating Redux with game payload:", JSON.stringify(payload, null, 2));
 
       state.roomKey = payload.roomKey || state.roomKey;

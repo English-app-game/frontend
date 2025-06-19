@@ -16,7 +16,6 @@
 // } from "../../../services/memoryGameEmitters";
 // import { MEMORY_GAME_EVENTS } from "../../../consts/memoryGameEvents";
 
-
 // export default function MemoryGame() {
 //   const { id: roomKey } = useParams();
 //   const user = useSelector((state) => state.user);
@@ -30,7 +29,6 @@
 //   const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState(null);
 
 //   useRoomPolling(roomKey);
-
 
 //   const wordPairs = [
 //     { en: "apple", he: "תפוח" },
@@ -89,7 +87,6 @@
 //   };
 // }, [socket]);
 
-
 //     const handleExit = () => {
 //     navigate(ROUTES.ROOMS_LIST);
 //   };
@@ -119,7 +116,6 @@
 
 //         emitPlayerScored(emit, { roomKey, userId: user.id });
 
-
 //         // end game ??
 //         const allRevealed = updated.every((c) => c.isRevealed);
 //         if (allRevealed) {
@@ -139,7 +135,6 @@
 //     }
 //   };
 
- 
 //   return (
 
 //     <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center relative">
@@ -164,8 +159,7 @@
 //       </div>
 //     </div>
 //   );
-// } 
-
+// }
 
 //----------------------------------------------------------------------------------------------------------------
 // 📁 FILE: client/pages/games/memorygame/MemoryGame.jsx
@@ -176,7 +170,7 @@ import { useDispatch, useSelector } from "react-redux";
 import WordCard from "./WordCard";
 import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
-import memoryGameUseSocket from "../../../hooks/memoryGameUseSocket";
+import { useMemoryGameSocket } from "../../../hooks/memoryGameUseSocket";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
@@ -189,9 +183,8 @@ export default function MemoryGame() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const socketHandlers = user?.id ? memoryGameUseSocket(roomKey) : null;
-  const { requestFlipCard, requestMatchCheck } = memoryGameUseSocket(roomKey);
- 
+  const { emit } = useMemoryGameSocket(roomKey);
+
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
 
@@ -202,7 +195,13 @@ export default function MemoryGame() {
     console.log("roomKey from hook:", roomKey);
     console.log("user from hook:", user);
 
-    if (!user?.id  || !game || !game.words?.heWords?.length || !game.words?.enWords?.length) return;
+    if (
+      !user?.id ||
+      !game ||
+      !game.words?.heWords?.length ||
+      !game.words?.enWords?.length
+    )
+      return;
     if (selectedCards.length === 2) {
       const [first, second] = selectedCards;
       setLockBoard(true);
@@ -229,15 +228,15 @@ export default function MemoryGame() {
     });
   };
 
- if (
-  !game ||
-  !game.words ||
-  !Array.isArray(game.words.heWords) ||
-  !Array.isArray(game.words.enWords)
-) {
-  console.log("🕐 Waiting for game data...", game);
-  return <div className="text-white text-xl">Loading game...</div>;
-}
+  if (
+    !game ||
+    !game.words ||
+    !Array.isArray(game.words.heWords) ||
+    !Array.isArray(game.words.enWords)
+  ) {
+    console.log("🕐 Waiting for game data...", game);
+    return <div className="text-white text-xl">Loading game...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center relative">
