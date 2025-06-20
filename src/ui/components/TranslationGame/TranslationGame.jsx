@@ -8,7 +8,7 @@ import { joinTranslationGameRoom } from "../../../services/translationGame";
 import EndGame from "./EndGame/EndGame";
 import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
-import getStoredUser from "../../../hooks/useAuthRedirect";
+import getStoredUser from "../../../hooks/useAuthRedirect"
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -23,7 +23,7 @@ function shuffleArray(array) {
 export default function TranslationGame({ roomKey, handleBack }) {
   const { emit } = useSocket();
 
-  const user = getStoredUser();
+  const user = useSelector((store) => store.user);
   const { id: userId } = user;
 
   const gameEnded = useSelector((store) => store.translationGame.end);
