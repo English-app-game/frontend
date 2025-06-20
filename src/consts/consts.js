@@ -17,6 +17,8 @@ export const PLAYERS_STATISTICS_PATH = "/statistics/players";
 export const PLAYER_SCORE = `${BASE_URL}/score/last`;
 export const REMOVE_PLAYER_ROUTE = `${BASE_URL}/rooms/players/remove`;
 export const JOIN_USER_ROOM_ROUTE = `${BASE_URL}/rooms/players/join`;
+export const RANDOM_WORD_API_URL = "https://random-word-api.vercel.app/api";
+export const DEFAULT_WORD_AMOUNT = 500;
 export const START_GAME_ROUTE = (roomKey = "") =>
   `${BASE_URL}/rooms/${roomKey}/start`;
 export const DELETE_ROOM_ROUTE = (roomKey = "") =>
