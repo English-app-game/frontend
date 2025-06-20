@@ -3,6 +3,7 @@ import {
   CREATE_ROOM,
   LOGIN,
   WAITING_ROOM,
+  ROOMS_LIST,
 } from "../../../routes/routes_consts";
 import { useState } from "react";
 import { FaPlay } from "react-icons/fa";
@@ -36,7 +37,12 @@ export default function Footer({ rooms }) {
 
     try {
       const data = await checkRoomAvailabilityByKey(roomCode);
-      await joinUserToRoom(data.roomKey, userId);
+      
+      const handleJoinError = () => {
+        navigate(ROOMS_LIST);
+      };
+      
+      await joinUserToRoom(data.roomKey, userId, null, handleJoinError);
 
       navigate(WAITING_ROOM(data.roomKey));
     } catch (err) {

@@ -1,18 +1,29 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { socket } from "../sockets/sockets";
-import { WAITING_ROOM_EVENTS } from "../consts/socketEvents";
+import { WAITING_ROOM_EVENTS, SOCKET_CONNECTION_EVENTS } from "../consts/socketEvents";
 import removeUserFromRoom from "../services/room/removeUserFromRoom";
 
 export function useWaitingRoomSocket() {
   const socketRef = useRef(socket);
+  const connectionTimeoutRef = useRef(null);
+  const isConnectingRef = useRef(false);
+  const [connectionState, setConnectionState] = useState('disconnected'); // disconnected, connecting, connected, error
 
   const socketDispatcher = useCallback((event, payload, callback) => {
     const ref = socketRef.current;
     if (ref.connected) {
       ref.emit(event, payload, callback);
     } else {
-      ref.connect();
-      ref.once('connect', () => {
+      // Immediate connection attempt if not already connecting
+      if (!isConnectingRef.current) {
+        isConnectingRef.current = true;
+        setConnectionState('connecting');
+        ref.connect();
+      }
+      
+      ref.once(SOCKET_CONNECTION_EVENTS.CONNECT, () => {
+        isConnectingRef.current = false;
+        setConnectionState('connected');
         ref.emit(event, payload, callback);
       });
     }
@@ -50,27 +61,159 @@ export function useWaitingRoomSocket() {
     }
   }, []);
 
+  // Enhanced connection function with timeout and retry logic
+  const connectWithTimeout = useCallback((timeout = 3000) => {
+    return new Promise((resolve, reject) => {
+      const ref = socketRef.current;
+      
+      if (ref.connected) {
+        setConnectionState('connected');
+        resolve();
+        return;
+      }
+
+      if (isConnectingRef.current) {
+        // Already connecting, just wait for the connection
+        ref.once(SOCKET_CONNECTION_EVENTS.CONNECT, () => {
+          isConnectingRef.current = false;
+          setConnectionState('connected');
+          if (connectionTimeoutRef.current) {
+            clearTimeout(connectionTimeoutRef.current);
+            connectionTimeoutRef.current = null;
+          }
+          resolve();
+        });
+        return;
+      }
+
+      isConnectingRef.current = true;
+      setConnectionState('connecting');
+      
+      // Set timeout
+      connectionTimeoutRef.current = setTimeout(() => {
+        isConnectingRef.current = false;
+        setConnectionState('error');
+        reject(new Error('Socket connection timeout'));
+      }, timeout);
+
+      // Setup connection handlers
+      const onConnect = () => {
+        isConnectingRef.current = false;
+        setConnectionState('connected');
+        if (connectionTimeoutRef.current) {
+          clearTimeout(connectionTimeoutRef.current);
+          connectionTimeoutRef.current = null;
+        }
+        ref.off(SOCKET_CONNECTION_EVENTS.CONNECT_ERROR, onError);
+        resolve();
+      };
+
+      const onError = (error) => {
+        isConnectingRef.current = false;
+        setConnectionState('error');
+        if (connectionTimeoutRef.current) {
+          clearTimeout(connectionTimeoutRef.current);
+          connectionTimeoutRef.current = null;
+        }
+        ref.off(SOCKET_CONNECTION_EVENTS.CONNECT, onConnect);
+        reject(error);
+      };
+
+      ref.once(SOCKET_CONNECTION_EVENTS.CONNECT, onConnect);
+      ref.once(SOCKET_CONNECTION_EVENTS.CONNECT_ERROR, onError);
+      
+      // Attempt connection
+      ref.connect();
+    });
+  }, []);
+
   useEffect(() => {
     const ref = socketRef.current;
     
-    if (!ref.connected) {
+    // Connection event handlers for state management
+    const handleConnect = () => {
+      isConnectingRef.current = false;
+      setConnectionState('connected');
+    };
+
+    const handleDisconnect = (reason) => {
+      setConnectionState('disconnected');
+      
+      // Auto-reconnect on unexpected disconnections (not manual)
+      if (reason !== 'io client disconnect') {
+        setTimeout(() => {
+          if (!ref.connected && !isConnectingRef.current) {
+            isConnectingRef.current = true;
+            setConnectionState('connecting');
+            ref.connect();
+          }
+        }, 500); // Quick retry
+      }
+    };
+
+    const handleConnectError = (error) => {
+      isConnectingRef.current = false;
+      setConnectionState('error');
+      console.error('Waiting room socket connection error:', error);
+    };
+
+    const handleReconnect = (attemptNumber) => {
+      setConnectionState('connecting');
+    };
+
+    const handleReconnectSuccess = () => {
+      setConnectionState('connected');
+    };
+
+    // Eagerly connect the socket as soon as the hook mounts
+    if (!ref.connected && !isConnectingRef.current) {
+      isConnectingRef.current = true;
+      setConnectionState('connecting');
       ref.connect();
     }
 
+    // Add event listeners
+    ref.on(SOCKET_CONNECTION_EVENTS.CONNECT, handleConnect);
+    ref.on(SOCKET_CONNECTION_EVENTS.DISCONNECT, handleDisconnect);
+    ref.on(SOCKET_CONNECTION_EVENTS.CONNECT_ERROR, handleConnectError);
+    ref.on(SOCKET_CONNECTION_EVENTS.RECONNECT, handleReconnectSuccess);
+    ref.on(SOCKET_CONNECTION_EVENTS.RECONNECT_ATTEMPT, handleReconnect);
+
     return () => {
+      // Clean up
+      if (connectionTimeoutRef.current) {
+        clearTimeout(connectionTimeoutRef.current);
+        connectionTimeoutRef.current = null;
+      }
+      isConnectingRef.current = false;
+      
+      // Remove event listeners
+      ref.off(SOCKET_CONNECTION_EVENTS.CONNECT, handleConnect);
+      ref.off(SOCKET_CONNECTION_EVENTS.DISCONNECT, handleDisconnect);
+      ref.off(SOCKET_CONNECTION_EVENTS.CONNECT_ERROR, handleConnectError);
+      ref.off(SOCKET_CONNECTION_EVENTS.RECONNECT, handleReconnectSuccess);
+      ref.off(SOCKET_CONNECTION_EVENTS.RECONNECT_ATTEMPT, handleReconnect);
+      
       ref.disconnect();
     };
   }, []);
 
   const connect = useCallback(() => {
     const ref = socketRef.current;
-    if (!ref.connected) {
-      ref.connect();
+    if (!ref.connected && !isConnectingRef.current) {
+      return connectWithTimeout();
     }
-  }, []);
+    return Promise.resolve();
+  }, [connectWithTimeout]);
 
   const disconnect = useCallback(() => {
     const ref = socketRef.current;
+    if (connectionTimeoutRef.current) {
+      clearTimeout(connectionTimeoutRef.current);
+      connectionTimeoutRef.current = null;
+    }
+    isConnectingRef.current = false;
+    setConnectionState('disconnected');
     if (ref.connected) {
       ref.disconnect();
     }
@@ -83,6 +226,10 @@ export function useWaitingRoomSocket() {
     removeListener,
     connect,
     disconnect,
-    leaveWaitingRoom
+    connectWithTimeout,
+    leaveWaitingRoom,
+    connectionState, 
+    isConnected: connectionState === 'connected',
+    isConnecting: connectionState === 'connecting',
   };
 } 

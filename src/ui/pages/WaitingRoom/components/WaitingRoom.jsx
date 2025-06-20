@@ -22,13 +22,17 @@ export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
   const dispatch = useDispatch();
   const room = useSelector((store) => store.room);
-  const userId = useSelector((store) => store.user.id);
+  const reduxUserId = useSelector((store) => store.user.id);
+  // Fallback to stored user if Redux store isn't populated yet (race condition with useAuthRedirect)
+  const storedUser = getStoredUser();
+  const userId = reduxUserId || storedUser?.id;
   const { id: roomKey } = useParams();
   const [players, setPlayers] = useState([]);
   const [hostId, setHostId] = useState(null);
   const [hasJoinedRoom, setHasJoinedRoom] = useState(false);
+  const [hasEmittedJoin, setHasEmittedJoin] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-  const { socket, emit } = useWaitingRoomSocket();
+  const { socket, emit, connectWithTimeout } = useWaitingRoomSocket();
   const navigate = useNavigate();
   const [showHostLeftModal, setShowHostLeftModal] = useState(false);
 
@@ -46,19 +50,11 @@ export default function WaitingRoom() {
     const gameTypes = await getAllGameTypes();
     const match = gameTypes.find((gt) => gt._id === room.gameType);
     let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
-    console.log("Game type is:", gameType, "- starting game");
 
     if (players.length < 2 && gameType !== "guesstheword") {
-      console.log("Too few players and gameType is:", gameType);
       alert("At least 2 players are required to start the game.");
       return;
     }
-
-    // comment this check if this blocks starting the game
-    // if (players.length < 2) {
-    //   alert("At least 2 players are required to start the game.");
-    //   return;
-    // }
 
     if (userId !== room.admin) {
       alert("Only the host can start the game.");
@@ -81,37 +77,26 @@ export default function WaitingRoom() {
     const user = getStoredUser();
     if (!user) return;
 
-    const joinRoom = async () => {
+    const joinRoomAndEmitJoin = async () => {
       try {
-        const isGuest =
-          user.isGuest ||
-          (typeof user.id === "string" && user.id.length !== 24);
+        const isGuest = user.isGuest || (typeof user.id === "string" && user.id.length !== 24);
+
+        const handleJoinError = () => {
+          navigate(ROUTES.ROOMS_LIST);
+        };
 
         if (isGuest) {
           await joinUserToRoom(roomKey, user.id, {
             id: user.id,
             name: user.name,
             avatarImg: user.avatarImg,
-          });
+          }, handleJoinError);
         } else {
-          await joinUserToRoom(roomKey, user.id);
+          await joinUserToRoom(roomKey, user.id, null, handleJoinError);
         }
 
-        // Wait for socket to be connected before emitting JOIN
-        const waitForConnection = () => {
-          return new Promise((resolve) => {
-            if (socket.connected) {
-              resolve();
-            } else {
-              socket.once("connect", () => {
-                resolve();
-              });
-            }
-          });
-        };
-
-        await waitForConnection();
-
+        await connectWithTimeout(3000);
+        
         emit(WAITING_ROOM_EVENTS.JOIN, {
           roomKey,
           user: {
@@ -121,54 +106,91 @@ export default function WaitingRoom() {
             isGuest: isGuest,
           },
         });
+        
         setHasJoinedRoom(true);
+        setHasEmittedJoin(true);
+        
       } catch (error) {
         console.error("Failed to join room:", error);
+        setTimeout(() => {
+          if (!hasJoinedRoom) {
+            joinRoomAndEmitJoin();
+          }
+        }, 1000);
       }
     };
 
-    joinRoom();
-  }, [roomKey, userId, socket, hasJoinedRoom, emit]);
+    joinRoomAndEmitJoin();
+  }, [roomKey, userId, socket, hasJoinedRoom, emit, connectWithTimeout]);
 
   useEffect(() => {
     if (!socket || !roomKey) return;
 
-    const fetchInitialData = async () => {
-      try {
-        const data = await fetchPlayers(roomKey);
-        const registeredPlayers = data.players || [];
-        const guestPlayers = (data.guestPlayers || []).map((guest) => ({
-          _id: guest.id,
-          name: guest.name,
-          avatarImg: guest.avatarImg,
-          isGuest: true,
-        }));
-        const allPlayers = [...registeredPlayers, ...guestPlayers];
-        setPlayers(allPlayers);
-        setHostId(data.admin._id);
-      } catch (err) {
-        console.error("Failed fetching initial players", err);
-      }
-    };
-
-    fetchInitialData();
+    let socketDataReceived = false;
 
     const handlePlayersUpdate = ({ players, hostId: socketHostId }) => {
+      socketDataReceived = true;
+      
       const transformedPlayers = players.map((player) => ({
         _id: player.id,
         name: player.name,
         avatarImg: player.avatarImg,
         isGuest: player.isGuest || false,
+        isConnected: player.isConnected !== false,
       }));
-      setPlayers(transformedPlayers);
+      
+      // Remove duplicates based on _id and ensure no null/undefined ids
+      const uniquePlayers = transformedPlayers
+        .filter(player => player._id) // Remove players without valid _id
+        .filter((player, index, self) => 
+          index === self.findIndex(p => p._id === player._id)
+        );
+      
+      setPlayers(uniquePlayers);
+      
       if (socketHostId) {
         setHostId(socketHostId);
       }
     };
 
+    // Set up socket listener immediately
     socket.on(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
 
+    const fetchInitialData = async () => {
+      try {
+        const data = await fetchPlayers(roomKey);
+        
+        // Only use DB data if no socket update has arrived yet
+        if (!socketDataReceived) {
+          const registeredPlayers = data.players || [];
+          const guestPlayers = (data.guestPlayers || []).map((guest) => ({
+            _id: guest.id,
+            name: guest.name,
+            avatarImg: guest.avatarImg,
+            isGuest: true,
+          }));
+          const allPlayers = [...registeredPlayers, ...guestPlayers];
+          
+          // Remove duplicates based on _id and ensure no null/undefined ids
+          const uniquePlayers = allPlayers
+            .filter(player => player._id) // Remove players without valid _id
+            .filter((player, index, self) => 
+              index === self.findIndex(p => p._id === player._id)
+            );
+          
+          setPlayers(uniquePlayers);
+          setHostId(data.admin._id);
+        }
+      } catch (err) {
+        console.error("Failed fetching initial players", err);
+      }
+    };
+
+    // Wait a bit for socket updates, then fallback to DB if needed
+    const timer = setTimeout(fetchInitialData, 500);
+
     return () => {
+      clearTimeout(timer);
       socket.off(WAITING_ROOM_EVENTS.PLAYERS_UPDATED, handlePlayersUpdate);
     };
   }, [socket, roomKey]);
