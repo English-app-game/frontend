@@ -13,7 +13,6 @@ const icons = {
 
 
 export default function GameTypeButton({ gameType, isSelected, onClick }) {
-  console.log('👉 gameType.name:', `"${gameType.name}"`);
   const nameKey = gameType.name?.toLowerCase().trim();
   const imgSrc = icons[nameKey];
   return (
