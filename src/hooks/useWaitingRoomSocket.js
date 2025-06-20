@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { socket } from "../sockets/sockets";
+import { WAITING_ROOM_EVENTS } from "../consts/socketEvents";
+import removeUserFromRoom from "../services/room/removeUserFromRoom";
 
 export function useWaitingRoomSocket() {
   const socketRef = useRef(socket);
@@ -28,6 +30,24 @@ export function useWaitingRoomSocket() {
   const removeListener = useCallback((event, handler) => {
     const ref = socketRef.current;
     ref.off(event, handler);
+  }, []);
+
+  // Enhanced cleanup function for leaving waiting room
+  const leaveWaitingRoom = useCallback(async (roomKey, userId) => {
+    if (!roomKey || !userId) return;
+
+    try {      
+      // Remove user from database
+      await removeUserFromRoom(roomKey, userId);
+      
+      // Emit leave event to socket
+      const ref = socketRef.current;
+      if (ref.connected) {
+        ref.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId });
+      }
+    } catch (error) {
+      console.error("Error leaving waiting room:", error);
+    }
   }, []);
 
   useEffect(() => {
@@ -62,6 +82,7 @@ export function useWaitingRoomSocket() {
     addListener,
     removeListener,
     connect,
-    disconnect
+    disconnect,
+    leaveWaitingRoom
   };
 } 
