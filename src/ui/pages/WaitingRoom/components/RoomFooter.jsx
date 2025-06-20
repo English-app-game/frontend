@@ -9,8 +9,6 @@ import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket.js"
 const RoomFooter = ({exitRoom, copied, handleCopy, handleStart, roomKey }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((store) => store.user);
-  const { socket } = useWaitingRoomSocket();
 
   return (
     <div className="mt-5 sm:mb-5 flex flex-col sm:flex-row items-center gap-4 w-full justify-center">
