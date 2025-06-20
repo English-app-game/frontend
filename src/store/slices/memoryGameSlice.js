@@ -72,5 +72,5 @@ const memoryGameSlice = createSlice({
   },
 });
 
-export const { setMemoryGameState, resetMemoryGameState, flipBackCards} = memoryGameSlice.actions;
+export const { setMemoryGameState, resetMemoryGameState, flipBackCards } = memoryGameSlice.actions;
 export default memoryGameSlice.reducer;
