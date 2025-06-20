@@ -12,6 +12,7 @@ import GameTypeSelector from "../../components/GameTypeSelector";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SecondaryButton from "../../components/SecondaryButton";
+import UserInfoHeader from "../../components/UserInfoHeader";
 
 const TEMP_USER = {
   // this user ID has to be real ID from db.
@@ -65,10 +66,10 @@ const CreateRoom = () => {
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
       <SecondaryButton text={"EXIT"} onclick={handleExitCreateRoom}/>
+      <UserInfoHeader />
       <BlueBox
         size="large"
-        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"
-      >
+        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]" >
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}
@@ -79,7 +80,7 @@ const CreateRoom = () => {
         <PrimaryButton
           text="LET'S GO"
           onClick={handleCreateRoom}
-          className="bg-green-400 px-4 py-2"
+          className="bg-green-400 cursor-pointer sm:w-auto px-4 py-2 "
         />
       </BlueBox>
     </div>
