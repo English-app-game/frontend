@@ -71,7 +71,7 @@ export default function LoginGuest() {
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
-      <SecondaryButton text={"BACK"} onclick={handleExitRoom} />
+      <SecondaryButton text={"BACK"} onclick={handleExitRoom} className={"absolute"}/>
       <div className="pt-10 w-full">
         <BlueBox className="pr-3">
           <Header text="WELCOME GUEST!" className="pl-2 pt-2 pt-4" />

@@ -64,7 +64,7 @@ const CreateRoom = () => {
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
-      <SecondaryButton text={"EXIT"} onclick={handleExitCreateRoom}/>
+      <SecondaryButton text={"EXIT"} onclick={handleExitCreateRoom} className={"absolute"}/>
       <BlueBox
         size="large"
         className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"

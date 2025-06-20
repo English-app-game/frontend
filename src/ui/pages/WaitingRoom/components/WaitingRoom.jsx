@@ -15,6 +15,7 @@ import { ROUTES } from "../../../../routes/routes_consts";
 import { getAllGameTypes } from "../../../../services/room/roomType";
 import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
 import useRoomPolling from "../../../../hooks/useRoomPolling";
+import { FaClock } from "react-icons/fa";
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -99,7 +100,7 @@ export default function WaitingRoom() {
             if (socket.connected) {
               resolve();
             } else {
-              socket.once('connect', () => {
+              socket.once("connect", () => {
                 resolve();
               });
             }
@@ -201,6 +202,8 @@ export default function WaitingRoom() {
     if (!socket) return;
 
     const onHostLeft = () => {
+      if (userId === room.admin) return;
+
       setShowHostLeftModal(true);
       setTimeout(() => {
         navigate(ROUTES.ROOMS_LIST);
@@ -232,7 +235,7 @@ export default function WaitingRoom() {
   }, [hasJoinedRoom, roomKey, userId, emit]);
 
   return (
-    <div className="flex flex-col items-center justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center px-4">
+    <div className="flex flex-col justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
       {showHostLeftModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
           <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white max-w-xs sm:max-w-md w-full">
@@ -245,8 +248,10 @@ export default function WaitingRoom() {
           </div>
         </div>
       )}
-      <RoomHeader />
-      <PlayersList players={players} hostId={hostId} />
+      <RoomHeader HeaderIcon={FaClock} HeaderText={"WAITING ROOM"} />
+      <div className="flex justify-center mt-5 px-4">
+        <PlayersList players={players} hostId={hostId} />
+      </div>
       <RoomFooter
         copied={copied}
         handleCopy={handleCopy}
