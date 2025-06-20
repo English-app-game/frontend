@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from "prop-types";
 
-import memoryIcon      from "../../../public/memoryGame.png";
-import translationIcon from "../../../public/guessTheWord.png";
-import guessIcon       from "../../../public/translation.png";
+import memoryIcon      from "../../assets/images/memoryGame.png";
+import translationIcon from "../../assets/images/translation.png";
+import guessIcon       from "../../assets/images/guessTheWord.png";
 
 const icons = {
   "memory game": memoryIcon,
-  "translation": guessIcon,
-  "guess the word": translationIcon,
+  "translation": translationIcon,
+  "guess the word": guessIcon,
 };
 
 
