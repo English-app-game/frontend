@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setRoom } from "../../../../store/slices/roomSlice";
 import { getRoom } from "../../../../services/room/getRoom";
 import { FiMenu, FiX } from "react-icons/fi";
@@ -14,7 +14,6 @@ import Header from "../../../components/Header";
 import { handleExitWaitingRoom } from "../../../../utils/handleExitWaitingRoom.js";
 
 const RoomHeader = ({ exitRoom, HeaderIcon, HeaderText }) => {
-
   const navigate = useNavigate();
   const { id: roomKey } = useParams();
   const dispatch = useDispatch();
@@ -34,7 +33,7 @@ const RoomHeader = ({ exitRoom, HeaderIcon, HeaderText }) => {
         <div className="flex items-center justify-center gap-2">
           <Header
             text={HeaderText}
-            className="text-primary uppercase text-[1.5rem] md:text-4xl"
+            className="text-primary top-0 uppercase text-[1.5rem] md:text-4xl"
           />
           <HeaderIcon size={40} className="text-primary" />
         </div>
@@ -44,6 +43,9 @@ const RoomHeader = ({ exitRoom, HeaderIcon, HeaderText }) => {
             onclick={() => handleExitWaitingRoom(exitRoom, navigate, dispatch)}
             className={"hidden sm:block"}
           />
+        </div>
+        <div className="hidden sm:block">
+          <UserInfoHeader />
         </div>
       </div>
       <IconButton

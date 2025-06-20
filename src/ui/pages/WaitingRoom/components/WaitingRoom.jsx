@@ -230,7 +230,7 @@ export default function WaitingRoom() {
   }, [socket, navigate]);
 
   return (
-    <div className="flex flex-col justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
+    <div className="flex flex-col justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center pt-10 md:pt-15">
       {showHostLeftModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
           <div className="bg-[#137f95] p-6 rounded-lg shadow-lg border-2 border-black text-center text-white max-w-xs sm:max-w-md w-full">
@@ -248,7 +248,7 @@ export default function WaitingRoom() {
         HeaderText={"WAITING ROOM"}
         exitRoom={exitRoom}
       />
-      <div className="flex justify-center mt-5 px-4">
+      <div className="flex justify-center mt-10 px-4">
         <PlayersList players={players} hostId={hostId} />
       </div>
       <RoomFooter
