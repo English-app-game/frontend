@@ -23,6 +23,9 @@ function shuffleArray(array) {
 export default function TranslationGame({ roomKey, handleBack }) {
   const { emit } = useSocket();
 
+  const user = getStoredUser();
+  const { id: userId } = user;
+
   const gameEnded = useSelector((store) => store.translationGame.end);
   const enWords = useSelector((store) => store.translationGame.enWords);
   const hebWords = useSelector((store) => store.translationGame.hebWords);
@@ -57,9 +60,6 @@ export default function TranslationGame({ roomKey, handleBack }) {
   console.log(gameTypeId);
 
   useEffect(() => {
-    const user = getStoredUser();
-    const { id: userId } = user;
-
     if (!roomKey || !userId || !gameTypeId) return;
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
@@ -70,9 +70,6 @@ export default function TranslationGame({ roomKey, handleBack }) {
 
   // sync the held hebrew word if user refreshed.
   useEffect(() => {
-    const user = getStoredUser();
-    const { id: userId } = user;
-    
     const heldWord = hebWords?.find(
       (word) => word.heldBy === userId && word.lock
     );
