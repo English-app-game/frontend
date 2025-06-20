@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import ExitButton from "../../../components/ExitButton";
 import SecondaryButton from "../../../components/SecondaryButton";
 import { ROUTES } from "../../../../routes/routes_consts";
@@ -6,21 +7,16 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetRoom, setRoom } from "../../../../store/slices/roomSlice";
 import { getRoom } from "../../../../services/room/getRoom";
-import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket";
-import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
-import removeUserFromRoom from "../../../../services/room/removeUserFromRoom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { WindowBody } from "../../../components/WindowBody";
 import { IconButton } from "../../../components/IconButton";
 import UserInfoHeader from "../../../components/UserInfoHeader";
 import { MobileSideBar } from "../../../components/MobileSideBar";
 
-const RoomHeader = () => {
+const RoomHeader = ({ exitRoom }) => {
   const navigate = useNavigate();
   const { id: roomKey } = useParams();
   const dispatch = useDispatch();
-  const user = useSelector((store) => store.user);
-  const { socket } = useWaitingRoomSocket();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -32,25 +28,11 @@ const RoomHeader = () => {
   }, [roomKey, dispatch]);
 
   const handleExit = async () => {
-    console.log(`🚪 User ${user?.name} (${user?.id}) exiting room ${roomKey}`);
-
-    if (!user || !user.id || !roomKey) {
-      dispatch(resetRoom());
-      return navigate(ROUTES.ROOMS_LIST);
-    }
-
-    try {
-      await removeUserFromRoom(roomKey, user.id);
-      console.log(
-        `📤 Emitting LEAVE event for user ${user.id} in room ${roomKey}`
-      );
-      socket.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId: user.id });
-
-      dispatch(resetRoom());
-      navigate(ROUTES.ROOMS_LIST);
-    } catch (error) {
-      console.error("Error during exit:", error);
-      // Still navigate even if there's an error
+    if (exitRoom) {
+      // Use the comprehensive exit function from parent
+      await exitRoom();
+    } else {
+      // Fallback to navigate if exitRoom is not provided
       dispatch(resetRoom());
       navigate(ROUTES.ROOMS_LIST);
     }
@@ -85,6 +67,10 @@ const RoomHeader = () => {
       </MobileSideBar>
     </>
   );
+};
+
+RoomHeader.propTypes = {
+  exitRoom: PropTypes.func,
 };
 
 export default RoomHeader;
