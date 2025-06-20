@@ -26,7 +26,7 @@ const PlayersList = ({ players, hostId }) => {
       </div>
       <div className="w-full sm:w-1/3 flex justify-center sm:justify-end mt-auto sm:mt-0">
         <div className="bg-teal-200 text-teal-600 rounded-full px-5 py-4 font-semibold">
-          MAX PLAYERS: 5
+          PLAYERS IN ROOM: {players.length}
         </div>
       </div>
     </BlueBox>
