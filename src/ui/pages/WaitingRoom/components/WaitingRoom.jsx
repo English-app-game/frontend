@@ -243,11 +243,16 @@ export default function WaitingRoom() {
           </div>
         </div>
       )}
-      <RoomHeader HeaderIcon={FaClock} HeaderText={"WAITING ROOM"} exitRoom={exitRoom}/>
+      <RoomHeader
+        HeaderIcon={FaClock}
+        HeaderText={"WAITING ROOM"}
+        exitRoom={exitRoom}
+      />
       <div className="flex justify-center mt-5 px-4">
         <PlayersList players={players} hostId={hostId} />
       </div>
       <RoomFooter
+        exitRoom={exitRoom}
         copied={copied}
         handleCopy={handleCopy}
         handleStart={handleStart}

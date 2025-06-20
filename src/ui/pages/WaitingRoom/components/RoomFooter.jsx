@@ -6,7 +6,7 @@ import { handleExitWaitingRoom } from "../../../../utils/handleExitWaitingRoom";
 import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket.js";
 
 
-const RoomFooter = ({ copied, handleCopy, handleStart, roomKey }) => {
+const RoomFooter = ({exitRoom, copied, handleCopy, handleStart, roomKey }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
@@ -30,7 +30,7 @@ const RoomFooter = ({ copied, handleCopy, handleStart, roomKey }) => {
         <ExitButton
           className="sm:hidden w-full sm:w-auto text-center bg-rose-600 border-green-400 hover:bg-green-400 mb-7 sm:mb-0 border-4 border-rose-400"
           onClick={() =>
-            handleExitWaitingRoom(user, roomKey, navigate, socket, dispatch)
+            handleExitWaitingRoom(exitRoom, navigate, dispatch)
           }
         >
           EXIT ROOM
