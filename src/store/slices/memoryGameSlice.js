@@ -42,9 +42,35 @@ const memoryGameSlice = createSlice({
       }));
     },
 
+    flipBackCards: (state, { payload }) => {
+      console.log("🧩 flipBackCards reducer activated with:", payload);
+      const [firstId, secondId] = payload;
+
+      const updatedHe= state.words.heWords = state.words.heWords.map(card =>
+        card.id === firstId || card.id === secondId
+          ? { ...card, flipped: false }
+          : card
+      );
+
+       const updatedEn= state.words.enWords = state.words.enWords.map(card =>
+        card.id === firstId || card.id === secondId
+          ? { ...card, flipped: false }
+          : card
+      );
+
+      return {
+       ...state,
+       words: {
+         heWords: updatedHe,
+         enWords: updatedEn
+       },
+       cards: [...updatedHe, ...updatedEn]
+  };
+    },
+
     resetMemoryGameState: () => initialState,
   },
 });
 
-export const { setMemoryGameState, resetMemoryGameState } = memoryGameSlice.actions;
+export const { setMemoryGameState, resetMemoryGameState, flipBackCards} = memoryGameSlice.actions;
 export default memoryGameSlice.reducer;

@@ -77,6 +77,7 @@ import { socket } from "../sockets/sockets";
 import { useDispatch, useSelector } from "react-redux";
 import { setMemoryGameState, resetMemoryGameState } from "../store/slices/memoryGameSlice";
 import { toast } from "react-toastify";
+import { flipBackCards } from "../store/slices/memoryGameSlice";
 
 export function useMemoryGameSocket(roomKey) {
   const socketRef = useRef(socket);
@@ -100,12 +101,17 @@ export function useMemoryGameSocket(roomKey) {
     const s = socketRef.current;
     s.on("memory-game/state", updateMemoryGameState);
     s.on("memory-game/end", handleGameEnd);
-  }, [updateMemoryGameState, handleGameEnd]);
+    s.on("memory-game/flip-back", ({ firstCardId, secondCardId }) => {
+    console.log("📩 Received flip-back event on client:", firstCardId, secondCardId);
+    dispatch(flipBackCards([firstCardId, secondCardId]));
+  });
+  }, [updateMemoryGameState, handleGameEnd, dispatch]);
 
   const stopListeners = useCallback(() => {
     const s = socketRef.current;
     s.off("memory-game/state", updateMemoryGameState);
     s.off("memory-game/end", handleGameEnd);
+    s.off("memory-game/flip-back");
   }, [updateMemoryGameState, handleGameEnd]);
 
   // --- Emit wrapper ---
@@ -141,6 +147,7 @@ export function useMemoryGameSocket(roomKey) {
 
   // --- Custom emitters ---
   const requestFlipCard = useCallback((userId, cardId, callback) => {
+      console.log("📤 Emitting memory-game/flip-card", { roomKey, userId, cardId });
     socketDispatcher("memory-game/flip-card", { roomKey, userId, cardId }, callback);
   }, [roomKey, socketDispatcher]);
 

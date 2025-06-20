@@ -178,12 +178,10 @@ export default function MemoryGame() {
   const game = useSelector((state) => state.memoryGame);
 
   console.log("📦 MemoryGame state:", game);
-  // console.log("🎴 heWords:", game.words?.heWords);
-  // console.log("🎴 enWords:", game.words?.enWords);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { emit } = useMemoryGameSocket(roomKey);
+  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey);
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
@@ -209,8 +207,16 @@ export default function MemoryGame() {
         setLockBoard(false);
         setSelectedCards([]);
         if (!match) {
-        }
-      });
+        // ❗ אם אין מאץ', נשאיר את הקלפים פתוחים לרגע ואז נהפוך אותם חזרה
+        setTimeout(() => {
+          setSelectedCards([]);
+          setLockBoard(false);
+        }, 1000); // זמן קצר של השהייה כדי לראות את הקלפים
+      } else {
+        setSelectedCards([]);
+        setLockBoard(false);
+      }
+    });
     }
   }, [selectedCards, user?.id, game, lockBoard]);
 
@@ -219,7 +225,11 @@ export default function MemoryGame() {
   };
 
   const handleCardClick = (card) => {
-    if (lockBoard || user.id !== game?.turn) return;
+    console.log("🖱️ Card clicked:", card);
+    console.log("🔒 lockBoard:", lockBoard);
+    console.log("🧑‍🦱 userId:", user.id);
+    console.log("🎯 current turn:", game?.currentTurn);
+    if (lockBoard || user.id !== game?.currentTurn) return;
     if (card.flipped || card.matched) return;
 
     requestFlipCard(user.id, card.id, ({ success }) => {
