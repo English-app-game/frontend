@@ -40,14 +40,19 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
     cleanupPerformedRef.current = true;
 
     try {
-      await leaveWaitingRoom(currentRoomKey, currentUserId);
+      // Only send LEAVE event for intentional exits, not page refreshes
+      if (reason === CLEANUP_REASONS.EXIT_BUTTON || reason === CLEANUP_REASONS.URL_CHANGE) {
+        await leaveWaitingRoom(currentRoomKey, currentUserId);
+      } else {
+        // Don't send LEAVE event - let the socket disconnection handle it naturally
+        // The backend will treat this as a temporary disconnection
+      }
       dispatch(resetRoom());
     } catch (error) {
       console.error("Error during waiting room cleanup:", error);
     }
   }, [leaveWaitingRoom, hasJoinedRoom, dispatch]);
 
-  // Handle URL changes (navigation away from waiting room)
   useEffect(() => {
     const currentPath = location.pathname;
     const isLeavingWaitingRoom = hasJoinedRoom && roomKey && !currentPath.includes(`/rooms/${roomKey}`);
@@ -57,20 +62,11 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
     }
   }, [location.pathname, roomKey, hasJoinedRoom, performCleanup]);
 
-  // Handle browser close/refresh/tab close
   useEffect(() => {
     if (!hasJoinedRoom || !roomKey || !userId) return;
 
     const handleBeforeUnload = async (event) => {
-      // For modern browsers, we can't make async calls in beforeunload
-      // But we can use navigator.sendBeacon for a fire-and-forget request
-      if (navigator.sendBeacon && window.location.origin) {
-        const data = JSON.stringify({ roomKey, userId });
-        navigator.sendBeacon(`${window.location.origin}/api/rooms/quick-leave`, data);
-      }
-      
-      // Also perform the regular cleanup (though it might not complete)
-      performCleanup(CLEANUP_REASONS.BROWSER_CLOSE);
+      dispatch(resetRoom());
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -78,7 +74,7 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [roomKey, userId, hasJoinedRoom, performCleanup]);
+  }, [roomKey, userId, hasJoinedRoom, dispatch]);
 
   // Component unmount cleanup (covers most other cases)
   useEffect(() => {

@@ -5,4 +5,12 @@ export const WAITING_ROOM_EVENTS = {
   PLAYERS_UPDATED: 'waiting-room-players-updated',
   HOST_LEFT: 'host-left',
   ROOM_CLOSED: 'room-closed'
+};
+
+export const SOCKET_CONNECTION_EVENTS = {
+  CONNECT: 'connect',
+  DISCONNECT: 'disconnect',
+  CONNECT_ERROR: 'connect_error',
+  RECONNECT: 'reconnect',
+  RECONNECT_ATTEMPT: 'reconnect_attempt'
 }; 
