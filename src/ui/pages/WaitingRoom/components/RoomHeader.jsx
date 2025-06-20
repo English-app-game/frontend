@@ -29,7 +29,7 @@ const RoomHeader = ({ exitRoom, HeaderIcon, HeaderText }) => {
   }, [roomKey, dispatch]);
 
   return (
-    <header className="flex items-center justify-center gap-5 h-16 py-7 md:py-10 z-50 relative">
+    <header className="fixed top-0 left-0 w-full flex items-center justify-center gap-5 h-16 py-7 md:py-10 z-50">
       <div className="flex justify-center w-full md:justify-center">
         <div className="flex items-center justify-center gap-2">
           <Header
