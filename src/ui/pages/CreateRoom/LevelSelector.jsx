@@ -10,7 +10,7 @@ const LevelSelector = ({ level, setLevel }) => (
           <div className="text-sm font-extrabold text-[#f5f5dc] text-center">{nameLevel}</div>
           <button
             onClick={() => setLevel(level === key ? null : key)}
-            className={`w-20 h-20 rounded-lg border-4 shadow-md transition hover:scale-105 ${
+            className={`w-20 h-20 rounded-lg border-4 shadow-md transition cursor-pointer hover:scale-105 ${
               level === key ? "border-teal-500" : "border-white"
             }`}
           >
