@@ -23,9 +23,9 @@ function shuffleArray(array) {
 export default function TranslationGame({ roomKey, handleBack }) {
   const { emit } = useSocket();
 
-  const user = useMemo(() => getStoredUser(), []);
-  const userId = user?.id;
-  
+  const user = getStoredUser();
+  const { id: userId } = user;
+
   const gameEnded = useSelector((store) => store.translationGame.end);
   const enWords = useSelector((store) => store.translationGame.enWords);
   const hebWords = useSelector((store) => store.translationGame.hebWords);
