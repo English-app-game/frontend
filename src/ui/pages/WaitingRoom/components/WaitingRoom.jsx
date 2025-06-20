@@ -5,6 +5,7 @@ import { fetchPlayers } from "../../../../services/room/getPlayers";
 import { joinUserToRoom } from "../../../../services/room/joinUserToRoom";
 import { getStoredUser } from "../../../../hooks/useAuthRedirect";
 import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket";
+import { useWaitingRoomCleanup } from "../../../../hooks/useWaitingRoomCleanup";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +31,8 @@ export default function WaitingRoom() {
   const { socket, emit } = useWaitingRoomSocket();
   const navigate = useNavigate();
   const [showHostLeftModal, setShowHostLeftModal] = useState(false);
+
+  const { exitRoom } = useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom);
 
   useRoomPolling(roomKey);
 
@@ -226,14 +229,6 @@ export default function WaitingRoom() {
     };
   }, [socket, navigate]);
 
-  useEffect(() => {
-    return () => {
-      if (hasJoinedRoom && roomKey && userId) {
-        emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId });
-      }
-    };
-  }, [hasJoinedRoom, roomKey, userId, emit]);
-
   return (
     <div className="flex flex-col justify-evenly min-h-screen bg-[url('/homePage.png')] bg-cover bg-center">
       {showHostLeftModal && (
@@ -248,7 +243,7 @@ export default function WaitingRoom() {
           </div>
         </div>
       )}
-      <RoomHeader HeaderIcon={FaClock} HeaderText={"WAITING ROOM"} />
+      <RoomHeader HeaderIcon={FaClock} HeaderText={"WAITING ROOM"} exitRoom={exitRoom}/>
       <div className="flex justify-center mt-5 px-4">
         <PlayersList players={players} hostId={hostId} />
       </div>
