@@ -1,6 +1,6 @@
 import { JOIN_USER_ROOM_ROUTE } from "../../consts/consts";
 
-export async function joinUserToRoom(roomKey, userId, guestData = null) {
+export async function joinUserToRoom(roomKey, userId, guestData = null, onError = null) {
   try {
     const requestBody = {
       roomKey,
@@ -28,6 +28,11 @@ export async function joinUserToRoom(roomKey, userId, guestData = null) {
   } catch (err) {
     console.error("❌ Error joining room:", err);
     alert("Failed to join the room.");
+    
+    if (onError && typeof onError === 'function') {
+      onError();
+    }
+    
     return;
   }
 }

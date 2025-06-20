@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 import { joinUserToRoom } from "../../services/room/joinUserToRoom";
 import { getStoredUser } from "../../hooks/useAuthRedirect";
+import { ROOMS_LIST } from "../../routes/routes_consts";
 
 const JoinGameRoom = ({
   id,
@@ -34,15 +35,19 @@ const JoinGameRoom = ({
 
     const isGuest = user.isGuest || typeof user.id === 'string' && user.id.length !== 24;
     
+    const handleJoinError = () => {
+      navigate(ROOMS_LIST);
+    };
+    
     if (isGuest) {
       const guestData = {
         id: user.id,
         name: user.name,
         avatarImg: user.avatarImg
       };
-      await joinUserToRoom(id, user.id, guestData);
+      await joinUserToRoom(id, user.id, guestData, handleJoinError);
     } else {
-      await joinUserToRoom(id, user.id);
+      await joinUserToRoom(id, user.id, null, handleJoinError);
     }
 
     if (onJoinAttempt) {

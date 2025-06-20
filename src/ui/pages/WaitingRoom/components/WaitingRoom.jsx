@@ -80,14 +80,18 @@ export default function WaitingRoom() {
       try {
         const isGuest = user.isGuest || (typeof user.id === "string" && user.id.length !== 24);
 
+        const handleJoinError = () => {
+          navigate(ROUTES.ROOMS_LIST);
+        };
+
         if (isGuest) {
           await joinUserToRoom(roomKey, user.id, {
             id: user.id,
             name: user.name,
             avatarImg: user.avatarImg,
-          });
+          }, handleJoinError);
         } else {
-          await joinUserToRoom(roomKey, user.id);
+          await joinUserToRoom(roomKey, user.id, null, handleJoinError);
         }
 
         await connectWithTimeout(3000);
