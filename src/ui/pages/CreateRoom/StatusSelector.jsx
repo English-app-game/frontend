@@ -15,7 +15,7 @@ const StatusSelector = ({ status, setStatus }) => {
             `}
           ></div>
 
-          {/* Tabs */}
+
           <div className="relative w-48 h-10 bg-white rounded-full flex items-center justify-between p-1">
             {Object.keys(statusOptions).map((key) => {
               const isSelected = status === key;
