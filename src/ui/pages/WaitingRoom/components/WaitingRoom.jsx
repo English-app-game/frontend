@@ -81,24 +81,31 @@ export default function WaitingRoom() {
 
     const joinRoomAndEmitJoin = async () => {
       try {
-        const isGuest = user.isGuest || (typeof user.id === "string" && user.id.length !== 24);
+        const isGuest =
+          user.isGuest ||
+          (typeof user.id === "string" && user.id.length !== 24);
 
         const handleJoinError = () => {
           navigate(ROUTES.ROOMS_LIST);
         };
 
         if (isGuest) {
-          await joinUserToRoom(roomKey, user.id, {
-            id: user.id,
-            name: user.name,
-            avatarImg: user.avatarImg,
-          }, handleJoinError);
+          await joinUserToRoom(
+            roomKey,
+            user.id,
+            {
+              id: user.id,
+              name: user.name,
+              avatarImg: user.avatarImg,
+            },
+            handleJoinError
+          );
         } else {
           await joinUserToRoom(roomKey, user.id, null, handleJoinError);
         }
 
         await connectWithTimeout(3000);
-        
+
         emit(WAITING_ROOM_EVENTS.JOIN, {
           roomKey,
           user: {
@@ -108,10 +115,12 @@ export default function WaitingRoom() {
             isGuest: isGuest,
           },
         });
-        
+
+        localStorage.setItem("enteredFromWaitingRoom", "true");
+        localStorage.setItem("lastEnteredRoom", roomKey);
+
         setHasJoinedRoom(true);
         setHasEmittedJoin(true);
-        
       } catch (error) {
         console.error("Failed to join room:", error);
         setTimeout(() => {
@@ -132,7 +141,7 @@ export default function WaitingRoom() {
 
     const handlePlayersUpdate = ({ players, hostId: socketHostId }) => {
       socketDataReceived = true;
-      
+
       const transformedPlayers = players.map((player) => ({
         _id: player.id,
         name: player.name,
@@ -140,16 +149,17 @@ export default function WaitingRoom() {
         isGuest: player.isGuest || false,
         isConnected: player.isConnected !== false,
       }));
-      
+
       // Remove duplicates based on _id and ensure no null/undefined ids
       const uniquePlayers = transformedPlayers
-        .filter(player => player._id) // Remove players without valid _id
-        .filter((player, index, self) => 
-          index === self.findIndex(p => p._id === player._id)
+        .filter((player) => player._id) // Remove players without valid _id
+        .filter(
+          (player, index, self) =>
+            index === self.findIndex((p) => p._id === player._id)
         );
-      
+
       setPlayers(uniquePlayers);
-      
+
       if (socketHostId) {
         setHostId(socketHostId);
       }
@@ -161,7 +171,7 @@ export default function WaitingRoom() {
     const fetchInitialData = async () => {
       try {
         const data = await fetchPlayers(roomKey);
-        
+
         // Only use DB data if no socket update has arrived yet
         if (!socketDataReceived) {
           const registeredPlayers = data.players || [];
@@ -172,14 +182,15 @@ export default function WaitingRoom() {
             isGuest: true,
           }));
           const allPlayers = [...registeredPlayers, ...guestPlayers];
-          
+
           // Remove duplicates based on _id and ensure no null/undefined ids
           const uniquePlayers = allPlayers
-            .filter(player => player._id) // Remove players without valid _id
-            .filter((player, index, self) => 
-              index === self.findIndex(p => p._id === player._id)
+            .filter((player) => player._id) // Remove players without valid _id
+            .filter(
+              (player, index, self) =>
+                index === self.findIndex((p) => p._id === player._id)
             );
-          
+
           setPlayers(uniquePlayers);
           setHostId(data.admin._id);
         }
@@ -214,6 +225,9 @@ export default function WaitingRoom() {
             navigate(ROUTES.ROOMS_LIST);
             return;
           }
+
+          localStorage.setItem("enteredFromWaitingRoom", "true");
+          localStorage.setItem("lastEnteredRoom", roomKey);
 
           navigate(ROUTES.ACTIVE_ROOM(roomKey, gameType));
         } catch (error) {

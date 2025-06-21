@@ -8,7 +8,8 @@ import { joinTranslationGameRoom } from "../../../services/translationGame";
 import EndGame from "./EndGame/EndGame";
 import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
-import getStoredUser from "../../../hooks/useAuthRedirect"
+import { useNavigate } from "react-router-dom";
+import { ROOMS_LIST } from "../../../routes/routes_consts";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -21,6 +22,7 @@ function shuffleArray(array) {
 }
 
 export default function TranslationGame({ roomKey, handleBack }) {
+  const navigate = useNavigate();
   const { emit } = useSocket();
 
   const user = useSelector((store) => store.user);
@@ -61,11 +63,22 @@ export default function TranslationGame({ roomKey, handleBack }) {
 
   useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;
+
+    const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
+    const lastRoom = localStorage.getItem("lastEnteredRoom");
+    if (enteredProperly !== "true" || lastRoom !== roomKey) {
+      navigate(ROOMS_LIST);
+      return;
+    }
+
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
       user,
       gameTypeId,
     });
+
+    localStorage.removeItem("enteredFromWaitingRoom");
+    localStorage.removeItem("lastEnteredRoom");
   }, [roomKey, userId, emit, user]);
 
   // sync the held hebrew word if user refreshed.
