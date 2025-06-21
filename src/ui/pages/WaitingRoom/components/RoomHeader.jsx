@@ -1,27 +1,23 @@
-import ExitButton from "../../../components/ExitButton";
-import { ROUTES } from "../../../../routes/routes_consts";
+import PropTypes from "prop-types";
+import SecondaryButton from "../../../components/SecondaryButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { resetRoom, setRoom } from "../../../../store/slices/roomSlice";
+import { useDispatch } from "react-redux";
+import { setRoom } from "../../../../store/slices/roomSlice";
 import { getRoom } from "../../../../services/room/getRoom";
-import { useWaitingRoomSocket } from "../../../../hooks/useWaitingRoomSocket";
-import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
-import removeUserFromRoom from "../../../../services/room/removeUserFromRoom";
 import { FiMenu, FiX } from "react-icons/fi";
 import { WindowBody } from "../../../components/WindowBody";
 import { IconButton } from "../../../components/IconButton";
 import UserInfoHeader from "../../../components/UserInfoHeader";
 import { MobileSideBar } from "../../../components/MobileSideBar";
+import Header from "../../../components/Header";
+import { handleExitWaitingRoom } from "../../../../utils/handleExitWaitingRoom.js";
 
-const RoomHeader = () => {
+const RoomHeader = ({ exitRoom, HeaderIcon, HeaderText }) => {
   const navigate = useNavigate();
   const { id: roomKey } = useParams();
   const dispatch = useDispatch();
-  const user = useSelector((store) => store.user);
-  const { socket } = useWaitingRoomSocket()
   const [isOpen, setIsOpen] = useState(false);
-
 
   useEffect(() => {
     if (!roomKey) return;
@@ -31,55 +27,50 @@ const RoomHeader = () => {
     }
   }, [roomKey, dispatch]);
 
-  const handleExit = async () => {
-    if (!user || !user.id || !roomKey) {
-      dispatch(resetRoom());
-      return navigate(ROUTES.ROOMS_LIST);
-    }
-
-    await removeUserFromRoom(roomKey, user.id);
-    socket.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId: user.id });
-
-    dispatch(resetRoom());
-    navigate(ROUTES.ROOMS_LIST);
-  };
-
   return (
-    <>
-      <div className="flex sm:block px-4 py-4 sm:py-6">
-        <ExitButton
-          onClick={handleExit}
-          className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400 text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-3 
-        sm:absolute sm:left-4"
-        >
-          EXIT ROOM
-        </ExitButton>
-
-        <h1 className="text-lg sm:text-4xl font-extrabold text-teal-600 uppercase drop-shadow-md text-center px-2 break-words flex-1">
-          WAITING ROOM
-        </h1>
-
-        <div className="sm:hidden">
-          <IconButton
-            className="text-primary text-3xl"
-            onClick={() => setIsOpen(true)}
-            Icon={FiMenu}
+    <header className="fixed top-0 left-0 w-full flex items-center justify-center gap-5 h-16 py-7 md:py-10 z-50">
+      <div className="flex justify-center w-full md:justify-center">
+        <div className="flex items-center justify-center gap-2">
+          <Header
+            text={HeaderText}
+            className="text-primary top-0 uppercase text-[1.5rem] md:text-4xl"
+          />
+          <HeaderIcon size={40} className="text-primary" />
+        </div>
+        <div className="md:flex absolute left-8 top-1/2 -translate-y-1/2">
+          <SecondaryButton
+            text={"EXIT ROOM"}
+            onclick={() => handleExitWaitingRoom(exitRoom, navigate, dispatch)}
+            className={"hidden sm:block"}
           />
         </div>
+        <div className="hidden sm:block">
+          <UserInfoHeader />
+        </div>
       </div>
-
+      <IconButton
+        className={
+          "md:hidden text-primary text-3xl absolute pb-3 right-4 top-1/2 -translate-y-1/2"
+        }
+        onClick={() => setIsOpen(true)}
+        Icon={FiMenu}
+      />
       <MobileSideBar isOpen={isOpen}>
         <IconButton
-          className="text-primary text-3xl mb-6 ml-auto"
+          className={"text-primary text-3xl mb-6 ml-auto"}
           onClick={() => setIsOpen(false)}
           Icon={FiX}
         />
-        <WindowBody className="flex flex-col items-end gap-4">
+        <WindowBody className={"flex flex-col items-end gap-4"}>
           <UserInfoHeader isInsideSidebar={true} />
         </WindowBody>
       </MobileSideBar>
-    </>
+    </header>
   );
+};
+
+RoomHeader.propTypes = {
+  exitRoom: PropTypes.func,
 };
 
 export default RoomHeader;

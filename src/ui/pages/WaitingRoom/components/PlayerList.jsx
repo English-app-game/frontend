@@ -13,20 +13,21 @@ const PlayersList = ({ players, hostId }) => {
           Players In The Room:
         </h1>
         <ul className="space-y-4 text-white font-semibold">
-          {players.map(({ _id, avatarImg, name, isGuest }) => (
+          {players.map(({ _id, avatarImg, name, isGuest, isConnected }) => (
             <WaitingPlayerListItem
               key={_id}
               avatarImage={avatarImg}
               player={name}
               host={_id === hostId}
               isGuest={isGuest || false}
+              isConnected={isConnected !== false}
             />
           ))}
         </ul>
       </div>
       <div className="w-full sm:w-1/3 flex justify-center sm:justify-end mt-auto sm:mt-0">
         <div className="bg-teal-200 text-teal-600 rounded-full px-5 py-4 font-semibold">
-          MAX PLAYERS: 5
+          PLAYERS IN ROOM: {players.length}
         </div>
       </div>
     </BlueBox>

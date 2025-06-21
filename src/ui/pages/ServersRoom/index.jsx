@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { fetchRooms } from "../../../services/room/getRooms"; 
 import { IoGameControllerOutline } from "react-icons/io5";
 import { STATISTICS } from "../../../routes/routes_consts";
+import { RoomStatus } from "../../../consts/gameTypes";
 
 
 
@@ -18,7 +19,13 @@ export default function ServersRoom() {
       try {
         const data = await fetchRooms();
         console.log("📦 Rooms from service:", data);
-        setRooms(data);
+        
+        // Filter out rooms that are currently playing
+        const availableRooms = data.filter(room => 
+        !room.isPrivate && room.currentStatus === RoomStatus.WAITING 
+        );
+        
+        setRooms(availableRooms);
         setIsLoading(false);
       } catch (err) {
         console.error("Error loading rooms:", err);

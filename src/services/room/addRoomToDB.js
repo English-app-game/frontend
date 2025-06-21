@@ -8,6 +8,7 @@ export async function addRoomToDB(roomData, thunkAPI) {
       players: [],
       isActive: false,
       currentStatus: "waiting",
+      isPrivate: roomData.status === "private",
       createdAt: formatDateAndTime(new Date()),
       chat: [],
       amountOfPlayers: 1,

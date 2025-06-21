@@ -1,42 +1,116 @@
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSocket } from "../../../hooks/useSocket";
+import ScoreBoard from "./Scoreboard";
+import EnglishWords from "./EnglishWords";
+import HebrewWords from "./HebrewWords";
+import { joinTranslationGameRoom } from "../../../services/translationGame";
+import EndGame from "./EndGame/EndGame";
+import { GameTypes } from "../../../consts/gameTypes";
+import RotateNotice from "../RotateNotice";
+import getStoredUser from "../../../hooks/useAuthRedirect"
 
-export default function TranslationGame({roomKey, handleBack}) {
+// Utility: Fisher-Yates shuffle
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
-  const room = useSelector((store) => store.room);
- 
+export default function TranslationGame({ roomKey, handleBack }) {
+  const { emit } = useSocket();
 
-  // Basic ui in next steps will be replaced with actual game interface.
-  // will seperate to components in later stages.
+  const user = useSelector((store) => store.user);
+  const { id: userId } = user;
+
+  const gameEnded = useSelector((store) => store.translationGame.end);
+  const enWords = useSelector((store) => store.translationGame.enWords);
+  const hebWords = useSelector((store) => store.translationGame.hebWords);
+
+  const availableEnWords = useMemo(
+    () => enWords?.filter((word) => !word.disabled).slice(0, 15),
+    [enWords]
+  );
+
+  const renderedIds = useMemo(
+    () => new Set(availableEnWords?.map((word) => word.id)),
+    [availableEnWords]
+  );
+
+  const availableHeWords = useMemo(
+    () =>
+      hebWords?.filter((word) => !word.disabled && renderedIds.has(word.id)),
+    [hebWords, renderedIds]
+  );
+
+  const [selectedHebrewWordId, setSelectedHebrewWord] = useState(null);
+
+  const compareWordIds = useCallback(
+    (engWordId) =>
+      engWordId === selectedHebrewWordId ? selectedHebrewWordId : false,
+    [selectedHebrewWordId]
+  );
+
+  const game = useSelector((store) => store.translationGame);
+  const gameTypeId = useSelector((store) => store.room.gameType);
+  console.log(game);
+  console.log(gameTypeId);
+
+  useEffect(() => {
+    if (!roomKey || !userId || !gameTypeId) return;
+    joinTranslationGameRoom(emit, {
+      roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
+      user,
+      gameTypeId,
+    });
+  }, [roomKey, userId, emit, user]);
+
+  // sync the held hebrew word if user refreshed.
+  useEffect(() => {
+    const heldWord = hebWords?.find(
+      (word) => word.heldBy === userId && word.lock
+    );
+    setSelectedHebrewWord(heldWord ? heldWord.id : null);
+  }, [userId, hebWords]);
+
+  if (gameEnded) return <EndGame />;
+
   return (
-    <div className="relative min-h-screen p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-teal-700">Translation Game</h1>
+    <section className="relative z-[1] h-screen grid grid-rows-6 overflow-hidden">
+      {/* Scoreboard & Exit */}
+      <div className="row-span-1 bg-red-50 flex justify-between items-center px-6 py-3 shadow">
+        <ScoreBoard />
+        <button
+          onClick={handleBack}
+          className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow"
+        >
+          יציאה מהמשחק
+        </button>
       </div>
 
-      {/* Room Info */}
-      <div className="mb-4">
-        <p className="text-gray-700">
-          Room ID: <span className="font-semibold">{room.key}</span>
-        </p>
-        <p className="text-gray-700">
-          Players:{" "}
-          <span className="font-semibold">{room.players?.length || 0}</span>
-        </p>
+      {/* English Words */}
+      <div className="row-span-3 text-sm bg-gray-300 overflow-y-auto">
+        <EnglishWords
+          words={availableEnWords}
+          emit={emit}
+          compareWordIds={compareWordIds}
+          hebWordSelected={selectedHebrewWordId}
+          setHebWordSelected={setSelectedHebrewWord}
+        />
       </div>
 
-      {/* Game Area Placeholder */}
-      <div className="mt-8 border-2 border-dashed border-gray-300 p-10 rounded text-center text-gray-500">
-        Game interface will go here.
+      {/* Hebrew Words */}
+      <div className="row-span-2 text-sm bg-blue-100 overflow-y-auto">
+        <HebrewWords
+          words={availableHeWords}
+          emit={emit}
+          setSelectedHebrewWord={setSelectedHebrewWord}
+        />
       </div>
-
-      {/* Back Button - Bottom Left */}
-      <button
-        onClick={handleBack}
-        className="absolute bottom-6 left-6 px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-500 transition"
-      >
-        Back to Rooms
-      </button>
-    </div>
+      <RotateNotice />
+    </section>
   );
 }

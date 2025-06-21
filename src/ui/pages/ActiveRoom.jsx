@@ -1,42 +1,38 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
-import { useSocket } from "../../hooks/useSocket";
-import { useEffect } from "react";
-import { ROOMS_LIST, ROUTES } from "../../routes/routes_consts";
+import GuessWordGame from "../components/GuessWordGame/GuessWordGame"; 
+import { GameTypes } from "../../consts/gameTypes";
+import {  ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
 
 export default function ActiveRoom() {
   const { id: roomKey, gameType } = useParams();
   const navigate = useNavigate();
-  const { emit } = useSocket();
   const user = useSelector((store) => store.user);
+  const { id: userId } = user;
   const dispatch = useDispatch();
 
   const handleBack = async () => {
-    if (!user || !user.id || !roomKey) {
+    if (!userId || !roomKey) {
       dispatch(resetRoom());
       return navigate(ROUTES.ROOMS_LIST);
     }
 
-    await removeUserFromRoom(roomKey, user.id);
+    await removeUserFromRoom(roomKey, userId);
 
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };
 
-  useEffect(() => {
-    if (!roomKey || !user.id) return;
-    emit("join-room", {
-      roomKey,
-      user,
-    });
-  }, [roomKey, emit, user]);
+  console.log("the game type is" + gameType.toLowerCase());
 
-
-  if (gameType.toLowerCase() == "translation")
+  if (gameType.toLowerCase() === GameTypes.TRANSLATION)
     return <TranslationGame handleBack={handleBack} roomKey={roomKey} />;
+
+  if (gameType.toLowerCase() === GameTypes.GUESS_WORD_GAME)
+    return <GuessWordGame handleBack={handleBack} roomKey={roomKey} />;
 
   // TODO: Implement other game types (tomer?)
   // Remove this comment when implementing other game types
