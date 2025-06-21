@@ -17,6 +17,7 @@ import { getAllGameTypes } from "../../../../services/room/roomType";
 import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
 import useRoomPolling from "../../../../hooks/useRoomPolling";
 import { FaClock } from "react-icons/fa";
+import { setUser } from "../../../../store/slices/userSlice";
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -63,6 +64,7 @@ export default function WaitingRoom() {
 
     try {
       const updatedRoom = await startGameService(roomKey, userId);
+      dispatch(setUser(storedUser));
       setGameStarted(true);
       dispatch(startGame(updatedRoom.currentStatus));
     } catch (error) {

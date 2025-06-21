@@ -5,6 +5,8 @@ import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 import { joinUserToRoom } from "../../services/room/joinUserToRoom";
 import { getStoredUser } from "../../hooks/useAuthRedirect";
 import { ROOMS_LIST } from "../../routes/routes_consts";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slices/userSlice";
 
 const JoinGameRoom = ({
   id,
@@ -15,21 +17,24 @@ const JoinGameRoom = ({
   className = "w-45",
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClick = async () => {
+    const user = getStoredUser();
+
+    if (!user || !user.id) {
+      alert("User not found. Please log in.");
+      return;
+    }
+
+    dispatch(setUser(user));
+    
     if (currentPlayers >= capacity) {
       if (onJoinAttempt) {
         onJoinAttempt({ id, full: true });
       } else {
         alert("This room is full!");
       }
-      return;
-    }
-
-    const user = getStoredUser();
-
-    if (!user || !user.id) {
-      alert("User not found. Please log in.");
       return;
     }
 
