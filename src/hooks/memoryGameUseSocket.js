@@ -3,6 +3,7 @@ import { socket } from "../sockets/sockets";
 import { useDispatch, useSelector } from "react-redux";
 import { setMemoryGameState, resetMemoryGameState } from "../store/slices/memoryGameSlice";
 import { toast } from "react-toastify";
+import { MEMORY_GAME_STATE, MEMORY_GAME_END } from "../consts/consts";
 
 export function useMemoryGameSocket(roomKey) {
   const socketRef = useRef(socket);
@@ -24,14 +25,14 @@ export function useMemoryGameSocket(roomKey) {
   // --- Event listeners setup ---
   const startListeners = useCallback(() => {
     const s = socketRef.current;
-    s.on("memory-game/state", updateMemoryGameState);
-    s.on("memory-game/end", handleGameEnd);
+    s.on(MEMORY_GAME_STATE, updateMemoryGameState);
+    s.on(MEMORY_GAME_END, handleGameEnd);
   }, [updateMemoryGameState, handleGameEnd, dispatch]);
 
   const stopListeners = useCallback(() => {
     const s = socketRef.current;
-    s.off("memory-game/state", updateMemoryGameState);
-    s.off("memory-game/end", handleGameEnd);
+    s.off(MEMORY_GAME_STATE, updateMemoryGameState);
+    s.off(MEMORY_GAME_END, handleGameEnd);
   }, [updateMemoryGameState, handleGameEnd]);
 
   // --- Emit wrapper ---
@@ -43,7 +44,7 @@ export function useMemoryGameSocket(roomKey) {
   useEffect(() => {
     const s = socketRef.current;
 
-    if (!user?.id || !roomKey || user.id === "") {
+    if (!user?.id || !roomKey) {
       console.log("⛔️ Missing user or roomKey, skipping socket emit");
       return;
     }

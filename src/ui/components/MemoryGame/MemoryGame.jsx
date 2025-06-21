@@ -45,8 +45,6 @@ export default function MemoryGame() {
           setLockBoard(false);
           setSelectedCards([]);
           if (!match) {
-            // This timeout is redundant as the backend now handles the flip-back delay.
-            // However, we'll leave the local state clearing.
             setTimeout(() => {
               setLockBoard(false);
             }, 1000);

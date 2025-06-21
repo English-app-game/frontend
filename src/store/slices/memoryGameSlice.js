@@ -12,6 +12,14 @@ const initialState = {
   currentTurn: null,
 };
 
+function resetFlipped(cards, firstId, secondId) {
+  return cards.map(card =>
+    card.id === firstId || card.id === secondId
+      ? { ...card, flipped: false }
+      : card
+  );
+}
+
 const memoryGameSlice = createSlice({
   name: "memoryGame",
   initialState,
@@ -45,18 +53,8 @@ const memoryGameSlice = createSlice({
     flipBackCards: (state, { payload }) => {
       console.log("🧩 flipBackCards reducer activated with:", payload);
       const [firstId, secondId] = payload;
-
-      const updatedHe= state.words.heWords = state.words.heWords.map(card =>
-        card.id === firstId || card.id === secondId
-          ? { ...card, flipped: false }
-          : card
-      );
-
-       const updatedEn= state.words.enWords = state.words.enWords.map(card =>
-        card.id === firstId || card.id === secondId
-          ? { ...card, flipped: false }
-          : card
-      );
+      const updatedHe= state.words.heWords =resetFlipped(state.words.heWords, firstId, secondId);
+      const updatedEn= state.words.enWords = resetFlipped(state.words.enWords, firstId, secondId);
 
       return {
        ...state,
