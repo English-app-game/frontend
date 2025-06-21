@@ -15,9 +15,11 @@ import { RoomStatus } from "../../../../consts/gameTypes";
 import { ROUTES } from "../../../../routes/routes_consts";
 import { getAllGameTypes } from "../../../../services/room/roomType";
 import { WAITING_ROOM_EVENTS } from "../../../../consts/socketEvents";
+import { toast } from 'react-toastify';
 import useRoomPolling from "../../../../hooks/useRoomPolling";
 import { FaClock } from "react-icons/fa";
 import { setUser } from "../../../../store/slices/userSlice";
+
 
 export default function WaitingRoom() {
   const [copied, setCopied] = useState(false);
@@ -48,17 +50,20 @@ export default function WaitingRoom() {
   };
 
   const handleStart = async () => {
+    // comment this check if this blocks starting the game
+   
+      
     const gameTypes = await getAllGameTypes();
     const match = gameTypes.find((gt) => gt._id === room.gameType);
     let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
 
     if (players.length < 2 && gameType !== "guesstheword") {
-      alert("At least 2 players are required to start the game.");
+      toast.error("At least 2 players are required to start the game.");
       return;
     }
 
     if (userId !== room.admin) {
-      alert("Only the host can start the game.");
+      toast.error("Only the host can start the game.");
       return;
     }
 
@@ -69,7 +74,7 @@ export default function WaitingRoom() {
       dispatch(startGame(updatedRoom.currentStatus));
     } catch (error) {
       console.error(error);
-      alert("Failed to start the game. Please try again later.");
+      toast.error("Failed to start the game. Please try again later.");
     }
   };
 

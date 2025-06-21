@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 import { joinUserToRoom } from "../../services/room/joinUserToRoom";
 import { getStoredUser } from "../../hooks/useAuthRedirect";
+import { toast } from 'react-toastify';
 import { ROOMS_LIST } from "../../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slices/userSlice";
@@ -20,7 +21,7 @@ const JoinGameRoom = ({
   const dispatch = useDispatch();
 
   const handleClick = async () => {
-    const user = getStoredUser();
+  const user = getStoredUser();
 
     if (!user || !user.id) {
       alert("User not found. Please log in.");
@@ -33,8 +34,13 @@ const JoinGameRoom = ({
       if (onJoinAttempt) {
         onJoinAttempt({ id, full: true });
       } else {
-        alert("This room is full!");
+        toast.error("This room is full!");
       }
+      return;
+    }
+
+    if (!user || !user.id) {
+      toast.error("User not found. Please log in.");
       return;
     }
 
