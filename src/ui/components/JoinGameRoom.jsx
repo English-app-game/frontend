@@ -21,7 +21,7 @@ const JoinGameRoom = ({
   const dispatch = useDispatch();
 
   const handleClick = async () => {
-    const user = getStoredUser();
+  const user = getStoredUser();
 
     if (!user || !user.id) {
       alert("User not found. Please log in.");
@@ -38,8 +38,6 @@ const JoinGameRoom = ({
       }
       return;
     }
-
-    const user = getStoredUser();
 
     if (!user || !user.id) {
       toast.error("User not found. Please log in.");
