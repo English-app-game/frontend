@@ -1,4 +1,6 @@
 import { START_GAME_ROUTE } from "../consts/consts";
+import { toast } from 'react-toastify';
+
 
 export default async function startGame(roomKey, userId) {
   try {
@@ -21,6 +23,6 @@ export default async function startGame(roomKey, userId) {
     return updatedRoom;
   } catch (err) {
     console.error(err);
-    alert("Something went wrong. Please try again.");
+    toast.error("Something went wrong. Please try again.");
   }
 }
