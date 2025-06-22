@@ -1,6 +1,7 @@
+import React from "react";
 import { useSelector } from "react-redux";
 
-export default function HebrewWords({ words, emit, setSelectedHebrewWord }) {
+function HebrewWords({ words, emit, setSelectedHebrewWord }) {
   const userId = useSelector((state) => state.user.id);
   const roomKey = useSelector((state) => state.translationGame.roomKey);
   const users = useSelector((state) => state.translationGame.users);
@@ -15,7 +16,15 @@ export default function HebrewWords({ words, emit, setSelectedHebrewWord }) {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-3 p-4" dir="rtl">
+    <div
+      className="relative grid grid-cols-5 gap-2 p-3 w-1/2 ml-auto"
+      dir="rtl"
+    >
+      <img
+        src="/translation_game/boat.png"
+        className="z-2 top-1/4 absolute h-20 w-full"
+        alt=""
+      />
       {words.map((word) => {
         if (!word?.word || !word?.id) {
           console.warn("⚠️ Malformed word object:", word);
@@ -28,21 +37,35 @@ export default function HebrewWords({ words, emit, setSelectedHebrewWord }) {
         const color = heldBy ? users[heldBy]?.color : null;
 
         return (
-          <button
-            key={id}
-            onClick={() => handleLock(id)}
-            disabled={isLocked && !lockedByMe}
-            className={`px-3 py-2 rounded-lg font-semibold border transition
-              ${isLocked ? "opacity-80" : "hover:bg-gray-100"}
-              ${color ? "border-[3px]" : "border"}
-              text-black
-            `}
-            style={{ backgroundColor: color || "#ffffff" }}
-          >
-            {hebWord}
-          </button>
+          <div className="relative z-100" onClick={() => handleLock(id)}>
+            <img
+              src="/translation_game/bucket.png"
+              alt="bucket"
+              draggable={false}
+              className="absolute w-16 -translate-y-1/2"
+            />
+
+            <button
+              key={id}
+              disabled={isLocked && !lockedByMe}
+              className={`
+      relative z-10
+      w-16 h-full
+      flex items-center justify-center
+      rounded-lg border font-semibold transition
+      ${isLocked ? "ring-2 ring-blue-500 opacity-80" : "hover:bg-gray-100"}
+      text-black
+    `}
+              style={{ backgroundColor: color || "#fff" }}
+              dir="rtl"
+            >
+              {hebWord}
+            </button>
+          </div>
         );
       })}
     </div>
   );
 }
+
+export default React.memo(HebrewWords);

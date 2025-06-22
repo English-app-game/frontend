@@ -29,10 +29,36 @@ export default function TranslationGame({ roomKey, handleBack }) {
   const enWords = useSelector((store) => store.translationGame.enWords);
   const hebWords = useSelector((store) => store.translationGame.hebWords);
 
-  const availableEnWords = useMemo(
-    () => enWords?.filter((word) => !word.disabled).slice(0, 15),
-    [enWords]
-  );
+  const availableEnWords = useMemo(() => {
+    if (!enWords) return [];
+
+    const MAX = 10;
+
+    const result = enWords.slice(0, MAX);
+    const usedIds = new Set(
+      result.filter((w) => w && !w.disabled).map((w) => w.id)
+    );
+
+    let scanIndex = MAX;
+    for (let i = 0; i < result.length; i++) {
+      if (!result[i] || !result[i].disabled) continue;
+
+      while (
+        scanIndex < enWords.length &&
+        (enWords[scanIndex].disabled || usedIds.has(enWords[scanIndex].id))
+      ) {
+        scanIndex++;
+      }
+
+      if (scanIndex < enWords.length) {
+        result[i] = enWords[scanIndex];
+        usedIds.add(enWords[scanIndex].id);
+        scanIndex++;
+      }
+    }
+
+    return result;
+  }, [enWords]);
 
   const renderedIds = useMemo(
     () => new Set(availableEnWords?.map((word) => word.id)),
@@ -41,7 +67,9 @@ export default function TranslationGame({ roomKey, handleBack }) {
 
   const availableHeWords = useMemo(
     () =>
-      hebWords?.filter((word) => !word.disabled && renderedIds.has(word.id)),
+      hebWords
+        ?.filter((word) => !word.disabled && renderedIds.has(word.id))
+        .slice(0, 5),
     [hebWords, renderedIds]
   );
 
@@ -78,35 +106,33 @@ export default function TranslationGame({ roomKey, handleBack }) {
   if (gameEnded) return <EndGame />;
 
   return (
-    <section className="relative z-[1] h-screen grid grid-rows-6 overflow-hidden">
+    <section
+      className=" relative z-[1] h-screen grid grid-rows-4 overflow-hidden bg-no-repeat bg-cover bg-center"
+      style={{ backgroundImage: 'url("/translation_game/bg.svg")' }}
+    >
       {/* Scoreboard & Exit */}
-      <div className="row-span-1 bg-red-50 flex justify-between items-center px-6 py-3 shadow">
-        <ScoreBoard />
-        <button
-          onClick={handleBack}
-          className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow"
-        >
-          יציאה מהמשחק
-        </button>
+
+      <div className="row-span-1 flex justify-between items-center px-6 py-3 shadow-md">
+        <ScoreBoard handleBack={handleBack} />
+      </div>
+
+      {/* Hebrew Words */}
+      <div className="row-span-1 text-sm">
+        <HebrewWords
+          words={availableHeWords}
+          emit={emit}
+          setSelectedHebrewWord={setSelectedHebrewWord}
+        />
       </div>
 
       {/* English Words */}
-      <div className="row-span-3 text-sm bg-gray-300 overflow-y-auto">
+      <div className="row-span-2 text-sm">
         <EnglishWords
           words={availableEnWords}
           emit={emit}
           compareWordIds={compareWordIds}
           hebWordSelected={selectedHebrewWordId}
           setHebWordSelected={setSelectedHebrewWord}
-        />
-      </div>
-
-      {/* Hebrew Words */}
-      <div className="row-span-2 text-sm bg-blue-100 overflow-y-auto">
-        <HebrewWords
-          words={availableHeWords}
-          emit={emit}
-          setSelectedHebrewWord={setSelectedHebrewWord}
         />
       </div>
       <RotateNotice />

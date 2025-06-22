@@ -44,11 +44,11 @@ export default function WaitingRoom() {
     let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
     console.log("Game type is:", gameType, "- starting game");
 
-    if (players.length < 2 && gameType !== "guesstheword") {
-      console.log("Too few players and gameType is:", gameType);
-      alert("At least 2 players are required to start the game.");
-      return;
-    }
+    // if (players.length < 2 && gameType !== "guesstheword") {
+    //   console.log("Too few players and gameType is:", gameType);
+    //   alert("At least 2 players are required to start the game.");
+    //   return;
+    // }
 
     // comment this check if this blocks starting the game
     // if (players.length < 2) {
