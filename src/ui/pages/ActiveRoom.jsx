@@ -5,6 +5,8 @@ import MemoryGame from "../components/MemoryGame/MemoryGame";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
 import { ROOMS_LIST } from "../../routes/routes_consts";
+import GuessWordGame from "../components/GuessWordGame/GuessWordGame"; 
+import { GameTypes } from "../../consts/gameTypes";
 import {  ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
@@ -28,6 +30,8 @@ export default function ActiveRoom() {
     navigate(ROUTES.ROOMS_LIST);
   };
 
+  console.log("the game type is" + gameType.toLowerCase());
+
 
   //or look at it
   console.log("gameType from params:", gameType);
@@ -39,6 +43,18 @@ export default function ActiveRoom() {
   if (normalizedGameType === "memorygame") {
     return <MemoryGame roomKey={roomKey} />;
   }
+
+  if (gameType.toLowerCase() === GameTypes.TRANSLATION)
+    return <TranslationGame handleBack={handleBack} roomKey={roomKey} />;
+
+  if (gameType.toLowerCase() === GameTypes.GUESS_WORD_GAME)
+    return <GuessWordGame handleBack={handleBack} roomKey={roomKey} />;
+
+  // TODO: Implement other game types (tomer?)
+  // Remove this comment when implementing other game types
+  // if(gameType.toLowerCase() == 'memorygame')
+  //   return <MemoryGame />
+
 
   return (
     <h1>
