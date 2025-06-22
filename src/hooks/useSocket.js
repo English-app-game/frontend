@@ -17,6 +17,7 @@ export function useSocket() {
   );
 
   const handleMatchFeedback = useCallback(({ correct }) => {
+    toast.dismiss();
     if (correct) {
       toast.success("✅ Correct match!");
     } else {
