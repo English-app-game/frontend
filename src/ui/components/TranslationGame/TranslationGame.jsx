@@ -8,6 +8,7 @@ import { joinTranslationGameRoom } from "../../../services/translationGame";
 import EndGame from "./EndGame/EndGame";
 import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
+import getStoredUser from "../../../hooks/useAuthRedirect"
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {

@@ -1,6 +1,7 @@
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { handleLogout, getStoredUser } from "../../hooks/useAuthRedirect";
 import { useSocket } from "../../hooks/useSocket";
+import { useWaitingRoomSocket } from "../../hooks/useWaitingRoomSocket";
 import { useDispatch } from "react-redux";
 import TextButton from "./TextButton";
 import AvatarImg from "./AvatarImg";
@@ -12,6 +13,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
   const params = useParams();
   const dispatch = useDispatch();
   const { socket } = useSocket();
+  const { leaveWaitingRoom } = useWaitingRoomSocket();
 
   const user = getStoredUser();
 
@@ -33,7 +35,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
           onClick={() =>
-            handleLogout(navigate, socket, currentRoomKey, dispatch)
+            handleLogout(navigate, socket, currentRoomKey, dispatch, leaveWaitingRoom)
           }
           className="text-white hover:cursor-pointer hover:underline"
         >
