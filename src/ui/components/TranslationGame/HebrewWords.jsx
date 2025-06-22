@@ -37,7 +37,11 @@ function HebrewWords({ words, emit, setSelectedHebrewWord }) {
         const color = heldBy ? users[heldBy]?.color : null;
 
         return (
-          <div className="relative z-100" onClick={() => handleLock(id)}>
+          <div
+            className="relative z-100"
+            key={id}
+            onClick={() => handleLock(id)}
+          >
             <img
               src="/translation_game/bucket.png"
               alt="bucket"
@@ -46,7 +50,6 @@ function HebrewWords({ words, emit, setSelectedHebrewWord }) {
             />
 
             <button
-              key={id}
               disabled={isLocked && !lockedByMe}
               className={`
       relative z-10
