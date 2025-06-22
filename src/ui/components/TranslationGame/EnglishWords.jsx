@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import React, { useRef, useEffect } from "react";
-import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
+import { TRANSLATION_GAME_ASSETS_PATH, TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
 import { toast } from "react-toastify";
 import { emitMatchWord } from "../../../services/translationGame";
 
@@ -37,7 +37,7 @@ function EnglishWords({
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 p-4">
       {words?.map((word, index) => {
         const fishIndex = (index % 10) + 1;
-        const fishSrc = `/translation_game/fish-${fishIndex}.png`;
+        const fishSrc = TRANSLATION_GAME_ASSETS_PATH.FISH(fishIndex);
 
         return (
           !word.disabled && (

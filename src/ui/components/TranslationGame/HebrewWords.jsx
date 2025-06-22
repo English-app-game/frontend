@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { TRANSLATION_GAME_ASSETS_PATH } from "../../../consts/translationGame";
 
 function HebrewWords({ words, emit, setSelectedHebrewWord }) {
   const userId = useSelector((state) => state.user.id);
@@ -21,7 +22,7 @@ function HebrewWords({ words, emit, setSelectedHebrewWord }) {
       dir="rtl"
     >
       <img
-        src="/translation_game/boat.png"
+        src={TRANSLATION_GAME_ASSETS_PATH.BOAT}
         className="z-2 top-1/4 absolute h-20 w-full"
         alt=""
       />
@@ -43,7 +44,7 @@ function HebrewWords({ words, emit, setSelectedHebrewWord }) {
             onClick={() => handleLock(id)}
           >
             <img
-              src="/translation_game/bucket.png"
+              src={TRANSLATION_GAME_ASSETS_PATH.BUCKET}
               alt="bucket"
               draggable={false}
               className="absolute w-16 -translate-y-1/2"
