@@ -21,7 +21,7 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] bg-cover bg-center flex justify-center items-center px-4">
-      <SecondaryButton text={"BACK"} onclick={handleExitRoom} />
+      <SecondaryButton text={"BACK"} onclick={handleExitRoom} className={"absolute"}/>
       <div className="pt-10 w-full">
         <BlueBox>
           <Header text="PLEASE ENTER YOUR EMAIL" className="text-center" />

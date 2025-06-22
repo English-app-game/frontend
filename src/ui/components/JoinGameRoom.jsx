@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
 import { joinUserToRoom } from "../../services/room/joinUserToRoom";
 import { getStoredUser } from "../../hooks/useAuthRedirect";
+import { toast } from 'react-toastify';
+import { ROOMS_LIST } from "../../routes/routes_consts";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slices/userSlice";
 
 const JoinGameRoom = ({
   id,
@@ -14,25 +18,37 @@ const JoinGameRoom = ({
   className = "w-45",
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleClick = async () => {
-    if (currentPlayers >= capacity) {
-      if (onJoinAttempt) {
-        onJoinAttempt({ id, full: true });
-      } else {
-        alert("This room is full!");
-      }
-      return;
-    }
-
-    const user = getStoredUser();
+  const user = getStoredUser();
 
     if (!user || !user.id) {
       alert("User not found. Please log in.");
       return;
     }
 
+    dispatch(setUser(user));
+    
+    if (currentPlayers >= capacity) {
+      if (onJoinAttempt) {
+        onJoinAttempt({ id, full: true });
+      } else {
+        toast.error("This room is full!");
+      }
+      return;
+    }
+
+    if (!user || !user.id) {
+      toast.error("User not found. Please log in.");
+      return;
+    }
+
     const isGuest = user.isGuest || typeof user.id === 'string' && user.id.length !== 24;
+    
+    const handleJoinError = () => {
+      navigate(ROOMS_LIST);
+    };
     
     if (isGuest) {
       const guestData = {
@@ -40,9 +56,9 @@ const JoinGameRoom = ({
         name: user.name,
         avatarImg: user.avatarImg
       };
-      await joinUserToRoom(id, user.id, guestData);
+      await joinUserToRoom(id, user.id, guestData, handleJoinError);
     } else {
-      await joinUserToRoom(id, user.id);
+      await joinUserToRoom(id, user.id, null, handleJoinError);
     }
 
     if (onJoinAttempt) {
