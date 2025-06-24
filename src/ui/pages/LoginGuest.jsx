@@ -16,6 +16,7 @@ export default function LoginGuest() {
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [usernameError, setUsernameError] = useState("");
   const [avatarError, setAvatarError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateGuestFields = (
     username,
@@ -55,6 +56,7 @@ export default function LoginGuest() {
     );
     if (!isValid) return;
 
+    setIsLoading(true);
     try {
       const data = await loginGuest(username, selectedAvatar);
 
@@ -66,6 +68,8 @@ export default function LoginGuest() {
     } catch (err) {
       console.error("Guest login error:", err);
       setAvatarError("Server error. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,10 +92,19 @@ export default function LoginGuest() {
           </div>
           <div className="pt-4">
             <PrimaryButton
-              text="LET'S GO!"
-              className="float-right mt-4 ml-4 px-4 py-2"
+              text={isLoading ? "LOGGING IN" : "LET'S GO!"}
+              className={`float-right mt-4 ml-4 px-4 py-2 ${isLoading ? 'opacity-75' : ''}`}
               onClick={handleGuestLogin}
-            />
+              disabled={isLoading}
+            >
+              {isLoading && (
+                <span className="ml-2">
+                  <span className="inline-block w-2 h-2 bg-white rounded-full animate-bounce"></span>
+                  <span className="inline-block w-2 h-2 bg-white rounded-full animate-bounce ml-1" style={{animationDelay: '0.1s'}}></span>
+                  <span className="inline-block w-2 h-2 bg-white rounded-full animate-bounce ml-1" style={{animationDelay: '0.2s'}}></span>
+                </span>
+              )}
+            </PrimaryButton>
             <h3 className="text-white mb-2">Choose your Avatar:</h3>
             <div className="grid grid-cols-5 gap-1">
               {avatarList.map((src, index) => (

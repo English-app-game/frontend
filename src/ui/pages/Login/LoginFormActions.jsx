@@ -2,14 +2,23 @@ import PrimaryButton from "../../components/PrimaryButton.jsx";
 import TextBottom from "../../components/TextButton.jsx";
 import { LOGIN_GUEST, REGISTER, RESET_PASSWORD } from "../../../routes/routes_consts.js";
 
-export default function LoginFormActions({ handleLogin, navigate }) {
+export default function LoginFormActions({ handleLogin, navigate, isLoading = false }) {
   return (
     <>
       <PrimaryButton
-        text="LOGIN"
-        className="mt-4 px-4 py-2"
+        text={isLoading ? "LOGGING IN" : "LOGIN"}
+        className={`mt-4 px-4 py-2 ${isLoading ? 'opacity-75' : ''}`}
         onClick={handleLogin}
-      />
+        disabled={isLoading}
+      >
+        {isLoading && (
+          <span className="ml-2">
+            <span className="inline-block w-2 h-2 bg-white rounded-full animate-bounce"></span>
+            <span className="inline-block w-2 h-2 bg-white rounded-full animate-bounce ml-1" style={{animationDelay: '0.1s'}}></span>
+            <span className="inline-block w-2 h-2 bg-white rounded-full animate-bounce ml-1" style={{animationDelay: '0.2s'}}></span>
+          </span>
+        )}
+      </PrimaryButton>
       <div className="flex flex-col items-center gap-4 mt-6">
         {/* Main action links in one line */}
         <div className="flex flex-row items-center justify-center gap-6 flex-wrap">
