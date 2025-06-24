@@ -26,7 +26,7 @@ const RoomFooter = ({exitRoom, copied, handleCopy, handleStart, roomKey }) => {
       </div>
       <div className="flex gap-4">
         <ExitButton
-          className="sm:hidden w-full sm:w-auto text-center bg-rose-600 border-green-400 hover:bg-green-400 mb-7 sm:mb-0 border-4 border-rose-400"
+          className="sm:hidden w-full sm:w-auto text-center bg-rose-600 mb-7 sm:mb-0 border-4 border-rose-400"
           onClick={() =>
             handleExitWaitingRoom(exitRoom, navigate, dispatch)
           }
