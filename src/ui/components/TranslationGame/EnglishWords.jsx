@@ -1,15 +1,15 @@
 import { useSelector } from "react-redux";
-import { useRef, useEffect } from "react";
-import { TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
+import React, { useRef, useEffect } from "react";
+import { TRANSLATION_GAME_ASSETS_PATH, TRANSLATION_GAME_EVENTS } from "../../../consts/translationGame";
 import { toast } from "react-toastify";
 import { emitMatchWord } from "../../../services/translationGame";
 
-export default function EnglishWords({
+function EnglishWords({
   words,
   emit,
   hebWordSelected,
   compareWordIds,
-  setHebWordSelected
+  setHebWordSelected,
 }) {
   const roomKey = useSelector((store) => store.translationGame.roomKey);
   const userId = useSelector((store) => store.user.id);
@@ -18,6 +18,7 @@ export default function EnglishWords({
     if (!hebWordSelected) return;
     const hebWordId = compareWordIds(englishId);
     if (!hebWordId) {
+      toast.dismiss();
       toast.error("❌ Incorrect match!");
       return;
     }
@@ -33,25 +34,37 @@ export default function EnglishWords({
   };
 
   return (
-    <div className="grid grid-cols-4 gap-3 p-4">
-      {words?.map((word) => (
-        <button
-          key={word.id}
-          onClick={() => handleClick(word.id)}
-          disabled={word.disabled}
-          className="w-full px-4 py-2 rounded-xl font-semibold border bg-white hover:bg-gray-100 transition break-words text-center"
-          style={{ wordBreak: "break-word", minHeight: "3rem" }}
-        >
-          {word.word}
-        </button>
-      ))}
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 p-4">
+      {words?.map((word, index) => {
+        const fishIndex = (index % 10) + 1;
+        const fishSrc = TRANSLATION_GAME_ASSETS_PATH.FISH(fishIndex);
+
+        return (
+          !word.disabled && (
+            <button
+              key={word.id}
+              onClick={() => handleClick(word.id)}
+              disabled={word.disabled}
+              className={`flex flex-col items-center justify-center text-center transition active:scale-95 ${
+                word.disabled
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              <img
+                src={fishSrc}
+                alt="fish"
+                className="w-28 h-14 object-contain"
+                draggable={false}
+              />
+              <span className="mt-1 text-black font-semibold text-sm leading-tight break-words">
+                {word.word}
+              </span>
+            </button>
+          )
+        );
+      })}
     </div>
   );
 }
-
-// FIXES:
-// 1. fix emit messages to use consts and service functions
-// 2. Transfer logic to service
-// 3. fix shuffle bug by seperating eng and heb words. check
-// 4. no need for two ids as its the same id check
-// 5. use closure for heb eng id comparison check
+export default React.memo(EnglishWords);
