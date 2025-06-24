@@ -1,13 +1,8 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import joinRoomIcon from "../../assets/images/joinRoomIcon.png";
-import { joinUserToRoom } from "../../services/room/joinUserToRoom";
-import { getStoredUser } from "../../hooks/useAuthRedirect";
-import { toast } from 'react-toastify';
-import { ROOMS_LIST } from "../../routes/routes_consts";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../store/slices/userSlice";
+import { handleJoinRoomClick } from "../../utils/handleJoinRoomClick";
 
 const JoinGameRoom = ({
   id,
@@ -20,53 +15,17 @@ const JoinGameRoom = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleClick = async () => {
-  const user = getStoredUser();
+  const handleClick = () => {
+  handleJoinRoomClick({
+    id,
+    currentPlayers,
+    capacity,
+    onJoinAttempt,
+    navigate,
+    dispatch,
+  });
+};
 
-    if (!user || !user.id) {
-      alert("User not found. Please log in.");
-      return;
-    }
-
-    dispatch(setUser(user));
-    
-    if (currentPlayers >= capacity) {
-      if (onJoinAttempt) {
-        onJoinAttempt({ id, full: true });
-      } else {
-        toast.error("This room is full!");
-      }
-      return;
-    }
-
-    if (!user || !user.id) {
-      toast.error("User not found. Please log in.");
-      return;
-    }
-
-    const isGuest = user.isGuest || typeof user.id === 'string' && user.id.length !== 24;
-    
-    const handleJoinError = () => {
-      navigate(ROOMS_LIST);
-    };
-    
-    if (isGuest) {
-      const guestData = {
-        id: user.id,
-        name: user.name,
-        avatarImg: user.avatarImg
-      };
-      await joinUserToRoom(id, user.id, guestData, handleJoinError);
-    } else {
-      await joinUserToRoom(id, user.id, null, handleJoinError);
-    }
-
-    if (onJoinAttempt) {
-      onJoinAttempt({ id, full: false });
-    }
-
-    navigate(`/rooms/${id}`);
-  };
 
   return (
     <div

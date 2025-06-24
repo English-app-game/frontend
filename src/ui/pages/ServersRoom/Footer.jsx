@@ -10,17 +10,21 @@ import { FaPlay } from "react-icons/fa";
 import PrimaryButton from "../../components/PrimaryButton";
 import InputField from "../../components/InputField";
 import { checkRoomAvailabilityByKey } from "../../../services/room/getRooms";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { joinUserToRoom } from "../../../services/room/joinUserToRoom";
+import { useWaitingRoomSocket } from "../../../hooks/useWaitingRoomSocket";
+import { handleJoinRoomClick } from "../../../utils/handleJoinRoomClick";
 
 export default function Footer({ rooms }) {
   const userId = useSelector((store) => store.user.id);
   const user = useSelector((store) => store.user);
+  const { connectWithTimeout } = useWaitingRoomSocket();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [createError, setCreateError] = useState();
-
+  
   async function handleJoinRoom(e) {
     e.preventDefault();
     setError("");
@@ -28,26 +32,19 @@ export default function Footer({ rooms }) {
     const formData = new FormData(e.target);
     const roomCode = formData.get("roomCode").trim();
 
-    console.log("🔍 Room code sent to server:", roomCode);
-
     if (!roomCode) {
       setError("Please enter a room code");
       return;
     }
 
-    try {
-      const data = await checkRoomAvailabilityByKey(roomCode);
-      
-      const handleJoinError = () => {
-        navigate(ROOMS_LIST);
-      };
-      
-      await joinUserToRoom(data.roomKey, userId, null, handleJoinError);
-
-      navigate(WAITING_ROOM(data.roomKey));
-    } catch (err) {
-      setError(err.message);
-    }
+    handleJoinRoomClick({
+      id: roomCode,
+      currentPlayers: 0,
+      capacity: 9999,
+      onJoinAttempt: null,
+      navigate,
+      dispatch,
+    });
   }
 
   function handleCreateRoomClick(e, setCreateError) {
