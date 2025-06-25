@@ -1,27 +1,19 @@
-import { formatDateAndTime } from "../../services/dateService";
+// services/rooms.js or similar
 import { BASE_URL } from "../../consts/consts";
-// import { getGameTypes } from "../getGameTypes";
-export async function addRoomToDB(roomData, thunkAPI) {
+
+export async function addRoomToDB(roomData, token, thunkAPI) {
   try {
-
-    const roomTemplate = {
-      players: [],
-      isActive: false,
-      currentStatus: "waiting",
-      isPrivate: roomData.status === "private",
-      createdAt: formatDateAndTime(new Date()),
-      chat: [],
-      amountOfPlayers: 0,
-    };
-
     const response = await fetch(`${BASE_URL}/rooms/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        ...roomData,
-        ...roomTemplate,
+        admin: roomData.admin,
+        gameType: roomData.gameType,
+        level: roomData.level,
+        status: roomData.status, // "private" or "public"
       }),
     });
 
@@ -33,7 +25,7 @@ export async function addRoomToDB(roomData, thunkAPI) {
     }
 
     const newRoom = await response.json();
-    return newRoom.room; // assuming backend returns { message, room }
+    return newRoom.room;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.message || "Network error");
   }
