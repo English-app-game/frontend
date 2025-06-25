@@ -1,5 +1,5 @@
-import { GET_PLAYERS_ROUTE } from "../../consts/consts";
-import {BASE_URL} from "../../../src/consts/consts";
+import { GET_PLAYERS_ROUTE, BASE_URL } from "../../consts/consts";
+
 
 export const fetchPlayers = async (roomKey) => {
   try {

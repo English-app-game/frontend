@@ -24,15 +24,15 @@ export function useMemoryGameSocket(roomKey) {
 
   // --- Event listeners setup ---
   const startListeners = useCallback(() => {
-    const s = socketRef.current;
-    s.on(MEMORY_GAME_STATE, updateMemoryGameState);
-    s.on(MEMORY_GAME_END, handleGameEnd);
+    const currSocket = socketRef.current;
+    currSocket.on(MEMORY_GAME_STATE, updateMemoryGameState);
+    currSocket.on(MEMORY_GAME_END, handleGameEnd);
   }, [updateMemoryGameState, handleGameEnd, dispatch]);
 
   const stopListeners = useCallback(() => {
-    const s = socketRef.current;
-    s.off(MEMORY_GAME_STATE, updateMemoryGameState);
-    s.off(MEMORY_GAME_END, handleGameEnd);
+    const currSocket = socketRef.current;
+    currSocket.off(MEMORY_GAME_STATE, updateMemoryGameState);
+    currSocket.off(MEMORY_GAME_END, handleGameEnd);
   }, [updateMemoryGameState, handleGameEnd]);
 
   // --- Emit wrapper ---
@@ -42,20 +42,20 @@ export function useMemoryGameSocket(roomKey) {
 
   // --- Lifecycle management ---
   useEffect(() => {
-    const s = socketRef.current;
+    const currSocket = socketRef.current;
 
     if (!user?.id || !roomKey) {
       console.log("⛔️ Missing user or roomKey, skipping socket emit");
       return;
     }
 
-    if (!s.connected) s.connect();
+    if (!currSocket.connected) currSocket.connect();
 
     console.log("📤 Emitting memory-game/join", { roomKey, user });
-    s.emit("memory-game/join", { roomKey, user });
+    currSocket.emit("memory-game/join", { roomKey, user });
 
     return () => {
-      s.disconnect();
+      currSocket.disconnect();
     };
   }, [roomKey, user?.id]);
 

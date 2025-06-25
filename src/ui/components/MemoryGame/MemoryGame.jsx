@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import WordCard from "./WordCard";
 import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
-import { useMemoryGameSocket } from "../../../hooks/memoryGameUseSocket";
+import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
