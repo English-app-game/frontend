@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import LevelSelector from "./LevelSelector";
 import StatusSelector from "./StatusSelector";
 import PrimaryButton from "../../../ui/components/PrimaryButton";
@@ -6,7 +6,7 @@ import BlueBox from "../../../ui/components/BlueBox";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { createRoom } from "../../../store/thunks/createRoomThunk";
-import { ROOMS_LIST, WAITING_ROOM } from "../../../routes/routes_consts";
+import { LOGIN, ROOMS_LIST, WAITING_ROOM } from "../../../routes/routes_consts";
 import { useNavigate } from "react-router-dom";
 import GameTypeSelector from "../../components/GameTypeSelector";
 import { toast } from "react-toastify";
@@ -41,6 +41,10 @@ const CreateRoom = () => {
       toast.error("Please select game type, level and status!");
       return;
     }
+
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token") || null;
+
     dispatch(
       createRoom({
         key: null,
@@ -49,6 +53,7 @@ const CreateRoom = () => {
         status,
         gameType,
         admin: user.id,
+        token,
       })
     );
   };
@@ -61,14 +66,19 @@ const CreateRoom = () => {
 
   const handleExitCreateRoom = () => {
     navigate(ROOMS_LIST);
-  }
+  };
 
   return (
     <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
-      <SecondaryButton text={"EXIT"} onclick={handleExitCreateRoom} className={"absolute"}/>
+      <SecondaryButton
+        text={"EXIT"}
+        onclick={handleExitCreateRoom}
+        className={"absolute"}
+      />
       <BlueBox
         size="large"
-        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]" >
+        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"
+      >
         <Header
           className="text-4xl font-extrabold mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}

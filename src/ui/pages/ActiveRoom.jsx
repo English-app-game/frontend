@@ -5,9 +5,9 @@ import MemoryGame from "../components/MemoryGame/MemoryGame";
 import { useSocket } from "../../hooks/useSocket";
 import { useEffect } from "react";
 import { ROOMS_LIST } from "../../routes/routes_consts";
-import GuessWordGame from "../components/GuessWordGame/GuessWordGame"; 
+import GuessWordGame from "../components/GuessWordGame/GuessWordGame";
 import { GameTypes } from "../../consts/gameTypes";
-import {  ROUTES } from "../../routes/routes_consts";
+import { ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
 
@@ -19,6 +19,7 @@ export default function ActiveRoom() {
   const dispatch = useDispatch();
 
   const handleBack = async () => {
+    console.log("test");
     if (!userId || !roomKey) {
       dispatch(resetRoom());
       return navigate(ROUTES.ROOMS_LIST);
@@ -26,22 +27,23 @@ export default function ActiveRoom() {
 
     await removeUserFromRoom(roomKey, userId);
 
+    localStorage.removeItem("enteredFromWaitingRoom");
+    localStorage.removeItem("lastEnteredRoom");      
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };
 
   console.log("the game type is" + gameType.toLowerCase());
 
-
   //or look at it
   console.log("gameType from params:", gameType);
   const normalizedGameType = gameType.toLowerCase().replace(/[_ ]/g, "");
 
   if (normalizedGameType === "translation") {
-    return <TranslationGame roomKey={roomKey} />;
+    return <TranslationGame roomKey={roomKey} handleBack={handleBack} />;
   }
   if (normalizedGameType === "memorygame") {
-    return <MemoryGame roomKey={roomKey} />;
+    return <MemoryGame roomKey={roomKey} handleBack={handleBack} />;
   }
 
   if (gameType.toLowerCase() === GameTypes.TRANSLATION)
@@ -54,7 +56,6 @@ export default function ActiveRoom() {
   // Remove this comment when implementing other game types
   // if(gameType.toLowerCase() == 'memorygame')
   //   return <MemoryGame />
-
 
   return (
     <h1>

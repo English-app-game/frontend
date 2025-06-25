@@ -94,10 +94,11 @@ export default function TranslationGame({ roomKey, handleBack }) {
 
     const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
     const lastRoom = localStorage.getItem("lastEnteredRoom");
-    if (enteredProperly !== "true" || lastRoom !== roomKey) {
-      navigate(ROOMS_LIST);
-      return;
-    }
+    console.log("test");
+    // if (enteredProperly !== "true" || lastRoom !== roomKey) {
+    //   return;
+    //   navigate(ROOMS_LIST);
+    // }
 
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
@@ -105,8 +106,6 @@ export default function TranslationGame({ roomKey, handleBack }) {
       gameTypeId,
     });
 
-    localStorage.removeItem("enteredFromWaitingRoom");
-    localStorage.removeItem("lastEnteredRoom");
   }, [roomKey, userId, emit, user]);
 
   // sync the held hebrew word if user refreshed.

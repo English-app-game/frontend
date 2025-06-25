@@ -38,6 +38,8 @@ export default function EndGame() {
         onClick={() => {
           dispatch(resetTranslationGameState());
           dispatch(resetRoom());
+          localStorage.removeItem("enteredFromWaitingRoom");
+          localStorage.removeItem("lastEnteredRoom");      
           navigate(ROUTES.ROOMS_LIST);
         }}
         className="mt-6 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow"
