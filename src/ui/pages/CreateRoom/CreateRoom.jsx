@@ -12,17 +12,7 @@ import GameTypeSelector from "../../components/GameTypeSelector";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SecondaryButton from "../../components/SecondaryButton";
-import UserInfoHeader from "../../components/UserInfoHeader";
-
-const TEMP_USER = {
-  // this user ID has to be real ID from db.
-  _id: "681f7a077d51665473dbe491",
-  name: "Alice Example",
-  email: "alice@example.com",
-  password: "securePassword123!",
-  avatarImg: "https://api.dicebear.com/7.x/adventurer/svg?seed=Alice",
-  lastLogin: new Date().toISOString(),
-};
+import { getStoredUser } from "../../../hooks/useAuthRedirect";
 
 const CreateRoom = () => {
   const [level, setLevel] = useState(null);
@@ -34,7 +24,7 @@ const CreateRoom = () => {
   const roomKey = useSelector((store) => store.room.key);
   const dispatch = useDispatch();
 
-  const user = useSelector((store) => store.user);
+  const user = getStoredUser();
 
   const handleCreateRoom = () => {
     if (!level || !status || !gameType) {
