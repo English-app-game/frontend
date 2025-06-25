@@ -1,3 +1,6 @@
+
+
+import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 export const PORT = 5000;
 export const BASE_URL =
   import.meta.env.VITE_API_BASE_URL || `http://localhost:${PORT}/api`;
@@ -21,3 +24,5 @@ export const START_GAME_ROUTE = (roomKey = "") =>
 export const DELETE_ROOM_ROUTE = (roomKey = "") =>
   `${BASE_URL}/rooms/${roomKey}`;
 export const SAVE_USER_SCORE_ROUTE = `${BASE_URL}/score/save`
+export const MEMORY_GAME_STATE = "memory-game/state";
+export const MEMORY_GAME_END = "memory-game/end";
