@@ -11,7 +11,7 @@ export async function addRoomToDB(roomData, thunkAPI) {
       isPrivate: roomData.status === "private",
       createdAt: formatDateAndTime(new Date()),
       chat: [],
-      amountOfPlayers: 1,
+      amountOfPlayers: 0,
     };
 
     const response = await fetch(`${BASE_URL}/rooms/create`, {

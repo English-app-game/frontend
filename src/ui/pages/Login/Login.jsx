@@ -18,6 +18,7 @@ export default function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [generalError, setGeneralError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateLoginFields = () => {
     let valid = true;
@@ -38,10 +39,13 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!validateLoginFields()) return;
+    
+    setIsLoading(true);
     try {
       const { ok, data } = await loginUser(email, password);
+      
       if (!ok) {
-        setGeneralError("Invalid email or password");
+        setGeneralError(data?.error || "Invalid email or password");
       } else {
         setEmailError("");
         setPasswordError("");
@@ -49,8 +53,10 @@ export default function Login() {
         navigate(ROOMS_LIST);
       }
     } catch (err) {
+      console.error("Login error:", err);
       setGeneralError("Server error. Please try again later.");
-      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,6 +73,7 @@ export default function Login() {
           <LoginFormActions
             handleLogin={handleLogin}
             navigate={navigate}
+            isLoading={isLoading}
           />
         </BlueBox>
       </div>
