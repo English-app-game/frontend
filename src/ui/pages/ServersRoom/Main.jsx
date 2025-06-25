@@ -1,5 +1,4 @@
 import JoinGameRoom from "../../components/JoinGameRoom";
-import React, { useState, useEffect } from "react";
 import NoRoomsMessage from "../ServersRoom/NoRoomsMessage";
 import RoomCardSkeleton from "../../components/RoomCardSkeleton"
 
@@ -29,6 +28,7 @@ export default function Main({ rooms, isLoading }) {
           capacity={room.maxPlayers}
           key={room.key}
           className="w-32 sm:w-52"
+          gameType={room.gameType}
         />
       ))}
     </main>
