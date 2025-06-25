@@ -94,11 +94,10 @@ export default function TranslationGame({ roomKey, handleBack }) {
 
     const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
     const lastRoom = localStorage.getItem("lastEnteredRoom");
-    console.log("test");
-    // if (enteredProperly !== "true" || lastRoom !== roomKey) {
-    //   return;
-    //   navigate(ROOMS_LIST);
-    // }
+    if (enteredProperly !== "true" || lastRoom !== roomKey) {
+      navigate(ROOMS_LIST);
+      return;
+    }
 
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
