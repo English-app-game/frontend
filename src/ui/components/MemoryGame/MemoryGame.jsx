@@ -5,6 +5,8 @@ import WordCard from "./WordCard";
 import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
+import LiveScore from "./LiveScore";
+import ScoreResultModal  from "./ScoreResultModal";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
@@ -15,10 +17,14 @@ export default function MemoryGame() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey);
+  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey, () => {
+  setShowScoreModal(true);
+  });
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
+  const [showScoreModal, setShowScoreModal] = useState(false);
+
 
   console.log("🧠 Rendering MemoryGame with:", game);
 
@@ -86,6 +92,7 @@ export default function MemoryGame() {
 
   return (
     <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center relative">
+      <LiveScore />
       <div className="absolute top-4 left-4">
         <ExitButton
           onClick={handleExit}
@@ -105,6 +112,7 @@ export default function MemoryGame() {
           />
         ))}
       </div>
+       {showScoreModal && <ScoreResultModal onClose={handleExit} />}
     </div>
   );
 }
