@@ -10,6 +10,7 @@ import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
 import { useNavigate } from "react-router-dom";
 import { ROOMS_LIST } from "../../../routes/routes_consts";
+import { toast } from "react-toastify";
 
 
 export default function TranslationGame({ roomKey, handleBack }) {
@@ -79,6 +80,10 @@ export default function TranslationGame({ roomKey, handleBack }) {
   const gameTypeId = useSelector((store) => store.room.gameType);
   console.log(game);
   console.log(gameTypeId);
+
+  useEffect(() => {
+    return () => toast.dismiss()
+  },[])
 
   useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;

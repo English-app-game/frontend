@@ -7,7 +7,7 @@ const initialState = {
   scoreboard: [], // [{ userId, name, score }]
   words: [], // [{ id, heb, eng, lock, disabled, heldBy }]
   end: false,
-  gameTypeId: ""
+  gameTypeId: "",
 };
 
 const translationGameSlice = createSlice({
@@ -17,13 +17,23 @@ const translationGameSlice = createSlice({
     setTranslationGameState: (state, { payload }) => {
       Object.assign(state, payload);
 
-      state.scoreboard = Object.entries(state.users).map(([userId, user]) => ({
-        userId,
-        name: user.name,
-        score: user.score || 0,
-        color: user.color || "#000000",
-        isGuest: user.isGuest ? true : false,
-      }));
+      console.log(payload.scoreboard);
+      state.scoreboard =
+        payload.scoreboard.length > 0
+          ? payload.scoreboard.map((user) => ({
+              userId: user.id,
+              name: user.name,
+              score: user.score || 0,
+              color: user.color || "#000000",
+              isGuest: user.isGuest ? true : false,
+            }))
+          : Object.entries(state.users).map(([userId, user]) => ({
+              userId,
+              name: user.name,
+              score: user.score || 0,
+              color: user.color || "#000000",
+              isGuest: user.isGuest ? true : false,
+            }));
     },
     lockHebrewWord: (state, action) => {
       const { wordId, userId } = action.payload;
