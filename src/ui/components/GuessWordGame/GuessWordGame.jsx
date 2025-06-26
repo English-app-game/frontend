@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchRandomWords } from "../../../services/GeussGame";
 import { pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
+import axios from "axios";
 
 import WordDisplay from "./WordDisplay";
 import VirtualKeyboard from "./VirtualKeyboard";
@@ -8,13 +9,18 @@ import ButtonGuessWord from "./ButtonGuessWord";
 import UserInfoHeader from "../UserInfoHeader";
 
 import Confetti from "react-confetti";
+import { toast } from "react-toastify";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 import ExitButton from "../ExitButton";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
+
+import { MAX_HINTS, MAX_SKIPS } from "../../../consts/consts";
+import { useParams } from "react-router-dom";
+import { DELETE_ROOM_ROUTE } from "../../../consts/consts";
 
 export default function GuessWordGame({ handleBack }) {
   const [words, setWords] = useState([]); //get the words list
@@ -23,8 +29,13 @@ export default function GuessWordGame({ handleBack }) {
   const [guesses, setGuesses] = useState([]); //the letters that the user geuss from keyboard
   const [isCompleted, setIsCompleted] = useState(false);
   const { width, height } = useWindowSize(); //for the confeti
+  const [hintCount, setHintCount] = useState(0);
+  const [skipCount, setSkipCount] = useState(0);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.user.id);
+  const { id: roomKey } = useParams();
 
   const currentPresentedWord = words[index] || "";
 
@@ -60,6 +71,13 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const handleHint = () => {
+    if (hintCount >= MAX_HINTS) {
+      toast.error("You've reached the maximum number of hints 😔", {
+        position: "top-center",
+      });
+      return;
+    }
+
     const remaining = missingIdxs
       .map((i) => currentPresentedWord[i].toLowerCase())
       .filter((ch) => !guesses.includes(ch));
@@ -69,6 +87,7 @@ export default function GuessWordGame({ handleBack }) {
     const hintLetter = remaining[Math.floor(Math.random() * remaining.length)];
     const updated = [...guesses, hintLetter];
     setGuesses(updated);
+    setHintCount((prev) => prev + 1);
 
     if (isGuessComplete(currentPresentedWord, missingIdxs, updated)) {
       setIsCompleted(true);
@@ -77,11 +96,36 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const goToNextWord = () => {
+    if (skipCount >= MAX_SKIPS) {
+      toast.error("You've reached the maximum number of word skips 😢", {
+        position: "top-center",
+      });
+      return;
+    }
+
     setIsCompleted(false);
     setIndex((i) => (i + 1) % words.length);
+    setSkipCount((prev) => prev + 1);
   };
 
-  const handleExit = () => {
+  const handleExit = async () => {
+    console.log("Deleting room with:", { roomKey, userId });
+    console.log("DELETE url:", DELETE_ROOM_ROUTE(roomKey));
+
+    try {
+    await axios.delete(DELETE_ROOM_ROUTE(roomKey), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        userId,
+        roomKey,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Failed to delete room:", err);
+  }
+
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };
