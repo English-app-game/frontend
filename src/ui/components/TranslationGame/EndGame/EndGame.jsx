@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../../routes/routes_consts";
@@ -8,6 +8,7 @@ import { useEndGameCleanup } from "../../../../hooks/useEndGameCleanup";
 import TextButton from "../../TextButton";
 import EndGameHeader from "./EndGameHeader";
 import ScoreboardList from "./ScoreboardList";
+import { toast } from "react-toastify";
 
 export default function EndGame() {
   const navigate = useNavigate();
@@ -26,6 +27,15 @@ export default function EndGame() {
   const scoreboard = useMemo(() => dynamicScoreboard.slice(), []);
   useEndGameCleanup({ roomKey, userId, hostId, scoreboard, gameType });
 
+
+  const handleExit = () => {
+    toast.dismiss();
+    dispatch(resetTranslationGameState());
+    dispatch(resetRoom());
+    localStorage.removeItem("enteredFromWaitingRoom");
+    navigate(ROUTES.ROOMS_LIST);
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-6"
@@ -35,12 +45,7 @@ export default function EndGame() {
       <ScoreboardList scoreboard={scoreboard} />
 
       <TextButton
-        onClick={() => {
-          dispatch(resetTranslationGameState());
-          dispatch(resetRoom());
-          localStorage.removeItem("enteredFromWaitingRoom");
-          navigate(ROUTES.ROOMS_LIST);
-        }}
+        onClick={handleExit}
         className="mt-6 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow"
       >
         יציאה מהמשחק

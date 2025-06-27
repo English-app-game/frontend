@@ -21,7 +21,7 @@ export function useEndGameCleanup({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ roomKey: key, userId }),
+          body: JSON.stringify({ roomKey: key, userId, roomAdmin: hostId }),
         });
 
         const result = await response.json();

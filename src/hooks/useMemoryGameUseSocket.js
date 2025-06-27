@@ -5,7 +5,7 @@ import { setMemoryGameState, resetMemoryGameState } from "../store/slices/memory
 import { toast } from "react-toastify";
 import { MEMORY_GAME_STATE, MEMORY_GAME_END } from "../consts/consts";
 
-export function useMemoryGameSocket(roomKey) {
+export function useMemoryGameSocket(roomKey,onGameEnd) {
   const socketRef = useRef(socket);
   const dispatch = useDispatch();
 
@@ -19,8 +19,12 @@ export function useMemoryGameSocket(roomKey) {
   }, [dispatch]);
 
   const handleGameEnd = useCallback(({ winners, finalScore }) => {
-    dispatch(resetMemoryGameState());
-  }, [dispatch]);
+  dispatch(setMemoryGameState({
+    users: Object.fromEntries(winners.map(p => [p.userId || p.id, p]))
+  }));
+
+  if (onGameEnd) onGameEnd(winners);
+}, [dispatch, onGameEnd]);
 
   // --- Event listeners setup ---
   const startListeners = useCallback(() => {
