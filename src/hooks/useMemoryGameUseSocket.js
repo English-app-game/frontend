@@ -31,12 +31,17 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
     const currSocket = socketRef.current;
     currSocket.on(MEMORY_GAME_STATE, updateMemoryGameState);
     currSocket.on(MEMORY_GAME_END, handleGameEnd);
+     currSocket.on("memory-game/player-left", ({ userId, name }) => {
+    toast.info(`🚪 ${name} left the game.`);
+  });
   }, [updateMemoryGameState, handleGameEnd, dispatch]);
 
   const stopListeners = useCallback(() => {
     const currSocket = socketRef.current;
     currSocket.off(MEMORY_GAME_STATE, updateMemoryGameState);
     currSocket.off(MEMORY_GAME_END, handleGameEnd);
+    currSocket.off("memory-game/player-left");
+    
   }, [updateMemoryGameState, handleGameEnd]);
 
   // --- Emit wrapper ---

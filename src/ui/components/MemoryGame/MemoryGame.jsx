@@ -7,11 +7,14 @@ import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
 import ScoreResultModal  from "./ScoreResultModal";
+import { toast } from "react-toastify";
+
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
+  const currentTurnPlayer = game.users?.[game.currentTurn];
 
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
@@ -61,6 +64,19 @@ export default function MemoryGame() {
       );
     }
   }, [selectedCards, user?.id, game, lockBoard]);
+
+  useEffect(() => {
+  if (!game || !user?.id) return;
+
+  if (game.currentTurn === user.id) {
+    toast.info("🎯 Your Turn!", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+    });
+  }
+}, [game.currentTurn, user?.id]);
+
 
   const handleExit = () => {
     navigate(ROUTES.ROOMS_LIST);
