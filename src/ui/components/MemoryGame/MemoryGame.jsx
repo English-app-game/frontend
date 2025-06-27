@@ -5,6 +5,7 @@ import WordCard from "./WordCard";
 import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
+import { handleProtectUrl } from "../../../utils/handleProtectUrl";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
@@ -15,7 +16,8 @@ export default function MemoryGame() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey);
+  const { emit, requestFlipCard, requestMatchCheck } =
+    useMemoryGameSocket(roomKey);
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
@@ -23,6 +25,7 @@ export default function MemoryGame() {
   console.log("🧠 Rendering MemoryGame with:", game);
 
   useEffect(() => {
+    handleProtectUrl(navigate);
     console.log("🚀 useEffect running in useMemoryGameSocket");
     console.log("roomKey from hook:", roomKey);
     console.log("user from hook:", user);
@@ -57,6 +60,7 @@ export default function MemoryGame() {
   }, [selectedCards, user?.id, game, lockBoard]);
 
   const handleExit = () => {
+    localStorage.removeItem("enteredFromWaitingRoom");
     navigate(ROUTES.ROOMS_LIST);
   };
 

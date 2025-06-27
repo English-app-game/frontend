@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CREATE_ROOM } from "../../../routes/routes_consts";
+import { validateLogin } from "../../../utils/validateFields";
 
 export default function NoRoomsMessage() {
   const navigate = useNavigate();
+  const [createError, setCreateError] = useState();
+
+  function handleCreateRoomClick(e, setCreateError) {
+    e.preventDefault();
+
+    const isUserLoggedIn = validateLogin();
+    if (!isUserLoggedIn) {
+      setCreateError("Guest can't create a game!");
+      return;
+    }
+    navigate(CREATE_ROOM);
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -14,11 +27,14 @@ export default function NoRoomsMessage() {
         Be the first to start one and invite your friends 🎉
       </p>
       <button
-        onClick={() => navigate(CREATE_ROOM)}
+        onClick={(e) => handleCreateRoomClick(e, setCreateError)}
         className="bg-primary text-white px-6 py-3 rounded-2xl shadow-lg text-sm sm:text-base hover:bg-opacity-80 hover:scale-105 hover:cursor-pointer hover:shadow-2xl transition"
       >
-        Create a New Room 🚀 
+        Create a New Room 🚀
       </button>
+      {createError && (
+        <p className="text-red-600 text-sm mt-1">{createError}</p>
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
 import { useNavigate } from "react-router-dom";
 import { ROOMS_LIST } from "../../../routes/routes_consts";
+import { handleProtectUrl } from "../../../utils/handleProtectUrl";
 
 // Utility: Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -92,12 +93,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
   useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;
 
-    const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
-    const lastRoom = localStorage.getItem("lastEnteredRoom");
-    if (enteredProperly !== "true" || lastRoom !== roomKey) {
-      navigate(ROOMS_LIST);
-      return;
-    }
+    handleProtectUrl(navigate);
 
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,

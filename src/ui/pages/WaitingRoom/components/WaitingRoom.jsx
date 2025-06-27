@@ -122,7 +122,6 @@ export default function WaitingRoom() {
         });
 
         localStorage.setItem("enteredFromWaitingRoom", "true");
-        localStorage.setItem("lastEnteredRoom", roomKey);
 
         setHasJoinedRoom(true);
         setHasEmittedJoin(true);

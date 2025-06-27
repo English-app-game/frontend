@@ -82,6 +82,7 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const handleExit = () => {
+    localStorage.removeItem("enteredFromWaitingRoom");
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };

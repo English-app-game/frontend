@@ -39,3 +39,9 @@ export function validatePassword(password, errors) {
 export const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
+
+export function validateLogin() {
+  const userString = sessionStorage.getItem("user");
+  if (userString) return false;
+  return true;
+}

@@ -1,19 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import {
   CREATE_ROOM,
-  LOGIN,
-  WAITING_ROOM,
-  ROOMS_LIST,
 } from "../../../routes/routes_consts";
 import { useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import PrimaryButton from "../../components/PrimaryButton";
 import InputField from "../../components/InputField";
-import { checkRoomAvailabilityByKey } from "../../../services/room/getRooms";
 import { useDispatch, useSelector } from "react-redux";
-import { joinUserToRoom } from "../../../services/room/joinUserToRoom";
 import { useWaitingRoomSocket } from "../../../hooks/useWaitingRoomSocket";
 import { handleJoinRoomClick } from "../../../utils/handleJoinRoomClick";
+import { validateLogin } from "../../../utils/validateFields";
 
 export default function Footer({ rooms }) {
   const userId = useSelector((store) => store.user.id);
@@ -49,12 +45,6 @@ export default function Footer({ rooms }) {
 
   function handleCreateRoomClick(e, setCreateError) {
     e.preventDefault();
-
-    function validateLogin() {
-      const userString = sessionStorage.getItem("user");
-      if (userString) return false;
-      return true;
-    }
 
     const isUserLoggedIn = validateLogin();
     if (!isUserLoggedIn) {
