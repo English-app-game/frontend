@@ -27,3 +27,5 @@ export const DELETE_ROOM_ROUTE = (roomKey = "") =>
 export const SAVE_USER_SCORE_ROUTE = `${BASE_URL}/score/save`
 export const MEMORY_GAME_STATE = "memory-game/state";
 export const MEMORY_GAME_END = "memory-game/end";
+export const MEMORY_GAME_PLAYER_LEFT= "memory-game/player-left";
+export const YOUR_TURN_MSG= "🎯 Your Turn!";
