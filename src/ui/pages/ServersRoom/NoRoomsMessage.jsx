@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CREATE_ROOM } from "../../../routes/routes_consts";
 import { validateLogin } from "../../../utils/validateFields";
+import WarningP from "../../components/warningP";
 
 export default function NoRoomsMessage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function NoRoomsMessage() {
         Create a New Room 🚀
       </button>
       {createError && (
-        <p className="text-red-600 text-sm mt-1">{createError}</p>
+        <WarningP children={createError}/>
       )}
     </div>
   );

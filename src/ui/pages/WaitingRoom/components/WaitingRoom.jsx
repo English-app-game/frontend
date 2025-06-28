@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import useRoomPolling from "../../../../hooks/useRoomPolling";
 import { FaClock } from "react-icons/fa";
 import { setUser } from "../../../../store/slices/userSlice";
+import { enteredToGameFrom, waitingRoomS } from "../../../../consts/strings";
 
 
 export default function WaitingRoom() {
@@ -121,7 +122,7 @@ export default function WaitingRoom() {
           },
         });
 
-        localStorage.setItem("enteredFromWaitingRoom", "true");
+        localStorage.setItem(enteredToGameFrom, waitingRoomS);
 
         setHasJoinedRoom(true);
         setHasEmittedJoin(true);
@@ -230,8 +231,7 @@ export default function WaitingRoom() {
             return;
           }
 
-          localStorage.setItem("enteredFromWaitingRoom", "true");
-          localStorage.setItem("lastEnteredRoom", roomKey);
+          localStorage.setItem(enteredToGameFrom, waitingRoomS);
 
           navigate(ROUTES.ACTIVE_ROOM(roomKey, gameType));
         } catch (error) {

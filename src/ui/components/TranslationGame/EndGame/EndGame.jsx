@@ -9,6 +9,7 @@ import TextButton from "../../TextButton";
 import EndGameHeader from "./EndGameHeader";
 import ScoreboardList from "./ScoreboardList";
 import { toast } from "react-toastify";
+import { enteredToGameFrom } from "../../../../consts/strings";
 
 export default function EndGame() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function EndGame() {
     toast.dismiss();
     dispatch(resetTranslationGameState());
     dispatch(resetRoom());
-    localStorage.removeItem("enteredFromWaitingRoom");
+    localStorage.removeItem(enteredToGameFrom);
     navigate(ROUTES.ROOMS_LIST);
   };
 

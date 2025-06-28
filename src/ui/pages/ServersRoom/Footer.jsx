@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWaitingRoomSocket } from "../../../hooks/useWaitingRoomSocket";
 import { handleJoinRoomClick } from "../../../utils/handleJoinRoomClick";
 import { validateLogin } from "../../../utils/validateFields";
+import WarningP from "../../components/warningP";
 
 export default function Footer({ rooms }) {
   const userId = useSelector((store) => store.user.id);
@@ -64,7 +65,7 @@ export default function Footer({ rooms }) {
           Create your <br /> private room
         </PrimaryButton>
         {createError && (
-          <p className="text-red-600 text-sm mt-1">{createError}</p>
+          <WarningP children={createError}/> 
         )}
       </div>
 

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {fetchLastScore} from "../../../src/services/scoreService";
 import {ROOMS_LIST} from "../../routes/routes_consts";
 import ScoreResult from "../../ui/components/ScoreResult";
+import { userS } from "../../consts/strings";
 
 
 
@@ -16,7 +17,7 @@ export default function GameOver() {
   
   let user = null;
   try {
-     user = JSON.parse(localStorage.getItem("user"));
+     user = JSON.parse(localStorage.getItem(userS));
   } catch (err) {
     user = null;
 }

@@ -5,32 +5,37 @@ import WordCard from "./WordCard";
 import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
-import { handleProtectUrl } from "../../../utils/handleProtectUrl";
 import LiveScore from "./LiveScore";
-import ScoreResultModal  from "./ScoreResultModal";
+import ScoreResultModal from "./ScoreResultModal";
+import { enteredToGameFrom } from "../../../consts/strings";
+import { useProtectUrl } from "../../../hooks/useProtectUrl";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
+  const blocked = useProtectUrl();
 
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey, () => {
-  setShowScoreModal(true);
-  });
+  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
+    roomKey,
+    () => {
+      setShowScoreModal(true);
+    }
+  );
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
 
-
   console.log("🧠 Rendering MemoryGame with:", game);
 
+  if(blocked) return null;
+
   useEffect(() => {
-    handleProtectUrl(navigate);
     console.log("🚀 useEffect running in useMemoryGameSocket");
     console.log("roomKey from hook:", roomKey);
     console.log("user from hook:", user);
@@ -65,7 +70,7 @@ export default function MemoryGame() {
   }, [selectedCards, user?.id, game, lockBoard]);
 
   const handleExit = () => {
-    localStorage.removeItem("enteredFromWaitingRoom");
+    localStorage.removeItem(enteredToGameFrom);
     navigate(ROUTES.ROOMS_LIST);
   };
 
@@ -115,7 +120,7 @@ export default function MemoryGame() {
           />
         ))}
       </div>
-       {showScoreModal && <ScoreResultModal onClose={handleExit} />}
+      {showScoreModal && <ScoreResultModal onClose={handleExit} />}
     </div>
   );
 }
