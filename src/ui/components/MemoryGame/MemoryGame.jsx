@@ -18,16 +18,12 @@ export default function MemoryGame() {
   const game = useSelector((state) => state.memoryGame);
   const currentTurnPlayer = game.users?.[game.currentTurn];
   const previousTurnRef = useRef(null);
-
-
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey, () => {
   setShowScoreModal(true);
   });
-
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
