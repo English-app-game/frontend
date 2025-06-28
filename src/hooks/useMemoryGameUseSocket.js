@@ -3,7 +3,7 @@ import { socket } from "../sockets/sockets";
 import { useDispatch, useSelector } from "react-redux";
 import { setMemoryGameState, resetMemoryGameState } from "../store/slices/memoryGameSlice";
 import { toast } from "react-toastify";
-import { MEMORY_GAME_STATE, MEMORY_GAME_END } from "../consts/consts";
+import { MEMORY_GAME_STATE, MEMORY_GAME_END,MEMORY_GAME_PLAYER_LEFT } from "../consts/consts";
 
 export function useMemoryGameSocket(roomKey,onGameEnd) {
   const socketRef = useRef(socket);
@@ -31,7 +31,7 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
     const currSocket = socketRef.current;
     currSocket.on(MEMORY_GAME_STATE, updateMemoryGameState);
     currSocket.on(MEMORY_GAME_END, handleGameEnd);
-     currSocket.on("memory-game/player-left", ({ userId, name }) => {
+    currSocket.on(MEMORY_GAME_PLAYER_LEFT, ({ userId, name }) => {
     toast.info(`🚪 ${name} left the game.`);
   });
   }, [updateMemoryGameState, handleGameEnd, dispatch]);
@@ -40,7 +40,7 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
     const currSocket = socketRef.current;
     currSocket.off(MEMORY_GAME_STATE, updateMemoryGameState);
     currSocket.off(MEMORY_GAME_END, handleGameEnd);
-    currSocket.off("memory-game/player-left");
+    currSocket.off(MEMORY_GAME_PLAYER_LEFT);
     
   }, [updateMemoryGameState, handleGameEnd]);
 
