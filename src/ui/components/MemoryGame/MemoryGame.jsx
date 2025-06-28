@@ -8,6 +8,7 @@ import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
 import ScoreResultModal  from "./ScoreResultModal";
 import { toast } from "react-toastify";
+import {YOUR_TURN_MSG} from "../../../consts/consts";
 
 
 export default function MemoryGame() {
@@ -69,7 +70,7 @@ export default function MemoryGame() {
   if (!game || !user?.id) return;
 
   if (game.currentTurn === user.id) {
-    toast.info("🎯 Your Turn!", {
+    toast.info(YOUR_TURN_MSG, {
       position: "top-center",
       autoClose: 2000,
       hideProgressBar: true,
