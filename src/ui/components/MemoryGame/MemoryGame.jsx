@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import WordCard from "./WordCard";
@@ -7,11 +7,18 @@ import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
 import ScoreResultModal  from "./ScoreResultModal";
+import { toast } from "react-toastify";
+import {YOUR_TURN_MSG} from "../../../consts/consts";
+import { notifyYourTurn } from "../../../services/memoryGameService";
+
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
+  const currentTurnPlayer = game.users?.[game.currentTurn];
+  const previousTurnRef = useRef(null);
+
 
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
@@ -61,6 +68,21 @@ export default function MemoryGame() {
       );
     }
   }, [selectedCards, user?.id, game, lockBoard]);
+
+  useEffect(() => {
+  if (!game || !user?.id) return;
+  
+  const prevTurn = previousTurnRef.current;
+  const currTurn = game.currentTurn;
+
+  if (game.currentTurn === user.id && prevTurn !== user.id) {
+    notifyYourTurn();
+    }
+    
+  previousTurnRef.current = currTurn;
+
+}, [game.currentTurn, user?.id]);
+
 
   const handleExit = () => {
     navigate(ROUTES.ROOMS_LIST);
