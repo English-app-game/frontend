@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchRandomWords } from "../../../services/GeussGame";
-import { pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
+import { splitWordsByDifficulty, pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
+import { getRoomLevel } from "../../../services/room/getRoomLevel";
 
 import WordDisplay from "./WordDisplay";
 import VirtualKeyboard from "./VirtualKeyboard";
@@ -11,7 +12,7 @@ import Confetti from "react-confetti";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 import ExitButton from "../ExitButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
@@ -23,10 +24,13 @@ export default function GuessWordGame({ handleBack }) {
   const [guesses, setGuesses] = useState([]); //the letters that the user geuss from keyboard
   const [isCompleted, setIsCompleted] = useState(false);
   const { width, height } = useWindowSize(); //for the confeti
+  const [level, setLevel] = useState("easy");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const currentPresentedWord = words[index] || "";
+  const { id: roomKey } = useParams();
+
 
   //new word - new turn
   const setupNewWord = useCallback(() => {
@@ -37,14 +41,36 @@ export default function GuessWordGame({ handleBack }) {
     setIsCompleted(false);
   }, [currentPresentedWord]);
 
+  async function loadWordsByLevel(roomKey) {
+    try {
+      const roomLevel = await getRoomLevel(roomKey);
+      setLevel(roomLevel);
+      console.log("level of the game is", roomLevel);
+
+      const allWords = await fetchRandomWords();
+      const { easy, medium, hard } = splitWordsByDifficulty(allWords);
+
+      let selectedWords = [];
+      if (roomLevel === "easy") selectedWords = easy;
+      else if (roomLevel === "medium") selectedWords = medium;
+      else selectedWords = hard;
+
+      setWords(selectedWords);
+    } catch (err) {
+      console.error("❌ Failed to load words or level:", err);
+    }
+  }
+
+
   useEffect(() => {
     if (!words.length) {
-      fetchRandomWords().then(setWords).catch(console.error);
+      loadWordsByLevel(roomKey);
       return;
     }
 
     setupNewWord();
-  }, [words.length, index, setupNewWord]);
+  }, [words.length, index, setupNewWord, roomKey]);
+
 
   const handleLetterClick = (letter) => {
     const lower = letter.toLowerCase();

@@ -29,3 +29,5 @@ export const MEMORY_GAME_STATE = "memory-game/state";
 export const MEMORY_GAME_END = "memory-game/end";
 export const MEMORY_GAME_PLAYER_LEFT= "memory-game/player-left";
 export const YOUR_TURN_MSG= "🎯 Your Turn!";
+export const MAX_WORDS_PER_DIFFICULTY = 200;
+
