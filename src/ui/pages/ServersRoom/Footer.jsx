@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWaitingRoomSocket } from "../../../hooks/useWaitingRoomSocket";
 import { handleJoinRoomClick } from "../../../utils/handleJoinRoomClick";
 import { validateLogin } from "../../../utils/validateFields";
-import WarningP from "../../components/warningP";
+import WarningP from "../../components/WarningP";
 
 export default function Footer({ rooms }) {
   const userId = useSelector((store) => store.user.id);
