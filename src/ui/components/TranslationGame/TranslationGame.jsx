@@ -10,16 +10,8 @@ import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
 import { useNavigate } from "react-router-dom";
 import { ROOMS_LIST } from "../../../routes/routes_consts";
+import { toast } from "react-toastify";
 
-// Utility: Fisher-Yates shuffle
-function shuffleArray(array) {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 export default function TranslationGame({ roomKey, handleBack }) {
   const navigate = useNavigate();
@@ -90,6 +82,10 @@ export default function TranslationGame({ roomKey, handleBack }) {
   console.log(gameTypeId);
 
   useEffect(() => {
+    return () => toast.dismiss()
+  },[])
+
+  useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;
 
     const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
@@ -104,7 +100,6 @@ export default function TranslationGame({ roomKey, handleBack }) {
       user,
       gameTypeId,
     });
-
   }, [roomKey, userId, emit, user]);
 
   // sync the held hebrew word if user refreshed.
@@ -114,6 +109,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
     );
     setSelectedHebrewWord(heldWord ? heldWord.id : null);
   }, [userId, hebWords]);
+
 
   if (gameEnded) return <EndGame />;
 

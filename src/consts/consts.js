@@ -29,3 +29,5 @@ export const MEMORY_GAME_STATE = "memory-game/state";
 export const MEMORY_GAME_END = "memory-game/end";
 export const MAX_HINTS = 4;
 export const MAX_SKIPS = 4;
+export const MEMORY_GAME_PLAYER_LEFT= "memory-game/player-left";
+export const YOUR_TURN_MSG= "🎯 Your Turn!";

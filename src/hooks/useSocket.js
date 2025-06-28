@@ -27,6 +27,7 @@ export function useSocket() {
 
   const handleEndGame = useCallback(
     ({ message, finalState }) => {
+      toast.dismiss();
       toast.info(message || "🏁 The game has ended!");
       dispatch(setTranslationGameState({ ...finalState, end: true }));
       // Optionally: navigate to a summary page or trigger some game end UI
