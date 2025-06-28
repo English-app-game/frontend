@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CREATE_ROOM } from "../../../routes/routes_consts";
 import { validateLogin } from "../../../utils/validateFields";
-import WarningP from "../../components/warningP";
+import WarningP from "../../components/WarningP";
 
 export default function NoRoomsMessage() {
   const navigate = useNavigate();
