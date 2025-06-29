@@ -7,8 +7,6 @@ import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
 import ScoreResultModal from "./ScoreResultModal";
-import { toast } from "react-toastify";
-import { YOUR_TURN_MSG } from "../../../consts/consts";
 import { notifyYourTurn } from "../../../services/memoryGameService";
 import { enteredToGameFrom } from "../../../consts/strings";
 import { useProtectUrl } from "../../../hooks/useProtectUrl";
@@ -20,13 +18,11 @@ export default function MemoryGame() {
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
   const blocked = useProtectUrl();
-  const currentTurnPlayer = game.users?.[game.currentTurn];
   const previousTurnRef = useRef(null);
 
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
   const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
     roomKey,
     () => {

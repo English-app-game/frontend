@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SecondaryButton from "../../components/SecondaryButton";
 import UserInfoHeader from "../../components/UserInfoHeader";
+import { getStoredUser } from "../../../hooks/useAuthRedirect";
 
 const TEMP_USER = {
   // this user ID has to be real ID from db.
@@ -35,6 +36,12 @@ const CreateRoom = () => {
   const dispatch = useDispatch();
 
   const user = useSelector((store) => store.user);
+  const storedUser = getStoredUser();
+
+  useEffect(() => {
+    if(!storedUser || storedUser.isGuest)
+      navigate(ROOMS_LIST);
+  }, [storedUser, navigate])
 
   const handleCreateRoom = () => {
     if (!level || !status || !gameType) {
