@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
+import { enteredToGameFrom } from "../../../consts/strings";
 
 export default function GuessWordGame({ handleBack }) {
   const [words, setWords] = useState([]); //get the words list
@@ -108,6 +109,7 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const handleExit = () => {
+    localStorage.removeItem(enteredToGameFrom);
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };

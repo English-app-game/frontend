@@ -1,3 +1,5 @@
+import { userS } from "../consts/strings";
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validateRegister(dataform) {
@@ -39,3 +41,9 @@ export function validatePassword(password, errors) {
 export const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
+
+export function validateLogin() {
+  const userString = sessionStorage.getItem(userS);
+  if (userString) return false;
+  return true;
+}
