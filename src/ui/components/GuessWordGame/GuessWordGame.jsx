@@ -17,6 +17,8 @@ import { ROUTES } from "../../../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
 import { enteredToGameFrom } from "../../../consts/strings";
+import { toast } from "react-toastify";
+import { MAX_HINTS, MAX_SKIPS } from "../../../consts/consts";
 
 export default function GuessWordGame({ handleBack }) {
   const [words, setWords] = useState([]); //get the words list
@@ -28,6 +30,8 @@ export default function GuessWordGame({ handleBack }) {
   const [level, setLevel] = useState("easy");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [hintCount, setHintCount] = useState(0);
+  const [skipCount, setSkipCount] = useState(0);
 
   const currentPresentedWord = words[index] || "";
   const { id: roomKey } = useParams();
@@ -78,6 +82,13 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const handleHint = () => {
+    if (hintCount >= MAX_HINTS) {
+      toast.error("You've reached the maximum number of hints 😔", {
+        position: "top-center",
+      });
+      return;
+    }
+    
     const remaining = missingIdxs
       .map((i) => currentPresentedWord[i].toLowerCase())
       .filter((ch) => !guesses.includes(ch));
@@ -87,6 +98,7 @@ export default function GuessWordGame({ handleBack }) {
     const hintLetter = remaining[Math.floor(Math.random() * remaining.length)];
     const updated = [...guesses, hintLetter];
     setGuesses(updated);
+    setHintCount((prev) => prev + 1);
 
     if (isGuessComplete(currentPresentedWord, missingIdxs, updated)) {
       setIsCompleted(true);
@@ -95,8 +107,16 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const goToNextWord = () => {
+    if (skipCount >= MAX_SKIPS) {
+      toast.error("You've reached the maximum number of word skips 😢", {
+        position: "top-center",
+      });
+      return;
+    }
+
     setIsCompleted(false);
     setIndex((i) => (i + 1) % words.length);
+    setSkipCount((prev) => prev + 1);
   };
 
   const handleExit = () => {
