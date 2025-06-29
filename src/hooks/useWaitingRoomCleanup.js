@@ -4,6 +4,7 @@ import { useWaitingRoomSocket } from "./useWaitingRoomSocket";
 import { ROUTES } from "../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { resetRoom } from "../store/slices/roomSlice";
+import { enteredToGameFrom } from "../consts/strings";
 
 // Cleanup reason constants
 const CLEANUP_REASONS = {
@@ -88,6 +89,7 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
   // Manual exit function for exit button
   const exitRoom = useCallback(async () => {
     await performCleanup(CLEANUP_REASONS.EXIT_BUTTON);
+    localStorage.removeItem(enteredToGameFrom);
     navigate(ROUTES.ROOMS_LIST);
   }, [performCleanup, navigate]);
 
