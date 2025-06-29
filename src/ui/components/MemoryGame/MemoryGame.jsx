@@ -10,12 +10,14 @@ import ScoreResultModal  from "./ScoreResultModal";
 import { toast } from "react-toastify";
 import {YOUR_TURN_MSG} from "../../../consts/consts";
 import { notifyYourTurn } from "../../../services/memoryGameService";
-
+import { enteredToGameFrom } from "../../../consts/strings";
+import { useProtectUrl } from "../../../hooks/useProtectUrl";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
+  const blocked = useProtectUrl();
   const currentTurnPlayer = game.users?.[game.currentTurn];
   const previousTurnRef = useRef(null);
 
@@ -24,16 +26,20 @@ export default function MemoryGame() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey, () => {
-  setShowScoreModal(true);
-  });
+  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
+    roomKey,
+    () => {
+      setShowScoreModal(true);
+    }
+  );
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
 
-
   console.log("🧠 Rendering MemoryGame with:", game);
+
+  if(blocked) return null;
 
   useEffect(() => {
     console.log("🚀 useEffect running in useMemoryGameSocket");
@@ -85,6 +91,7 @@ export default function MemoryGame() {
 
 
   const handleExit = () => {
+    localStorage.removeItem(enteredToGameFrom);
     navigate(ROUTES.ROOMS_LIST);
   };
 
@@ -134,7 +141,7 @@ export default function MemoryGame() {
           />
         ))}
       </div>
-       {showScoreModal && <ScoreResultModal onClose={handleExit} />}
+      {showScoreModal && <ScoreResultModal onClose={handleExit} />}
     </div>
   );
 }

@@ -9,13 +9,14 @@ import EndGame from "./EndGame/EndGame";
 import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
 import { useNavigate } from "react-router-dom";
-import { ROOMS_LIST } from "../../../routes/routes_consts";
 import { toast } from "react-toastify";
+import { useProtectUrl } from "../../../hooks/useProtectUrl";
 
 
 export default function TranslationGame({ roomKey, handleBack }) {
   const navigate = useNavigate();
   const { emit } = useSocket();
+  const blocked = useProtectUrl();
 
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
@@ -85,15 +86,9 @@ export default function TranslationGame({ roomKey, handleBack }) {
     return () => toast.dismiss()
   },[])
 
+  if(blocked) return null;
   useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;
-
-    const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
-    const lastRoom = localStorage.getItem("lastEnteredRoom");
-    if (enteredProperly !== "true" || lastRoom !== roomKey) {
-      navigate(ROOMS_LIST);
-      return;
-    }
 
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,

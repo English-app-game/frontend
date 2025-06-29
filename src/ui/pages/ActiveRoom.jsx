@@ -10,6 +10,7 @@ import { GameTypes } from "../../consts/gameTypes";
 import { ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
+import { enteredToGameFrom } from "../../consts/strings";
 
 export default function ActiveRoom() {
   const { id: roomKey, gameType } = useParams();
@@ -27,8 +28,7 @@ export default function ActiveRoom() {
 
     await removeUserFromRoom(roomKey, userId);
 
-    localStorage.removeItem("enteredFromWaitingRoom");
-    localStorage.removeItem("lastEnteredRoom");      
+    localStorage.removeItem(enteredToGameFrom);
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };
