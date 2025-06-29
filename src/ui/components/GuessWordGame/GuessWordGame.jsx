@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchRandomWords } from "../../../services/GeussGame";
-import { splitWordsByDifficulty, pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
+import { pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
 import { getRoomLevel } from "../../../services/room/getRoomLevel";
 
 import WordDisplay from "./WordDisplay";
@@ -48,20 +48,12 @@ export default function GuessWordGame({ handleBack }) {
       setLevel(roomLevel);
       console.log("level of the game is", roomLevel);
 
-      const allWords = await fetchRandomWords();
-      const { easy, medium, hard } = splitWordsByDifficulty(allWords);
-
-      let selectedWords = [];
-      if (roomLevel === "easy") selectedWords = easy;
-      else if (roomLevel === "medium") selectedWords = medium;
-      else selectedWords = hard;
-
-      setWords(selectedWords);
+      const allWords = await fetchRandomWords(roomLevel);
+      setWords(allWords);
     } catch (err) {
       console.error("❌ Failed to load words or level:", err);
     }
   }
-
 
   useEffect(() => {
     if (!words.length) {
