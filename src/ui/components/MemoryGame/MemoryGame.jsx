@@ -46,8 +46,7 @@ export default function MemoryGame() {
     if (
       !user?.id ||
       !game ||
-      !game.words?.heWords?.length ||
-      !game.words?.enWords?.length
+      !game.cards?.length
     )
       return;
     if (selectedCards.length === 2) {
@@ -106,9 +105,9 @@ export default function MemoryGame() {
 
   if (
     !game ||
-    !game.words ||
-    !Array.isArray(game.words.heWords) ||
-    !Array.isArray(game.words.enWords)
+    !game.cards ||
+    !Array.isArray(game.cards) ||
+    game.cards.length === 0
   ) {
     console.log("🕐 Waiting for game data...", game);
     return <div className="text-white text-xl">Loading game...</div>;
@@ -132,7 +131,7 @@ export default function MemoryGame() {
       </div>
       <div className="flex-1 flex  items-center justify-center">
         <div className="flex flex-wrap w-[1000px] gap-4 items-center justify-center py-6">
-          {[...game.words.heWords, ...game.words.enWords].map((card) => (
+          {game.cards.map((card) => (
             <WordCard
               key={card.id + card.text}
               word={card.text}

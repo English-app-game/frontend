@@ -37,7 +37,7 @@ const memoryGameSlice = createSlice({
    
       if (payload.words?.heWords && payload.words?.enWords) {
         state.words = payload.words;
-        state.cards = [...payload.words.heWords, ...payload.words.enWords];
+        state.cards = payload.words.allCards || [...payload.words.heWords, ...payload.words.enWords];
       }
 
 
@@ -53,17 +53,13 @@ const memoryGameSlice = createSlice({
     flipBackCards: (state, { payload }) => {
       console.log("🧩 flipBackCards reducer activated with:", payload);
       const [firstId, secondId] = payload;
-      const updatedHe= state.words.heWords =resetFlipped(state.words.heWords, firstId, secondId);
-      const updatedEn= state.words.enWords = resetFlipped(state.words.enWords, firstId, secondId);
+      const updatedHe = resetFlipped(state.words.heWords, firstId, secondId);
+      const updatedEn = resetFlipped(state.words.enWords, firstId, secondId);
+      const updatedCards = resetFlipped(state.cards, firstId, secondId);
 
-      return {
-       ...state,
-       words: {
-         heWords: updatedHe,
-         enWords: updatedEn
-       },
-       cards: [...updatedHe, ...updatedEn]
-  };
+      state.words.heWords = updatedHe;
+      state.words.enWords = updatedEn;
+      state.cards = updatedCards;
     },
 
     resetMemoryGameState: () => initialState,
