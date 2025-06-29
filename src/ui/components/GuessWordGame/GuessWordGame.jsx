@@ -46,7 +46,6 @@ export default function GuessWordGame({ handleBack }) {
     try {
       const roomLevel = await getRoomLevel(roomKey);
       setLevel(roomLevel);
-      console.log("level of the game is", roomLevel);
 
       const allWords = await fetchRandomWords(roomLevel);
       setWords(allWords);
