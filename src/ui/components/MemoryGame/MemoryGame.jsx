@@ -6,34 +6,37 @@ import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
-import ScoreResultModal  from "./ScoreResultModal";
-import { toast } from "react-toastify";
-import {YOUR_TURN_MSG} from "../../../consts/consts";
+import ScoreResultModal from "./ScoreResultModal";
 import { notifyYourTurn } from "../../../services/memoryGameService";
-
+import { enteredToGameFrom } from "../../../consts/strings";
+import { useProtectUrl } from "../../../hooks/useProtectUrl";
+import memoryGameBG from "../../../assets/images/memoryGameBG.png";
+import RotateNotice from "../RotateNotice";
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
-  const currentTurnPlayer = game.users?.[game.currentTurn];
+  const blocked = useProtectUrl();
   const previousTurnRef = useRef(null);
-
 
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const { emit,requestFlipCard, requestMatchCheck } = useMemoryGameSocket(roomKey, () => {
-  setShowScoreModal(true);
-  });
+  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
+    roomKey,
+    () => {
+      setShowScoreModal(true);
+    }
+  );
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
 
-
   console.log("🧠 Rendering MemoryGame with:", game);
+
+  if(blocked) return null;
 
   useEffect(() => {
     console.log("🚀 useEffect running in useMemoryGameSocket");
@@ -70,21 +73,20 @@ export default function MemoryGame() {
   }, [selectedCards, user?.id, game, lockBoard]);
 
   useEffect(() => {
-  if (!game || !user?.id) return;
-  
-  const prevTurn = previousTurnRef.current;
-  const currTurn = game.currentTurn;
+    if (!game || !user?.id) return;
 
-  if (game.currentTurn === user.id && prevTurn !== user.id) {
-    notifyYourTurn();
+    const prevTurn = previousTurnRef.current;
+    const currTurn = game.currentTurn;
+
+    if (game.currentTurn === user.id && prevTurn !== user.id) {
+      notifyYourTurn();
     }
-    
-  previousTurnRef.current = currTurn;
 
-}, [game.currentTurn, user?.id]);
-
+    previousTurnRef.current = currTurn;
+  }, [game.currentTurn, user?.id]);
 
   const handleExit = () => {
+    localStorage.removeItem(enteredToGameFrom);
     navigate(ROUTES.ROOMS_LIST);
   };
 
@@ -113,28 +115,35 @@ export default function MemoryGame() {
   }
 
   return (
-    <div className="min-h-screen bg-[url('/homePage.png')] flex items-center justify-center relative">
-      <LiveScore />
-      <div className="absolute top-4 left-4">
-        <ExitButton
-          onClick={handleExit}
-          className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400"
-        >
-          EXIT ROOM
-        </ExitButton>
+    <div
+      className={`min-h-screen relative`}
+      style={{ backgroundImage: `url(${memoryGameBG})` }}
+    >
+      <div className="relative h-35 z-10 flex items-center px-6 py-4">
+        <div className="top-4 left-4">
+          <ExitButton
+            onClick={handleExit}
+            className="bg-rose-300 border-4 border-orange-600 hover:bg-rose-400"
+          >
+            EXIT ROOM
+          </ExitButton>
+        </div>
+        <LiveScore />
       </div>
-
-      <div className="flex flex-wrap w-[640px] gap-4 justify-center">
-        {[...game.words.heWords, ...game.words.enWords].map((card) => (
-          <WordCard
-            key={card.id + card.text}
-            word={card.text}
-            isRevealed={card.flipped}
-            onClick={() => handleCardClick(card)}
-          />
-        ))}
+      <div className="flex-1 flex  items-center justify-center">
+        <div className="flex flex-wrap w-[1000px] gap-4 items-center justify-center py-6">
+          {[...game.words.heWords, ...game.words.enWords].map((card) => (
+            <WordCard
+              key={card.id + card.text}
+              word={card.text}
+              isRevealed={card.flipped}
+              onClick={() => handleCardClick(card)}
+            />
+          ))}
+        </div>
       </div>
-       {showScoreModal && <ScoreResultModal onClose={handleExit} />}
+      {showScoreModal && <ScoreResultModal onClose={handleExit} />}
+      <RotateNotice />
     </div>
   );
 }

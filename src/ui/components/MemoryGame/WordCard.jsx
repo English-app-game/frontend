@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
-import questionImg from "../../../assets/images/question-sign.png";
+import memoryGameCard from "../../../assets/images/memoryGameCard.png"
 
 export default function WordCard({ word, isRevealed, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="w-[7rem] h-[8.75rem] bg-white rounded-xl border-2 border-gray-300 flex items-center justify-center text-xl font-semibold cursor-pointer transition-transform hover:scale-105"
+      className="w-[7rem] h-[8.75rem] bg-sky-200 rounded-xl border-2 border-gray-300 flex items-center justify-center text-xl font-semibold cursor-pointer transition-transform hover:scale-105"
     >
       {isRevealed ? (
         <div className="text-black text-center px-2">{word}</div>
       ) : (
-        <img src={questionImg} alt="card back" className="w-10 h-10" />
+        <img src={memoryGameCard} alt="card back" className="w-full h-full rounded-xl" />
       )}
     </div>
   );

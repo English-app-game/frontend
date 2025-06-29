@@ -6,7 +6,7 @@ export default function ScoreResultModal({ onClose }) {
   const scoreboard = useSelector((state) => state.memoryGame.scoreboard);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 backdrop-blur-md bg-opacity-70 z-50 flex items-center justify-center">
       <div className="bg-white rounded-2xl shadow-xl w-[90%] max-w-md p-6 text-center">
         <Header text="🎉 GAME OVER 🎉" className="text-3xl font-extrabold text-rose-500 mb-4" />
 
@@ -15,7 +15,7 @@ export default function ScoreResultModal({ onClose }) {
           {scoreboard.map((player, index) => (
             <li
               key={player.userId}
-              className={`mb-1 ${index === 0 ? "font-bold text-green-600" : ""}`}
+              className={`mb-1 ${index === 0 ? "font-bold text-sky-400" : ""}`}
             >
               {index + 1}. {player.name}: {player.score} pts
             </li>
