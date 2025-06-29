@@ -42,7 +42,8 @@ export function useEndGameCleanup({
             roomKey,
             message: `It's a tie game! ${playersTiedWithWinner
               .map((player) => player.name)
-              .join(", ").concat(" are tied for the win!")}`,
+              .join(", ")
+              .concat(" are tied for the win!")}`,
           });
           throw new Error(`It's a tie game!`);
         } else {
@@ -52,14 +53,19 @@ export function useEndGameCleanup({
           });
         }
 
-        if (winner && !winner.isGuest) {
-          await saveScoreToServer({
-            player: winner.userId,
-            roomId: result.roomId,
-            gameTypeId: gameType,
-            score: winner.score,
-          });
-        }
+        Promise.all(
+          [...scoreboard].map(async (player) => {
+            return (
+              !player.isGuest &&
+              (await saveScoreToServer({
+                player: player.userId,
+                roomId: result.roomId,
+                gameTypeId: gameType,
+                score: player.score,
+              }))
+            );
+          })
+        );
       } catch (err) {
         console.error("❌ useEndGameCleanup failed:", err);
       }
