@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchRandomWords } from "../../../services/GeussGame";
+import { fetchRandomWords, deleteRoom } from "../../../services/GeussGame";
 import { pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
 import { getRoomLevel } from "../../../services/room/getRoomLevel";
 
@@ -14,7 +14,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import ExitButton from "../ExitButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
 import { enteredToGameFrom } from "../../../consts/strings";
 import { toast } from "react-toastify";
@@ -35,6 +35,8 @@ export default function GuessWordGame({ handleBack }) {
 
   const currentPresentedWord = words[index] || "";
   const { id: roomKey } = useParams();
+  const userId = useSelector((state) => state.user.id);
+  
 
 
   //new word - new turn
@@ -119,11 +121,19 @@ export default function GuessWordGame({ handleBack }) {
     setSkipCount((prev) => prev + 1);
   };
 
-  const handleExit = () => {
-    localStorage.removeItem(enteredToGameFrom);
-    dispatch(resetRoom());
-    navigate(ROUTES.ROOMS_LIST);
-  };
+  const handleExit = async () => {
+  try {
+    await deleteRoom(roomKey, userId);
+    console.log("Room deleted from server");
+  } catch (err) {
+    console.error("❌ Failed to delete room:", err.message);
+  }
+
+  localStorage.removeItem(enteredToGameFrom);
+  dispatch(resetRoom());
+  navigate(ROUTES.ROOMS_LIST);
+};
+
 
   return (
     <>
