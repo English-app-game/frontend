@@ -57,15 +57,15 @@ export default function WaitingRoom() {
     const match = gameTypes.find((gt) => gt._id === room.gameType);
     let gameType = match ? match.name.trim().split(" ").join("") : "Unknown";
 
-    if (players.length < 2 && gameType !== "guesstheword") {
-      toast.error("At least 2 players are required to start the game.");
-      return;
-    }
+    // if (players.length < 2 && gameType !== "guesstheword") {
+    //   toast.error("At least 2 players are required to start the game.");
+    //   return;
+    // }
 
-    if (userId !== room.admin) {
-      toast.error("Only the host can start the game.");
-      return;
-    }
+    // if (userId !== room.admin) {
+    //   toast.error("Only the host can start the game.");
+    //   return;
+    // }
 
     try {
       const updatedRoom = await startGameService(roomKey, userId);
