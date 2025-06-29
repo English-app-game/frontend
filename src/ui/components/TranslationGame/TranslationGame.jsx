@@ -106,7 +106,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
   }, [userId, hebWords]);
 
 
-  if (gameEnded) return <EndGame />;
+  if (gameEnded) return <EndGame emit={emit} />;
 
   return (
     <section
@@ -116,7 +116,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
       {/* Scoreboard & Exit */}
 
       <div className="row-span-1 flex justify-between items-center px-6 py-3 shadow-md">
-        <ScoreBoard handleBack={handleBack} />
+        <ScoreBoard handleBack={handleBack}  />
       </div>
 
       {/* Hebrew Words */}

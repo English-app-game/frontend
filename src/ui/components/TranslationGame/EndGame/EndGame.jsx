@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../../routes/routes_consts";
@@ -11,7 +11,7 @@ import ScoreboardList from "./ScoreboardList";
 import { toast } from "react-toastify";
 import { enteredToGameFrom } from "../../../../consts/strings";
 
-export default function EndGame() {
+export default function EndGame({ emit }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -26,7 +26,7 @@ export default function EndGame() {
 
   // To keep scoreboard snapshot
   const scoreboard = useMemo(() => dynamicScoreboard.slice(), []);
-  useEndGameCleanup({ roomKey, userId, hostId, scoreboard, gameType });
+  useEndGameCleanup({ roomKey, userId, hostId, scoreboard, gameType, emit });
 
 
   const handleExit = () => {
