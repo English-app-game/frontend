@@ -12,7 +12,6 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
   const location = useLocation();
   const params = useParams();
   const dispatch = useDispatch();
-  const socket = null;
   const { leaveWaitingRoom } = useWaitingRoomSocket();
 
   const user = getStoredUser();
@@ -35,7 +34,7 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
         <span className="text-white font-medium text-lg">{user.name}</span>
         <TextButton
           onClick={() =>
-            handleLogout(navigate, socket, currentRoomKey, dispatch, leaveWaitingRoom)
+            handleLogout(navigate, null, currentRoomKey, dispatch, leaveWaitingRoom)
           }
           className="text-white hover:cursor-pointer hover:underline"
         >
