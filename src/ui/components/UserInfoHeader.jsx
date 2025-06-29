@@ -12,7 +12,6 @@ export default function UserInfoHeader({ isInsideSidebar = false }) {
   const location = useLocation();
   const params = useParams();
   const dispatch = useDispatch();
-  // const { socket } = useSocket();
   const socket = null;
   const { leaveWaitingRoom } = useWaitingRoomSocket();
 
