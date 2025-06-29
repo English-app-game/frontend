@@ -45,6 +45,12 @@ const CreateRoom = () => {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token") || null;
 
+    if (!token) {
+      toast.error("Something went wrong – try to login again.");
+      console.warn("Aborting createRoom – token is missing");
+      return;
+    }
+
     dispatch(
       createRoom({
         key: null,
