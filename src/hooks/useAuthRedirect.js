@@ -5,6 +5,8 @@ import { setUser } from "../store/slices/userSlice";
 import { resetRoom } from "../store/slices/roomSlice";
 import { LOGIN, ROOMS_LIST } from "../routes/routes_consts";
 import { HOME } from "../routes/routes_consts";
+import { failToParseUser, loggedIn, loggedOut, errorDuringLogOut, failedToParseFromStorage } from "./hooksStrings";
+import { userS, tokenS} from "../consts/strings"
 
 export default function useAuthRedirect({ mode }) {
   const navigate = useNavigate();
@@ -12,26 +14,26 @@ export default function useAuthRedirect({ mode }) {
 
   useEffect(() => {
     const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
+      localStorage.getItem(tokenS) || sessionStorage.getItem(tokenS);
     const storedUser =
-      localStorage.getItem("user") || sessionStorage.getItem("user");
+      localStorage.getItem(userS) || sessionStorage.getItem(userS);
 
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         dispatch(setUser(parsedUser));
       } catch (err) {
-        console.warn("Failed to parse stored user:", err);
-        if (mode === "loggedIn") navigate(LOGIN);
+        console.warn(failToParseUser, err);
+        if (mode === loggedIn) navigate(LOGIN);
         return;
       }
     }
 
-    if (mode === "loggedIn" && !token) {
+    if (mode === loggedIn && !token) {
       navigate(LOGIN);
     }
 
-    if (mode === "loggedOut" && token) {
+    if (mode === loggedOut && token) {
       navigate(ROOMS_LIST);
     }
   }, []);
@@ -64,7 +66,7 @@ export const handleLogout = async (
 
     navigate(HOME);
   } catch (error) {
-    console.error("Error during logout:", error);
+    console.error(errorDuringLogOut, error);
     localStorage.clear();
     sessionStorage.clear();
     navigate(HOME);
@@ -73,10 +75,10 @@ export const handleLogout = async (
 
 export const getStoredUser = () => {
   try {
-    const data = localStorage.getItem("user") || sessionStorage.getItem("user");
+    const data = localStorage.getItem(userS) || sessionStorage.getItem(userS);
     return data ? JSON.parse(data) : null;
   } catch (err) {
-    console.log("Failed to parse user from storage:", err);
+    console.log(failedToParseFromStorage, err);
     return null;
   }
 };

@@ -3,8 +3,9 @@ import { socket } from "../sockets/sockets";
 import { useDispatch, useSelector } from "react-redux";
 import { setMemoryGameState, resetMemoryGameState } from "../store/slices/memoryGameSlice";
 import { toast } from "react-toastify";
-import { MEMORY_GAME_STATE, MEMORY_GAME_END,MEMORY_GAME_PLAYER_LEFT } from "../consts/consts";
+import { MEMORY_GAME_STATE, MEMORY_GAME_END,MEMORY_GAME_PLAYER_LEFT, MEMORY_GAME_JOIN, MEMORY_GAME_FLIPCARD, MEMORY_GAME_MATCHCHECK } from "../consts/consts";
 import {notifyPlayerLeft} from "../services/memoryGameService";
+import { emitingMemoryGameFlipCardMes, emitingMemoryGameJoinMes, missingPartsSkipEmit, receivedStateFromServer } from "./hooksStrings";
 
 export function useMemoryGameSocket(roomKey,onGameEnd) {
   const socketRef = useRef(socket);
@@ -15,7 +16,7 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
 
   // --- Handlers ---
   const updateMemoryGameState = useCallback((gameState) => {
-    console.log("📩 Received game state from server:", JSON.stringify(gameState, null, 2));
+    console.log(receivedStateFromServer, JSON.stringify(gameState, null, 2));
     dispatch(setMemoryGameState(gameState));
   }, [dispatch]);
 
@@ -55,14 +56,14 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
     const currSocket = socketRef.current;
 
     if (!user?.id || !roomKey) {
-      console.log("⛔️ Missing user or roomKey, skipping socket emit");
+      console.log(missingPartsSkipEmit);
       return;
     }
 
     if (!currSocket.connected) currSocket.connect();
 
-    console.log("📤 Emitting memory-game/join", { roomKey, user });
-    currSocket.emit("memory-game/join", { roomKey, user });
+    console.log(emitingMemoryGameJoinMes, { roomKey, user });
+    currSocket.emit(MEMORY_GAME_JOIN, { roomKey, user });
 
     return () => {
       currSocket.disconnect();
@@ -78,13 +79,13 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
 
   // --- Custom emitters ---
   const requestFlipCard = useCallback((userId, cardId, lang, callback) => {
-      console.log("📤 Emitting memory-game/flip-card", { roomKey, userId, cardId, lang });
-    socketDispatcher("memory-game/flip-card", { roomKey, userId, cardId, lang }, callback);
+      console.log(emitingMemoryGameFlipCardMes, { roomKey, userId, cardId, lang });
+    socketDispatcher(MEMORY_GAME_FLIPCARD, { roomKey, userId, cardId, lang }, callback);
   }, [roomKey, socketDispatcher]);
 
   const requestMatchCheck = useCallback((userId, firstCard, secondCard, callback) => {
     socketDispatcher(
-      "memory-game/match-check",
+      MEMORY_GAME_MATCHCHECK,
       { roomKey, userId, firstCard, secondCard },
       callback
     );
