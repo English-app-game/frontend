@@ -6,18 +6,32 @@ import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
+<<<<<<< Updated upstream
 import ScoreResultModal from "./ScoreResultModal";
 import { notifyYourTurn } from "../../../services/memoryGameService";
 import { enteredToGameFrom } from "../../../consts/strings";
 import { useProtectUrl } from "../../../hooks/useProtectUrl";
 import memoryGameBG from "../../../assets/images/memoryGameBG.png";
 import RotateNotice from "../RotateNotice";
+=======
+import ScoreResultModal  from "./ScoreResultModal";
+import { notifyYourTurn } from "../../../services/memoryGameService";
+import {useEndGameCleanup } from "../../../hooks/useEndGameCleanup";
+
+>>>>>>> Stashed changes
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
+<<<<<<< Updated upstream
   const blocked = useProtectUrl();
+=======
+  const scoreboard = useSelector((state) => state.memoryGame.scoreboard);
+  const isHost = user.id === game.host._id;
+  const gameEnded = game.end === true;
+  const currentTurnPlayer = game.users?.[game.currentTurn];
+>>>>>>> Stashed changes
   const previousTurnRef = useRef(null);
   console.log("📦 MemoryGame state:", game);
   const dispatch = useDispatch();
@@ -37,10 +51,23 @@ export default function MemoryGame() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
+<<<<<<< Updated upstream
 
   console.log("🧠 Rendering MemoryGame with:", game);
 
   if(blocked) return null;
+=======
+  
+  console.log("🧠 Rendering MemoryGame with:", game);
+
+  useEndGameCleanup({
+  roomKey,
+  userId: user.id,
+  hostId: isHost ? user.id : "non-host",
+  scoreboard: gameEnded && isHost ? scoreboard : [],
+  gameType: game.gameTypeId,
+});
+>>>>>>> Stashed changes
 
   useEffect(() => {
     console.log("🚀 useEffect running in useMemoryGameSocket");
