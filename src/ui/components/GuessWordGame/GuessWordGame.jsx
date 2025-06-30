@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchRandomWords } from "../../../services/GeussGame";
+import { fetchRandomWords, deleteRoom } from "../../../services/GeussGame";
 import { pickMissingIndexes, isGuessComplete } from "../../../utils/gameLogic";
+import { getRoomLevel } from "../../../services/room/getRoomLevel";
 
 import WordDisplay from "./WordDisplay";
 import VirtualKeyboard from "./VirtualKeyboard";
@@ -11,11 +12,13 @@ import Confetti from "react-confetti";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 import ExitButton from "../ExitButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../../routes/routes_consts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
 import { enteredToGameFrom } from "../../../consts/strings";
+import { toast } from "react-toastify";
+import { DEFAULT_LEVEL, MAX_HINTS, MAX_SKIPS } from "../../../consts/consts";
 
 export default function GuessWordGame({ handleBack }) {
   const [words, setWords] = useState([]); //get the words list
@@ -24,10 +27,17 @@ export default function GuessWordGame({ handleBack }) {
   const [guesses, setGuesses] = useState([]); //the letters that the user geuss from keyboard
   const [isCompleted, setIsCompleted] = useState(false);
   const { width, height } = useWindowSize(); //for the confeti
+  const [level, setLevel] = useState(DEFAULT_LEVEL);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [hintCount, setHintCount] = useState(0);
+  const [skipCount, setSkipCount] = useState(0);
 
   const currentPresentedWord = words[index] || "";
+  const { id: roomKey } = useParams();
+  const userId = useSelector((state) => state.user.id);
+  
+
 
   //new word - new turn
   const setupNewWord = useCallback(() => {
@@ -38,14 +48,27 @@ export default function GuessWordGame({ handleBack }) {
     setIsCompleted(false);
   }, [currentPresentedWord]);
 
+  async function loadWordsByLevel(roomKey) {
+    try {
+      const roomLevel = await getRoomLevel(roomKey);
+      setLevel(roomLevel);
+
+      const allWords = await fetchRandomWords(roomLevel);
+      setWords(allWords);
+    } catch (err) {
+      console.error("❌ Failed to load words or level:", err);
+    }
+  }
+
   useEffect(() => {
     if (!words.length) {
-      fetchRandomWords().then(setWords).catch(console.error);
+      loadWordsByLevel(roomKey);
       return;
     }
 
     setupNewWord();
-  }, [words.length, index, setupNewWord]);
+  }, [words.length, index, setupNewWord, roomKey]);
+
 
   const handleLetterClick = (letter) => {
     const lower = letter.toLowerCase();
@@ -61,6 +84,13 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const handleHint = () => {
+    if (hintCount >= MAX_HINTS) {
+      toast.error("You've reached the maximum number of hints 😔", {
+        position: "top-center",
+      });
+      return;
+    }
+    
     const remaining = missingIdxs
       .map((i) => currentPresentedWord[i].toLowerCase())
       .filter((ch) => !guesses.includes(ch));
@@ -70,6 +100,7 @@ export default function GuessWordGame({ handleBack }) {
     const hintLetter = remaining[Math.floor(Math.random() * remaining.length)];
     const updated = [...guesses, hintLetter];
     setGuesses(updated);
+    setHintCount((prev) => prev + 1);
 
     if (isGuessComplete(currentPresentedWord, missingIdxs, updated)) {
       setIsCompleted(true);
@@ -78,15 +109,31 @@ export default function GuessWordGame({ handleBack }) {
   };
 
   const goToNextWord = () => {
+    if (skipCount >= MAX_SKIPS) {
+      toast.error("You've reached the maximum number of word skips 😢", {
+        position: "top-center",
+      });
+      return;
+    }
+
     setIsCompleted(false);
     setIndex((i) => (i + 1) % words.length);
+    setSkipCount((prev) => prev + 1);
   };
 
-  const handleExit = () => {
-    localStorage.removeItem(enteredToGameFrom);
-    dispatch(resetRoom());
-    navigate(ROUTES.ROOMS_LIST);
-  };
+  const handleExit = async () => {
+  try {
+    await deleteRoom(roomKey, userId);
+    console.log("Room deleted from server");
+  } catch (err) {
+    console.error("❌ Failed to delete room:", err.message);
+  }
+
+  localStorage.removeItem(enteredToGameFrom);
+  dispatch(resetRoom());
+  navigate(ROUTES.ROOMS_LIST);
+};
+
 
   return (
     <>

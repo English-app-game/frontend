@@ -18,7 +18,7 @@ export const GAMETYPE_ROUTE = "/game-types"
 export const PLAYER_SCORE = `${BASE_URL}/score/last`;
 export const REMOVE_PLAYER_ROUTE = `${BASE_URL}/rooms/players/remove`;
 export const JOIN_USER_ROOM_ROUTE = `${BASE_URL}/rooms/players/join`;
-export const RANDOM_WORD_API_URL = "https://random-word-api.vercel.app/api";
+export const ALL_WORDS = `${BASE_URL}/rooms/words`;
 export const DEFAULT_WORD_AMOUNT = 500;
 export const START_GAME_ROUTE = (roomKey = "") =>
   `${BASE_URL}/rooms/${roomKey}/start`;
@@ -29,6 +29,11 @@ export const MEMORY_GAME_STATE = "memory-game/state";
 export const MEMORY_GAME_END = "memory-game/end";
 export const MEMORY_GAME_PLAYER_LEFT= "memory-game/player-left";
 export const YOUR_TURN_MSG= "🎯 Your Turn!";
+export const MAX_HINTS = 4;
+export const MAX_SKIPS = 4;
+export const DEFAULT_LEVEL = "easy";
+
+
 export const MEMORY_GAME_JOIN = "memory-game/join";
 export const MEMORY_GAME_FLIPCARD ="memory-game/flip-card";
 export const MEMORY_GAME_MATCHCHECK ="memory-game/match-check";
