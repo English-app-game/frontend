@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import WordCard from "./WordCard";
@@ -16,15 +16,12 @@ export default function MemoryGame() {
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
   const scoreboard = useSelector((state) => state.memoryGame.scoreboard);
-  const isHost = user.id === game.host._id;
-  const gameEnded = game.end === true;
+  const isHost = useMemo(() => user.id === game.host._id, [user.id, game.host._id]);
+  const gameEnded = useMemo(() => game.end === true, [game.end]);
   const currentTurnPlayer = game.users?.[game.currentTurn];
   const previousTurnRef = useRef(null);
   console.log("📦 MemoryGame state:", game);
   const dispatch = useDispatch();
-
-
-  console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
 
   const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
@@ -33,7 +30,6 @@ export default function MemoryGame() {
       setShowScoreModal(true);
     }
   );
-
 
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
