@@ -1,0 +1,10 @@
+export const userNotFound = "User not found. Please log in.";
+export const fullRoomMes = "This room is full!";
+export const loginFailAfterRegister = "Login failed after registration.";
+export const requiredUserName = "Username is required";
+export const onlyLetters = "Only letters allowed";
+export const selectAvatar = "Please select an avatar";
+export const requiredEmail = "Email is required";
+export const invalidEmail = "Invalid Email";
+export const requiredPassword = "Password is required";
+export const passwordLen = "Password must be 8–16 characters";

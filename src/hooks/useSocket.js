@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setTranslationGameState } from "../store/slices/translationGameSlice";
 import { toast } from "react-toastify";
 import { TRANSLATION_GAME_EVENTS } from "../consts/translationGame";
+import { correctMatch, gameEnded, inCorrectMatch } from "./hooksStrings";
 
 export function useSocket() {
   const socketRef = useRef(socket);
@@ -24,16 +25,16 @@ export function useSocket() {
   const handleMatchFeedback = useCallback(({ correct }) => {
     toast.dismiss();
     if (correct) {
-      toast.success("✅ Correct match!");
+      toast.success(correctMatch);
     } else {
-      toast.error("❌ Incorrect match!");
+      toast.error(inCorrectMatch);
     }
   }, []);
 
   const handleEndGame = useCallback(
     ({ message, finalState }) => {
       toast.dismiss();
-      toast.info(message || "🏁 The game has ended!");
+      toast.info(message || gameEnded);
       dispatch(setTranslationGameState({ ...finalState, end: true }));
       // Optionally: navigate to a summary page or trigger some game end UI
     },

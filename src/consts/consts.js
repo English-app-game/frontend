@@ -29,3 +29,6 @@ export const MEMORY_GAME_STATE = "memory-game/state";
 export const MEMORY_GAME_END = "memory-game/end";
 export const MEMORY_GAME_PLAYER_LEFT= "memory-game/player-left";
 export const YOUR_TURN_MSG= "🎯 Your Turn!";
+export const MEMORY_GAME_JOIN = "memory-game/join";
+export const MEMORY_GAME_FLIPCARD ="memory-game/flip-card";
+export const MEMORY_GAME_MATCHCHECK ="memory-game/match-check";

@@ -6,6 +6,7 @@ import { ROUTES } from "../routes/routes_consts";
 import { getRoom } from "../services/room/getRoom";
 import { setRoom } from "../store/slices/roomSlice";
 import { getAllGameTypes } from "../services/room/roomType";
+import { errorPollingRoom, gameTypeNotFound, unknown } from "./hooksStrings";
 export default function useRoomPolling(roomKey) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,10 +25,10 @@ export default function useRoomPolling(roomKey) {
           const match = gameTypes.find((gt) => gt._id === room.gameType);
           let gameType = match
             ? match.name.trim().split(" ").join("")
-            : "Unknown";
+            : unknown;
 
           if (!gameType) {
-            console.error("Game type not found for room:", roomKey);
+            console.error(gameTypeNotFound, roomKey);
             navigate(ROUTES.ROOMS_LIST);
             return;
           }
@@ -36,7 +37,7 @@ export default function useRoomPolling(roomKey) {
           navigate(ROUTES.ACTIVE_ROOM(roomKey, gameType));
         }
       } catch (err) {
-        console.error("Error polling room:", err);
+        console.error(errorPollingRoom, err);
       }
     }, 1000);
 

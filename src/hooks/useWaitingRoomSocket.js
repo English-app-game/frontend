@@ -2,12 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { socket } from "../sockets/sockets";
 import { WAITING_ROOM_EVENTS, SOCKET_CONNECTION_EVENTS } from "../consts/socketEvents";
 import removeUserFromRoom from "../services/room/removeUserFromRoom";
+import { connected, connecting, disconnected, errorLeaveWaitnigRoom, IOClientDisconnect, socketConnectionTimeOut, waitingRoomSocketError } from "./hooksStrings";
+import { errorS } from "../consts/strings";
 
 export function useWaitingRoomSocket() {
   const socketRef = useRef(socket);
   const connectionTimeoutRef = useRef(null);
   const isConnectingRef = useRef(false);
-  const [connectionState, setConnectionState] = useState('disconnected'); // disconnected, connecting, connected, error
+  const [connectionState, setConnectionState] = useState(disconnected); // disconnected, connecting, connected, error
 
   const socketDispatcher = useCallback((event, payload, callback) => {
     const ref = socketRef.current;
@@ -17,13 +19,13 @@ export function useWaitingRoomSocket() {
       // Immediate connection attempt if not already connecting
       if (!isConnectingRef.current) {
         isConnectingRef.current = true;
-        setConnectionState('connecting');
+        setConnectionState(connecting);
         ref.connect();
       }
       
       ref.once(SOCKET_CONNECTION_EVENTS.CONNECT, () => {
         isConnectingRef.current = false;
-        setConnectionState('connected');
+        setConnectionState(connected);
         ref.emit(event, payload, callback);
       });
     }
@@ -57,7 +59,7 @@ export function useWaitingRoomSocket() {
         ref.emit(WAITING_ROOM_EVENTS.LEAVE, { roomKey, userId });
       }
     } catch (error) {
-      console.error("Error leaving waiting room:", error);
+      console.error(errorLeaveWaitnigRoom, error);
     }
   }, []);
 
@@ -67,7 +69,7 @@ export function useWaitingRoomSocket() {
       const ref = socketRef.current;
       
       if (ref.connected) {
-        setConnectionState('connected');
+        setConnectionState(connected);
         resolve();
         return;
       }
@@ -76,7 +78,7 @@ export function useWaitingRoomSocket() {
         // Already connecting, just wait for the connection
         ref.once(SOCKET_CONNECTION_EVENTS.CONNECT, () => {
           isConnectingRef.current = false;
-          setConnectionState('connected');
+          setConnectionState(connected);
           if (connectionTimeoutRef.current) {
             clearTimeout(connectionTimeoutRef.current);
             connectionTimeoutRef.current = null;
@@ -87,19 +89,19 @@ export function useWaitingRoomSocket() {
       }
 
       isConnectingRef.current = true;
-      setConnectionState('connecting');
+      setConnectionState(connecting);
       
       // Set timeout
       connectionTimeoutRef.current = setTimeout(() => {
         isConnectingRef.current = false;
-        setConnectionState('error');
-        reject(new Error('Socket connection timeout'));
+        setConnectionState(errorS);
+        reject(new Error(socketConnectionTimeOut));
       }, timeout);
 
       // Setup connection handlers
       const onConnect = () => {
         isConnectingRef.current = false;
-        setConnectionState('connected');
+        setConnectionState(connected);
         if (connectionTimeoutRef.current) {
           clearTimeout(connectionTimeoutRef.current);
           connectionTimeoutRef.current = null;
@@ -110,7 +112,7 @@ export function useWaitingRoomSocket() {
 
       const onError = (error) => {
         isConnectingRef.current = false;
-        setConnectionState('error');
+        setConnectionState(errorS);
         if (connectionTimeoutRef.current) {
           clearTimeout(connectionTimeoutRef.current);
           connectionTimeoutRef.current = null;
@@ -133,18 +135,18 @@ export function useWaitingRoomSocket() {
     // Connection event handlers for state management
     const handleConnect = () => {
       isConnectingRef.current = false;
-      setConnectionState('connected');
+      setConnectionState(connected);
     };
 
     const handleDisconnect = (reason) => {
-      setConnectionState('disconnected');
+      setConnectionState(disconnected);
       
       // Auto-reconnect on unexpected disconnections (not manual)
-      if (reason !== 'io client disconnect') {
+      if (reason !== IOClientDisconnect) {
         setTimeout(() => {
           if (!ref.connected && !isConnectingRef.current) {
             isConnectingRef.current = true;
-            setConnectionState('connecting');
+            setConnectionState(connecting);
             ref.connect();
           }
         }, 500); // Quick retry
@@ -153,22 +155,22 @@ export function useWaitingRoomSocket() {
 
     const handleConnectError = (error) => {
       isConnectingRef.current = false;
-      setConnectionState('error');
-      console.error('Waiting room socket connection error:', error);
+      setConnectionState(errorS);
+      console.error(waitingRoomSocketError, error);
     };
 
     const handleReconnect = (attemptNumber) => {
-      setConnectionState('connecting');
+      setConnectionState(connecting);
     };
 
     const handleReconnectSuccess = () => {
-      setConnectionState('connected');
+      setConnectionState(connected);
     };
 
     // Eagerly connect the socket as soon as the hook mounts
     if (!ref.connected && !isConnectingRef.current) {
       isConnectingRef.current = true;
-      setConnectionState('connecting');
+      setConnectionState(connecting);
       ref.connect();
     }
 
@@ -213,7 +215,7 @@ export function useWaitingRoomSocket() {
       connectionTimeoutRef.current = null;
     }
     isConnectingRef.current = false;
-    setConnectionState('disconnected');
+    setConnectionState(disconnected);
     if (ref.connected) {
       ref.disconnect();
     }
@@ -229,7 +231,7 @@ export function useWaitingRoomSocket() {
     connectWithTimeout,
     leaveWaitingRoom,
     connectionState, 
-    isConnected: connectionState === 'connected',
-    isConnecting: connectionState === 'connecting',
+    isConnected: connectionState === connected,
+    isConnecting: connectionState === connecting,
   };
 } 
