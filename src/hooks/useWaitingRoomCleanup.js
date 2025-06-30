@@ -1,17 +1,19 @@
 import { useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useWaitingRoomSocket } from "./useWaitingRoomSocket";
-import { ROUTES } from "../routes/routes_consts";
+import { ROOMS_LIST, ROUTES } from "../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { resetRoom } from "../store/slices/roomSlice";
+import { enteredToGameFrom } from "../consts/strings";
+import { beforeunload, BROWSER_CLOSE, COMPONENT_UNMOUNT, errorDuringWaitingRoomCleanup, EXIT_BUTTON, unknown, URL_CHANGE } from "./hooksStrings";
 
 // Cleanup reason constants
 const CLEANUP_REASONS = {
-  UNKNOWN: "unknown",
-  URL_CHANGE: "URL_CHANGE",
-  BROWSER_CLOSE: "BROWSER_CLOSE", 
-  COMPONENT_UNMOUNT: "COMPONENT_UNMOUNT",
-  EXIT_BUTTON: "EXIT_BUTTON",
+  UNKNOWN: unknown,
+  URL_CHANGE: URL_CHANGE,
+  BROWSER_CLOSE: BROWSER_CLOSE, 
+  COMPONENT_UNMOUNT: COMPONENT_UNMOUNT,
+  EXIT_BUTTON: EXIT_BUTTON,
 };
 
 export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
@@ -49,13 +51,13 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
       }
       dispatch(resetRoom());
     } catch (error) {
-      console.error("Error during waiting room cleanup:", error);
+      console.error(errorDuringWaitingRoomCleanup, error);
     }
   }, [leaveWaitingRoom, hasJoinedRoom, dispatch]);
 
   useEffect(() => {
     const currentPath = location.pathname;
-    const isLeavingWaitingRoom = hasJoinedRoom && roomKey && !currentPath.includes(`/rooms/${roomKey}`);
+    const isLeavingWaitingRoom = hasJoinedRoom && roomKey && !currentPath.includes(`${ROOMS_LIST}/${roomKey}`);
     
     if (isLeavingWaitingRoom) {
       performCleanup(CLEANUP_REASONS.URL_CHANGE);
@@ -69,10 +71,10 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
       dispatch(resetRoom());
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener(beforeunload, handleBeforeUnload);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener(beforeunload, handleBeforeUnload);
     };
   }, [roomKey, userId, hasJoinedRoom, dispatch]);
 
@@ -88,6 +90,7 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
   // Manual exit function for exit button
   const exitRoom = useCallback(async () => {
     await performCleanup(CLEANUP_REASONS.EXIT_BUTTON);
+    localStorage.removeItem(enteredToGameFrom);
     navigate(ROUTES.ROOMS_LIST);
   }, [performCleanup, navigate]);
 

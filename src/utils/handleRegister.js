@@ -2,6 +2,9 @@ import { validateRegister } from "../utils/validateFields";
 import { registerUser } from "../services/service.js";
 import { LOGIN_API } from "../consts/consts.js";
 import { postAndStore } from "../services/auth.js"
+import { loginFailAfterRegister } from "./utilsStrings.js";
+import {ROOMS_LIST} from "../routes/routes_consts.js";
+import { serverError } from "../consts/strings.js";
 
 export const handleRegister = async (dataform, setErrors, navigate) => {
   const validationErrors = validateRegister(dataform);
@@ -32,14 +35,14 @@ export const handleRegister = async (dataform, setErrors, navigate) => {
     });
 
     if (!loginOk) {
-      setErrors({ general: data.message || "Login failed after registration." });
+      setErrors({ general: data.message || loginFailAfterRegister });
       return;
     }
 
-    navigate("/rooms");
+    navigate(ROOMS_LIST);
 
   } catch (err) {
-    setErrors({ general: "Server error, please try again later." });
+    setErrors({ general: serverError });
   }
 };
 

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { userS } from "../../consts/strings";
 
 const initialState = {
   id: "",
@@ -8,7 +9,7 @@ const initialState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: userS,
   initialState,
   reducers: {
     setUser: (state, action) => {

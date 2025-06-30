@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { blackColor, flipBackCardReducerActivated, memoryGame, updateRedux } from "../storeStrings";
 
 const initialState = {
   roomKey: "",
@@ -21,11 +22,11 @@ function resetFlipped(cards, firstId, secondId) {
 }
 
 const memoryGameSlice = createSlice({
-  name: "memoryGame",
+  name: memoryGame,
   initialState,
   reducers: {
     setMemoryGameState: (state, {payload} ) => {
-      console.log("📥 Updating Redux with game payload:", JSON.stringify(payload, null, 2));
+      console.log(updateRedux, JSON.stringify(payload, null, 2));
 
       state.roomKey = payload.roomKey || state.roomKey;
       state.host = payload.host ?? state.host;
@@ -37,7 +38,7 @@ const memoryGameSlice = createSlice({
    
       if (payload.words?.heWords && payload.words?.enWords) {
         state.words = payload.words;
-        state.cards = [...payload.words.heWords, ...payload.words.enWords];
+        state.cards = payload.words.allCards || [...payload.words.heWords, ...payload.words.enWords];
       }
 
 
@@ -45,25 +46,21 @@ const memoryGameSlice = createSlice({
         userId,
         name: user.name,
         score: user.score || 0,
-        color: user.color || "#000000",
+        color: user.color || blackColor,
         isGuest: user.isGuest || false,
       }));
     },
 
     flipBackCards: (state, { payload }) => {
-      console.log("🧩 flipBackCards reducer activated with:", payload);
+      console.log(flipBackCardReducerActivated, payload);
       const [firstId, secondId] = payload;
-      const updatedHe= state.words.heWords =resetFlipped(state.words.heWords, firstId, secondId);
-      const updatedEn= state.words.enWords = resetFlipped(state.words.enWords, firstId, secondId);
+      const updatedHe = resetFlipped(state.words.heWords, firstId, secondId);
+      const updatedEn = resetFlipped(state.words.enWords, firstId, secondId);
+      const updatedCards = resetFlipped(state.cards, firstId, secondId);
 
-      return {
-       ...state,
-       words: {
-         heWords: updatedHe,
-         enWords: updatedEn
-       },
-       cards: [...updatedHe, ...updatedEn]
-  };
+      state.words.heWords = updatedHe;
+      state.words.enWords = updatedEn;
+      state.cards = updatedCards;
     },
 
     resetMemoryGameState: () => initialState,

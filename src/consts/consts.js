@@ -33,3 +33,6 @@ export const MAX_HINTS = 4;
 export const MAX_SKIPS = 4;
 
 
+export const MEMORY_GAME_JOIN = "memory-game/join";
+export const MEMORY_GAME_FLIPCARD ="memory-game/flip-card";
+export const MEMORY_GAME_MATCHCHECK ="memory-game/match-check";

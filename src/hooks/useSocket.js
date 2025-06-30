@@ -4,10 +4,12 @@ import { useDispatch } from "react-redux";
 import { setTranslationGameState } from "../store/slices/translationGameSlice";
 import { toast } from "react-toastify";
 import { TRANSLATION_GAME_EVENTS } from "../consts/translationGame";
+import { correctMatch, gameEnded, inCorrectMatch } from "./hooksStrings";
 
 export function useSocket() {
   const socketRef = useRef(socket);
   const dispatch = useDispatch();
+  console.log('test');
 
   const updateTranslationGameState = useCallback(
     (room) => {
@@ -16,19 +18,23 @@ export function useSocket() {
     [dispatch]
   );
 
+  const handleEndGameMessage = useCallback(({ message }) => {
+    toast.info(message);
+  }, []);
+
   const handleMatchFeedback = useCallback(({ correct }) => {
     toast.dismiss();
     if (correct) {
-      toast.success("✅ Correct match!");
+      toast.success(correctMatch);
     } else {
-      toast.error("❌ Incorrect match!");
+      toast.error(inCorrectMatch);
     }
   }, []);
 
   const handleEndGame = useCallback(
     ({ message, finalState }) => {
       toast.dismiss();
-      toast.info(message || "🏁 The game has ended!");
+      toast.info(message || gameEnded);
       dispatch(setTranslationGameState({ ...finalState, end: true }));
       // Optionally: navigate to a summary page or trigger some game end UI
     },
@@ -40,14 +46,16 @@ export function useSocket() {
     ref.on(TRANSLATION_GAME_EVENTS.SET_STATE, updateTranslationGameState);
     ref.on(TRANSLATION_GAME_EVENTS.MATCH_FEEDBACK, handleMatchFeedback);
     ref.on(TRANSLATION_GAME_EVENTS.END, handleEndGame);
-  }, [updateTranslationGameState, handleMatchFeedback, handleEndGame]);
+    ref.on(TRANSLATION_GAME_EVENTS.END_GAME_MESSAGE, handleEndGameMessage);
+  }, [updateTranslationGameState, handleMatchFeedback, handleEndGame, handleEndGameMessage]);
 
   const stopListeners = useCallback(() => {
     const ref = socketRef.current;
     ref.off(TRANSLATION_GAME_EVENTS.SET_STATE, updateTranslationGameState);
     ref.off(TRANSLATION_GAME_EVENTS.MATCH_FEEDBACK, handleMatchFeedback);
     ref.off(TRANSLATION_GAME_EVENTS.END, handleEndGame);
-  }, [updateTranslationGameState, handleMatchFeedback, handleEndGame]);
+    ref.off(TRANSLATION_GAME_EVENTS.END_GAME_MESSAGE, handleEndGameMessage);
+  }, [updateTranslationGameState, handleMatchFeedback, handleEndGame, handleEndGameMessage]);
 
   const socketDispatcher = useCallback((event, payload, callback) => {
     socket.emit(event, payload, callback);

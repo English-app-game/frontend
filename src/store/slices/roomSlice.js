@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { GameTypes, RoomStatus } from "../../consts/gameTypes";
 import { createRoom as createRoomMiddleware } from "../thunks/createRoomThunk";
+import { room } from "../storeStrings";
 
 // Initial State aligned with your GameRoom schema
 const initialState = {
@@ -38,7 +39,7 @@ const initialState = {
 };
 
 const roomSlice = createSlice({
-  name: "room",
+  name: room,
   initialState,
   reducers: {
     setRoom: (state, action) => {

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { saveScoreToServer } from "../services/scoreService";
 import { DELETE_ROOM_ROUTE } from "../consts/consts";
+import { TRANSLATION_GAME_EVENTS } from "../consts/translationGame";
+import { DELETES, failedToDelRoom, itsATieGame, theWinnerIs, tiedPlayers, useHandleCleanUpFail } from "./hooksStrings";
 
 export function useEndGameCleanup({
   roomKey,
@@ -8,6 +10,7 @@ export function useEndGameCleanup({
   hostId,
   scoreboard,
   gameType,
+  emit,
 }) {
   useEffect(() => {
     if (!roomKey || !userId || !hostId || userId !== hostId) return;
@@ -17,7 +20,7 @@ export function useEndGameCleanup({
         const key = roomKey.split("/")[0];
 
         const response = await fetch(DELETE_ROOM_ROUTE(key), {
-          method: "DELETE",
+          method: DELETES,
           headers: {
             "Content-Type": "application/json",
           },
@@ -26,19 +29,45 @@ export function useEndGameCleanup({
 
         const result = await response.json();
         if (!response.ok)
-          throw new Error(result.message || "Failed to delete room");
+          throw new Error(result.message || failedToDelRoom);
 
         const [winner] = [...scoreboard].sort((a, b) => b.score - a.score);
-        if (winner && !winner.isGuest) {
-          await saveScoreToServer({
-            player: winner.userId,
-            roomId: result.roomId,
-            gameTypeId: gameType,
-            score: winner.score,
+
+        const playersTiedWithWinner = scoreboard.filter(
+          (player) => player.score === winner.score
+        );
+
+        if (playersTiedWithWinner.length > 1) {
+          emit(TRANSLATION_GAME_EVENTS.END_GAME_MESSAGE, {
+            roomKey,
+            message: `${itsATieGame} ${playersTiedWithWinner
+              .map((player) => player.name)
+              .join(", ")
+              .concat(tiedPlayers)}`,
+          });
+          throw new Error(`${itsATieGame}`);
+        } else {
+          emit(TRANSLATION_GAME_EVENTS.END_GAME_MESSAGE, {
+            roomKey,
+            message: `${theWinnerIs} ${winner.name}!`,
           });
         }
+
+        Promise.all(
+          [...scoreboard].map(async (player) => {
+            return (
+              !player.isGuest &&
+              (await saveScoreToServer({
+                player: player.userId,
+                roomId: result.roomId,
+                gameTypeId: gameType,
+                score: player.score,
+              }))
+            );
+          })
+        );
       } catch (err) {
-        console.error("❌ useEndGameCleanup failed:", err);
+        console.error(useHandleCleanUpFail, err);
       }
     };
 

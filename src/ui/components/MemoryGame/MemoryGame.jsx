@@ -7,8 +7,6 @@ import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
 import ScoreResultModal from "./ScoreResultModal";
-import { toast } from "react-toastify";
-import { YOUR_TURN_MSG } from "../../../consts/consts";
 import { notifyYourTurn } from "../../../services/memoryGameService";
 import { enteredToGameFrom } from "../../../consts/strings";
 import { useProtectUrl } from "../../../hooks/useProtectUrl";
@@ -20,13 +18,11 @@ export default function MemoryGame() {
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
   const blocked = useProtectUrl();
-  const currentTurnPlayer = game.users?.[game.currentTurn];
   const previousTurnRef = useRef(null);
 
   console.log("📦 MemoryGame state:", game);
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
   const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
     roomKey,
     () => {
@@ -50,8 +46,7 @@ export default function MemoryGame() {
     if (
       !user?.id ||
       !game ||
-      !game.words?.heWords?.length ||
-      !game.words?.enWords?.length
+      !game.cards?.length
     )
       return;
     if (selectedCards.length === 2) {
@@ -110,9 +105,9 @@ export default function MemoryGame() {
 
   if (
     !game ||
-    !game.words ||
-    !Array.isArray(game.words.heWords) ||
-    !Array.isArray(game.words.enWords)
+    !game.cards ||
+    !Array.isArray(game.cards) ||
+    game.cards.length === 0
   ) {
     console.log("🕐 Waiting for game data...", game);
     return <div className="text-white text-xl">Loading game...</div>;
@@ -136,7 +131,7 @@ export default function MemoryGame() {
       </div>
       <div className="flex-1 flex  items-center justify-center">
         <div className="flex flex-wrap w-[1000px] gap-4 items-center justify-center py-6">
-          {[...game.words.heWords, ...game.words.enWords].map((card) => (
+          {game.cards.map((card) => (
             <WordCard
               key={card.id + card.text}
               word={card.text}

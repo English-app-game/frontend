@@ -1,4 +1,5 @@
 import { userS } from "../consts/strings";
+import { invalidEmail, onlyLetters, passwordLen, requiredEmail, requiredPassword, requiredUserName, selectAvatar } from "./utilsStrings";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -6,9 +7,9 @@ export function validateRegister(dataform) {
   const errors = {};
 
   if (!dataform.name.trim()) {
-    errors.name = "Username is required";
+    errors.name = requiredUserName;
   } else if (!/^[A-Za-z0-9]+$/.test(dataform.name)) {
-    errors.name = "Only letters allowed";
+    errors.name = onlyLetters;
   }
 
   validateEmail(dataform.email, errors);
@@ -16,7 +17,7 @@ export function validateRegister(dataform) {
   validatePassword(dataform.password, errors);
 
   if (!dataform.avatarImg.trim()) {
-    errors.avatarImg = "Please select an avatar";
+    errors.avatarImg = selectAvatar;
   }
 
   return errors;
@@ -24,17 +25,17 @@ export function validateRegister(dataform) {
 
 export function validateEmail(email, errors) {
   if (!email.trim()) {
-    errors.email = "Email is required";
+    errors.email = requiredEmail;
   } else if (!emailRegex.test(email)) {
-    errors.email = "Invalid Email";
+    errors.email = invalidEmail;
   }
 }
 
 export function validatePassword(password, errors) {
   if (!password.trim()) {
-    errors.password = "Password is required";
+    errors.password = requiredPassword;
   } else if (password.length < 8 || password.length > 16) {
-    errors.password = "Password must be 8–16 characters";
+    errors.password = passwordLen;
   }
 }
 
