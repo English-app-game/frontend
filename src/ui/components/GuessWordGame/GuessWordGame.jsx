@@ -18,7 +18,7 @@ import { useDispatch, useSelector  } from "react-redux";
 import { resetRoom } from "../../../store/slices/roomSlice";
 import { enteredToGameFrom } from "../../../consts/strings";
 import { toast } from "react-toastify";
-import { MAX_HINTS, MAX_SKIPS } from "../../../consts/consts";
+import { DEFAULT_LEVEL, MAX_HINTS, MAX_SKIPS } from "../../../consts/consts";
 
 export default function GuessWordGame({ handleBack }) {
   const [words, setWords] = useState([]); //get the words list
@@ -27,7 +27,7 @@ export default function GuessWordGame({ handleBack }) {
   const [guesses, setGuesses] = useState([]); //the letters that the user geuss from keyboard
   const [isCompleted, setIsCompleted] = useState(false);
   const { width, height } = useWindowSize(); //for the confeti
-  const [level, setLevel] = useState("easy");
+  const [level, setLevel] = useState(DEFAULT_LEVEL);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [hintCount, setHintCount] = useState(0);

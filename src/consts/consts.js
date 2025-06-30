@@ -31,6 +31,7 @@ export const MEMORY_GAME_PLAYER_LEFT= "memory-game/player-left";
 export const YOUR_TURN_MSG= "🎯 Your Turn!";
 export const MAX_HINTS = 4;
 export const MAX_SKIPS = 4;
+export const DEFAULT_LEVEL = "easy";
 
 
 export const MEMORY_GAME_JOIN = "memory-game/join";
