@@ -6,8 +6,6 @@ import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import ScoreResultModal from "./ScoreResultModal";
 import { notifyYourTurn } from "../../../services/memoryGameService";
 import { enteredToGameFrom } from "../../../consts/strings";
@@ -16,29 +14,13 @@ import memoryGameBG from "../../../assets/images/memoryGameBG.png";
 import RotateNotice from "../RotateNotice";
 import {useEndGameCleanup } from "../../../hooks/useEndGameCleanup";
 
-=======
-import ScoreResultModal  from "./ScoreResultModal";
-import { notifyYourTurn } from "../../../services/memoryGameService";
-import {useEndGameCleanup } from "../../../hooks/useEndGameCleanup";
->>>>>>> Stashed changes
-=======
-import ScoreResultModal  from "./ScoreResultModal";
-import { notifyYourTurn } from "../../../services/memoryGameService";
-import {useEndGameCleanup } from "../../../hooks/useEndGameCleanup";
->>>>>>> Stashed changes
 
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
   const blocked = useProtectUrl();
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   const scoreboard = useSelector((state) => state.memoryGame.scoreboard);
   const isHost = user.id === game.host._id;
   const gameEnded = game.end === true;
