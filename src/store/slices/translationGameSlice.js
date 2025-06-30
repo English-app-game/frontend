@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { blackColor, translationGame } from "../storeStrings";
 
 const initialState = {
   roomKey: "",
@@ -11,7 +12,7 @@ const initialState = {
 };
 
 const translationGameSlice = createSlice({
-  name: "translationGame",
+  name: translationGame,
   initialState,
   reducers: {
     setTranslationGameState: (state, { payload }) => {
@@ -24,14 +25,14 @@ const translationGameSlice = createSlice({
               userId: user.id,
               name: user.name,
               score: user.score || 0,
-              color: user.color || "#000000",
+              color: user.color || blackColor,
               isGuest: user.isGuest ? true : false,
             }))
           : Object.entries(state.users).map(([userId, user]) => ({
               userId,
               name: user.name,
               score: user.score || 0,
-              color: user.color || "#000000",
+              color: user.color || blackColor,
               isGuest: user.isGuest ? true : false,
             }));
     },

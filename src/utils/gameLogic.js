@@ -1,3 +1,4 @@
+
 export function pickMissingIndexes(word, num = 1) {
   if (!word) return [];
 

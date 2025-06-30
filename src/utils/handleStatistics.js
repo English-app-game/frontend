@@ -1,4 +1,5 @@
 import { BASE_URL} from "../consts/consts";
+import { failedToFetch } from "../consts/strings";
 
 export const fetchTop = async (path) => {
   try {
@@ -6,7 +7,7 @@ export const fetchTop = async (path) => {
     const data = await res.json();
     return data;
   } catch (error) {
-    console.error("Failed to fetch:", error);
+    console.error(failedToFetch, error);
   }
 };
 
