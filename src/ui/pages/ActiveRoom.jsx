@@ -2,14 +2,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import TranslationGame from "../components/TranslationGame/TranslationGame";
 import MemoryGame from "../components/MemoryGame/MemoryGame";
-import { useSocket } from "../../hooks/useSocket";
-import { useEffect } from "react";
-import { ROOMS_LIST } from "../../routes/routes_consts";
 import GuessWordGame from "../components/GuessWordGame/GuessWordGame";
 import { GameTypes } from "../../consts/gameTypes";
 import { ROUTES } from "../../routes/routes_consts";
 import { resetRoom } from "../../store/slices/roomSlice";
 import removeUserFromRoom from "../../services/room/removeUserFromRoom";
+import { enteredToGameFrom } from "../../consts/strings";
 
 export default function ActiveRoom() {
   const { id: roomKey, gameType } = useParams();
@@ -27,8 +25,7 @@ export default function ActiveRoom() {
 
     await removeUserFromRoom(roomKey, userId);
 
-    localStorage.removeItem("enteredFromWaitingRoom");
-    localStorage.removeItem("lastEnteredRoom");      
+    localStorage.removeItem(enteredToGameFrom);
     dispatch(resetRoom());
     navigate(ROUTES.ROOMS_LIST);
   };

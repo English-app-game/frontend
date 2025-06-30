@@ -9,13 +9,14 @@ import EndGame from "./EndGame/EndGame";
 import { GameTypes } from "../../../consts/gameTypes";
 import RotateNotice from "../RotateNotice";
 import { useNavigate } from "react-router-dom";
-import { ROOMS_LIST } from "../../../routes/routes_consts";
 import { toast } from "react-toastify";
+import { useProtectUrl } from "../../../hooks/useProtectUrl";
 
 
 export default function TranslationGame({ roomKey, handleBack }) {
   const navigate = useNavigate();
   const { emit } = useSocket();
+  const blocked = useProtectUrl();
 
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
@@ -85,15 +86,9 @@ export default function TranslationGame({ roomKey, handleBack }) {
     return () => toast.dismiss()
   },[])
 
+  if(blocked) return null;
   useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;
-
-    const enteredProperly = localStorage.getItem("enteredFromWaitingRoom");
-    const lastRoom = localStorage.getItem("lastEnteredRoom");
-    if (enteredProperly !== "true" || lastRoom !== roomKey) {
-      navigate(ROOMS_LIST);
-      return;
-    }
 
     joinTranslationGameRoom(emit, {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
@@ -111,7 +106,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
   }, [userId, hebWords]);
 
 
-  if (gameEnded) return <EndGame />;
+  if (gameEnded) return <EndGame emit={emit} />;
 
   return (
     <section
@@ -121,7 +116,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
       {/* Scoreboard & Exit */}
 
       <div className="row-span-1 flex justify-between items-center px-6 py-3 shadow-md">
-        <ScoreBoard handleBack={handleBack} />
+        <ScoreBoard handleBack={handleBack}  />
       </div>
 
       {/* Hebrew Words */}

@@ -1,19 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import {
   CREATE_ROOM,
-  LOGIN,
-  WAITING_ROOM,
-  ROOMS_LIST,
 } from "../../../routes/routes_consts";
 import { useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import PrimaryButton from "../../components/PrimaryButton";
 import InputField from "../../components/InputField";
-import { checkRoomAvailabilityByKey } from "../../../services/room/getRooms";
 import { useDispatch, useSelector } from "react-redux";
-import { joinUserToRoom } from "../../../services/room/joinUserToRoom";
 import { useWaitingRoomSocket } from "../../../hooks/useWaitingRoomSocket";
 import { handleJoinRoomClick } from "../../../utils/handleJoinRoomClick";
+import { validateLogin } from "../../../utils/validateFields";
+import ErrorText from "../../components/ErrorText";
 
 export default function Footer({ rooms }) {
   const userId = useSelector((store) => store.user.id);
@@ -50,12 +47,6 @@ export default function Footer({ rooms }) {
   function handleCreateRoomClick(e, setCreateError) {
     e.preventDefault();
 
-    function validateLogin() {
-      const userString = sessionStorage.getItem("user");
-      if (userString) return false;
-      return true;
-    }
-
     const isUserLoggedIn = validateLogin();
     if (!isUserLoggedIn) {
       setCreateError("Guest can't create a game!");
@@ -74,7 +65,7 @@ export default function Footer({ rooms }) {
           Create your <br /> private room
         </PrimaryButton>
         {createError && (
-          <p className="text-red-600 text-sm mt-1">{createError}</p>
+          <ErrorText children={createError}/> 
         )}
       </div>
 
