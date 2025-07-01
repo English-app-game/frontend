@@ -108,7 +108,7 @@ export default function MemoryGame() {
     console.log("🔒 lockBoard:", lockBoard);
     console.log("🧑‍🦱 userId:", user.id);
     console.log("🎯 current turn:", game?.currentTurn);
-    if (lockBoard || user.id !== game?.currentTurn) return;
+    if (lockBoard || user.id !== game?.currentTurn|| selectedCards.length >= 2) return;
     if (card.flipped || card.matched) return;
 
     requestFlipCard(user.id, card.id, card.lang, ({ success }) => {
