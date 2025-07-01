@@ -11,7 +11,8 @@ import { notifyYourTurn } from "../../../services/memoryGameService";
 import { useMemoryGameCleanup } from "../../../hooks/useMemoryGameCleanUp";
 import RotateNotice from "../RotateNotice";
 import {enteredToGameFrom} from "../../../consts/strings";
-import { memoryGameBGImage } from "../../../consts/strings";
+import { useProtectUrl } from "../../../hooks/useProtectUrl";
+import memoryGameBG from "../../../assets/images/memoryGameBG.png";
 
 
 export default function MemoryGame() {
@@ -26,6 +27,7 @@ export default function MemoryGame() {
   console.log("📦 MemoryGame state:", game);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+   const blocked = useProtectUrl();
 
   
   const [selectedCards, setSelectedCards] = useState([]);
@@ -44,6 +46,7 @@ export default function MemoryGame() {
   
   console.log("🧠 Rendering MemoryGame with:", game);
 
+  if(blocked) return null;
  useMemoryGameCleanup({
   roomKey,
   userId: user.id,
@@ -130,7 +133,7 @@ export default function MemoryGame() {
   return (
     <div
       className={`min-h-screen relative`}
-      style={{ backgroundImage: `url(${memoryGameBGImage})` }}
+      style={{ backgroundImage: `url(${memoryGameBG})` }}
     >
       <div className="relative h-35 z-10 flex items-center px-6 py-4">
         <div className="top-4 left-4">
