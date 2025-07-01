@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import WordCard from "./WordCard";
@@ -6,37 +6,54 @@ import ExitButton from "../../components/ExitButton";
 import { ROUTES } from "../../../routes/routes_consts";
 import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
-import ScoreResultModal from "./ScoreResultModal";
+import ScoreResultModal  from "./ScoreResultModal";
 import { notifyYourTurn } from "../../../services/memoryGameService";
-import { enteredToGameFrom } from "../../../consts/strings";
+import { useMemoryGameCleanup } from "../../../hooks/useMemoryGameCleanUp";
+import RotateNotice from "../RotateNotice";
+import {enteredToGameFrom} from "../../../consts/strings";
 import { useProtectUrl } from "../../../hooks/useProtectUrl";
 import memoryGameBG from "../../../assets/images/memoryGameBG.png";
-import RotateNotice from "../RotateNotice";
+
 
 export default function MemoryGame() {
   const { id: roomKey } = useParams();
   const user = useSelector((state) => state.user);
   const game = useSelector((state) => state.memoryGame);
-  const blocked = useProtectUrl();
+  const scoreboard = useSelector((state) => state.memoryGame.scoreboard);
+  const isHost = useMemo(() => user.id === game.host._id, [user.id, game.host._id]);
+  const gameEnded = useMemo(() => game.end === true, [game.end]);
+  const currentTurnPlayer = game.users?.[game.currentTurn];
   const previousTurnRef = useRef(null);
-
   console.log("📦 MemoryGame state:", game);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+   const blocked = useProtectUrl();
 
-  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
-    roomKey,
-    () => {
-      setShowScoreModal(true);
-    }
-  );
-
+  
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [winners, setWinners] = useState([]);
 
+  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
+  roomKey,
+  ( payload ) => {
+    console.log("✅ Game ended! Setting winners + opening modal", winners);
+    setWinners(winners);
+    setShowScoreModal(true);
+  }
+);
+  
   console.log("🧠 Rendering MemoryGame with:", game);
 
   if(blocked) return null;
+ useMemoryGameCleanup({
+  roomKey,
+  userId: user.id,
+  hostId: isHost ? user.id : "non-host",
+  scoreboard: gameEnded && isHost ? scoreboard : [],
+  gameType: game.gameTypeId,
+});
 
   useEffect(() => {
     console.log("🚀 useEffect running in useMemoryGameSocket");
@@ -94,7 +111,7 @@ export default function MemoryGame() {
     console.log("🔒 lockBoard:", lockBoard);
     console.log("🧑‍🦱 userId:", user.id);
     console.log("🎯 current turn:", game?.currentTurn);
-    if (lockBoard || user.id !== game?.currentTurn) return;
+    if (lockBoard || user.id !== game?.currentTurn|| selectedCards.length >= 2) return;
     if (card.flipped || card.matched) return;
 
     requestFlipCard(user.id, card.id, card.lang, ({ success }) => {
@@ -141,7 +158,7 @@ export default function MemoryGame() {
           ))}
         </div>
       </div>
-      {showScoreModal && <ScoreResultModal onClose={handleExit} />}
+      {showScoreModal && <ScoreResultModal winners={winners}  onClose={handleExit} />}
       <RotateNotice />
     </div>
   );
