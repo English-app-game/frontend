@@ -18,7 +18,7 @@ export default function GameTypeButton({ gameType, isSelected, onClick }) {
   return (
     <button
   onClick={() => onClick(gameType._id)}
-  className={`w-20 h-20 p-0 rounded-xl border-4 overflow-hidden transition transform
+  className={`w-16 h-16 sm:w-16 sm:h-16 md:w-24 md:h-24 p-0 rounded-xl border-4 sm:border-4 overflow-hidden transition transform
     ${isSelected
       ? "border-yellow-500 shadow-md scale-105"
       : "border-gray-300 hover:scale-105"}
