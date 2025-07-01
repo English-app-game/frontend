@@ -8,7 +8,10 @@ import { useMemoryGameSocket } from "../../../hooks/useMemoryGameUseSocket";
 import LiveScore from "./LiveScore";
 import ScoreResultModal  from "./ScoreResultModal";
 import { notifyYourTurn } from "../../../services/memoryGameService";
-import {useEndGameCleanup } from "../../../hooks/useEndGameCleanup";
+import { useMemoryGameCleanup } from "../../../hooks/useMemoryGameCleanUp";
+import RotateNotice from "../RotateNotice";
+import {enteredToGameFrom} from "../../../consts/strings";
+import { memoryGameBGImage } from "../../../consts/strings";
 
 
 export default function MemoryGame() {
@@ -24,20 +27,24 @@ export default function MemoryGame() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
-    roomKey,
-    () => {
-      setShowScoreModal(true);
-    }
-  );
-
+  
   const [selectedCards, setSelectedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [winners, setWinners] = useState([]);
+
+  const { emit, requestFlipCard, requestMatchCheck } = useMemoryGameSocket(
+  roomKey,
+  ( payload ) => {
+    console.log("✅ Game ended! Setting winners + opening modal", winners);
+    setWinners(winners);
+    setShowScoreModal(true);
+  }
+);
   
   console.log("🧠 Rendering MemoryGame with:", game);
 
-  useEndGameCleanup({
+ useMemoryGameCleanup({
   roomKey,
   userId: user.id,
   hostId: isHost ? user.id : "non-host",
@@ -123,7 +130,7 @@ export default function MemoryGame() {
   return (
     <div
       className={`min-h-screen relative`}
-      style={{ backgroundImage: `url(${memoryGameBG})` }}
+      style={{ backgroundImage: `url(${memoryGameBGImage})` }}
     >
       <div className="relative h-35 z-10 flex items-center px-6 py-4">
         <div className="top-4 left-4">
@@ -148,7 +155,7 @@ export default function MemoryGame() {
           ))}
         </div>
       </div>
-      {showScoreModal && <ScoreResultModal onClose={handleExit} />}
+      {showScoreModal && <ScoreResultModal winners={winners}  onClose={handleExit} />}
       <RotateNotice />
     </div>
   );

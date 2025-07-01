@@ -2,7 +2,7 @@ import PrimaryButton from "../PrimaryButton";
 import Header from "../Header";
 import { useSelector } from "react-redux";
 
-export default function ScoreResultModal({ onClose }) {
+export default function ScoreResultModal({ winners ,onClose }) {
   const scoreboard = useSelector((state) => state.memoryGame.scoreboard);
 
   return (

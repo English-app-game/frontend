@@ -20,13 +20,17 @@ export function useMemoryGameSocket(roomKey,onGameEnd) {
     dispatch(setMemoryGameState(gameState));
   }, [dispatch]);
 
-  const handleGameEnd = useCallback(({ winners, finalScore }) => {
+const handleGameEnd = useCallback((payload) => {
+  const { winners, finalScore, end } = payload;
+
   dispatch(setMemoryGameState({
-    users: Object.fromEntries(winners.map(p => [p.userId || p.id, p]))
+    users: Object.fromEntries(winners.map(p => [p.userId || p.id, p])),
+    end: end ?? true,
   }));
 
-  if (onGameEnd) onGameEnd(winners);
+  if (onGameEnd) onGameEnd(payload); 
 }, [dispatch, onGameEnd]);
+
 
   // --- Event listeners setup ---
   const startListeners = useCallback(() => {

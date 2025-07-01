@@ -1,3 +1,4 @@
+import memoryGameBG from "../assets/images/memoryGameBG.png";
 export const enteredToGameFrom = "enteredFromWaitingRoom";
 export const userS = "user";
 export const waitingRoomS = "waitingRoom";
@@ -7,3 +8,4 @@ export const notFound = "404 not found";
 export const stringS = "string";
 export const serverError = "Server error, please try again later.";
 export const failedToFetch = "Failed to fetch:";
+export const memoryGameBGImage = memoryGameBG;
