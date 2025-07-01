@@ -82,7 +82,7 @@ const CreateRoom = () => {
   };
 
   return (
-    <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4">
+    <div className="bg-[url('/homePage.png')] bg-cover min-h-screen flex items-center justify-center px-4 py-8 sm:py-4">
       <SecondaryButton
         text={"EXIT"}
         onclick={handleExitCreateRoom}
@@ -90,10 +90,10 @@ const CreateRoom = () => {
       />
       <BlueBox
         size="large"
-        className="text-center w-[50rem] min-h-[40rem] p-4 overflow-y-auto max-h-[95vh]"
+        className="text-center w-[80%] sm:w-[70%] md:w-[80%] lg:w-[50%] max-w-4xl h-auto min-h-[45rem] sm:min-h-[30rem] md:min-h-[45rem] lg:min-h-[40rem] p-6 sm:p-4 md:p-8 lg:p-8"
       >
         <Header
-          className="text-4xl font-extrabold mb-6 uppercase"
+          className="text-2xl sm:text-2xl md:text-4xl lg:text-4xl font-extrabold mb-6 sm:mb-4 md:mb-6 uppercase"
           text={`CREATE YOUR GAME ROOM`}
         ></Header>
         <GameTypeSelector gameType={gameType} setGameType={setGameType} />
@@ -102,7 +102,7 @@ const CreateRoom = () => {
         <PrimaryButton
           text="LET'S GO"
           onClick={handleCreateRoom}
-          className="bg-green-400 cursor-pointer sm:w-auto px-4 py-2 "
+          className="bg-green-400 cursor-pointer w-full sm:w-auto px-6 py-3 sm:px-4 sm:py-2 md:px-8 md:py-4 text-base sm:text-base md:text-lg mt-4 sm:mt-4"
         />
       </BlueBox>
     </div>
