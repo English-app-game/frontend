@@ -12,15 +12,18 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useProtectUrl } from "../../../hooks/useProtectUrl";
 
-
-export default function TranslationGame({ roomKey, handleBack }) {
+export default function TranslationGame({
+  roomKey,
+  handleBack,
+  playersAmount,
+  level,
+}) {
   const navigate = useNavigate();
   const { emit } = useSocket();
   const blocked = useProtectUrl();
 
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
-
   const gameEnded = useSelector((store) => store.translationGame.end);
   const enWords = useSelector((store) => store.translationGame.enWords);
   const hebWords = useSelector((store) => store.translationGame.hebWords);
@@ -83,10 +86,13 @@ export default function TranslationGame({ roomKey, handleBack }) {
   console.log(gameTypeId);
 
   useEffect(() => {
-    return () => toast.dismiss()
-  },[])
+    return () => toast.dismiss();
+  }, []);
 
-  if(blocked) return null;
+  if (blocked) return null;
+
+  console.log(playersAmount, level);
+
   useEffect(() => {
     if (!roomKey || !userId || !gameTypeId) return;
 
@@ -94,6 +100,8 @@ export default function TranslationGame({ roomKey, handleBack }) {
       roomKey: `${roomKey}/${GameTypes.TRANSLATION}`,
       user,
       gameTypeId,
+      playersAmount: playersAmount || 2,
+      level: level || "easy",
     });
   }, [roomKey, userId, emit, user]);
 
@@ -105,7 +113,6 @@ export default function TranslationGame({ roomKey, handleBack }) {
     setSelectedHebrewWord(heldWord ? heldWord.id : null);
   }, [userId, hebWords]);
 
-
   if (gameEnded) return <EndGame emit={emit} />;
 
   return (
@@ -116,7 +123,7 @@ export default function TranslationGame({ roomKey, handleBack }) {
       {/* Scoreboard & Exit */}
 
       <div className="row-span-1 flex justify-between items-center px-6 py-3 shadow-md">
-        <ScoreBoard handleBack={handleBack}  />
+        <ScoreBoard handleBack={handleBack} />
       </div>
 
       {/* Hebrew Words */}

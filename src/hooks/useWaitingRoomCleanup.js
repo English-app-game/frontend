@@ -5,13 +5,21 @@ import { ROOMS_LIST, ROUTES } from "../routes/routes_consts";
 import { useDispatch } from "react-redux";
 import { resetRoom } from "../store/slices/roomSlice";
 import { enteredToGameFrom } from "../consts/strings";
-import { beforeunload, BROWSER_CLOSE, COMPONENT_UNMOUNT, errorDuringWaitingRoomCleanup, EXIT_BUTTON, unknown, URL_CHANGE } from "./hooksStrings";
+import {
+  beforeunload,
+  BROWSER_CLOSE,
+  COMPONENT_UNMOUNT,
+  errorDuringWaitingRoomCleanup,
+  EXIT_BUTTON,
+  unknown,
+  URL_CHANGE,
+} from "./hooksStrings";
 
 // Cleanup reason constants
 const CLEANUP_REASONS = {
   UNKNOWN: unknown,
   URL_CHANGE: URL_CHANGE,
-  BROWSER_CLOSE: BROWSER_CLOSE, 
+  BROWSER_CLOSE: BROWSER_CLOSE,
   COMPONENT_UNMOUNT: COMPONENT_UNMOUNT,
   EXIT_BUTTON: EXIT_BUTTON,
 };
@@ -31,34 +39,50 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
     currentUserRef.current = userId;
   }, [roomKey, userId]);
 
-  const performCleanup = useCallback(async (reason = CLEANUP_REASONS.UNKNOWN) => {
-    const currentRoomKey = currentRoomRef.current;
-    const currentUserId = currentUserRef.current;
+  const performCleanup = useCallback(
+    async (reason = CLEANUP_REASONS.UNKNOWN) => {
+      const currentRoomKey = currentRoomRef.current;
+      const currentUserId = currentUserRef.current;
 
-    if (cleanupPerformedRef.current || !currentRoomKey || !currentUserId || !hasJoinedRoom) {
-      return;
-    }
-
-    cleanupPerformedRef.current = true;
-
-    try {
-      // Only send LEAVE event for intentional exits, not page refreshes
-      if (reason === CLEANUP_REASONS.EXIT_BUTTON || reason === CLEANUP_REASONS.URL_CHANGE) {
-        await leaveWaitingRoom(currentRoomKey, currentUserId);
-      } else {
-        // Don't send LEAVE event - let the socket disconnection handle it naturally
-        // The backend will treat this as a temporary disconnection
+      if (
+        cleanupPerformedRef.current ||
+        !currentRoomKey ||
+        !currentUserId ||
+        !hasJoinedRoom
+      ) {
+        return;
       }
-      dispatch(resetRoom());
-    } catch (error) {
-      console.error(errorDuringWaitingRoomCleanup, error);
-    }
-  }, [leaveWaitingRoom, hasJoinedRoom, dispatch]);
+
+      cleanupPerformedRef.current = true;
+
+      try {
+        // Only send LEAVE event for intentional exits, not page refreshes
+        if (
+          reason === CLEANUP_REASONS.EXIT_BUTTON ||
+          reason === CLEANUP_REASONS.URL_CHANGE
+        ) {
+          await leaveWaitingRoom(currentRoomKey, currentUserId);
+        } else {
+          // Don't send LEAVE event - let the socket disconnection handle it naturally
+          // The backend will treat this as a temporary disconnection
+        }
+        setTimeout(() => {
+          dispatch(resetRoom());
+        }, 2000);
+      } catch (error) {
+        console.error(errorDuringWaitingRoomCleanup, error);
+      }
+    },
+    [leaveWaitingRoom, hasJoinedRoom, dispatch]
+  );
 
   useEffect(() => {
     const currentPath = location.pathname;
-    const isLeavingWaitingRoom = hasJoinedRoom && roomKey && !currentPath.includes(`${ROOMS_LIST}/${roomKey}`);
-    
+    const isLeavingWaitingRoom =
+      hasJoinedRoom &&
+      roomKey &&
+      !currentPath.includes(`${ROOMS_LIST}/${roomKey}`);
+
     if (isLeavingWaitingRoom) {
       performCleanup(CLEANUP_REASONS.URL_CHANGE);
     }
@@ -68,7 +92,9 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
     if (!hasJoinedRoom || !roomKey || !userId) return;
 
     const handleBeforeUnload = async (event) => {
-      dispatch(resetRoom());
+      setTimeout(() => {
+        dispatch(resetRoom());
+      }, 2000);
     };
 
     window.addEventListener(beforeunload, handleBeforeUnload);
@@ -95,4 +121,4 @@ export function useWaitingRoomCleanup(roomKey, userId, hasJoinedRoom) {
   }, [performCleanup, navigate]);
 
   return { exitRoom, performCleanup };
-} 
+}

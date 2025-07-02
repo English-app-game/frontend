@@ -9,8 +9,6 @@ export function emitMatchWord(emit, { roomKey, hebWordId, englishId, userId }) {
   });
 }
 
-
-
-export function joinTranslationGameRoom(emit, { roomKey, user, gameTypeId }) {
-  emit(TRANSLATION_GAME_EVENTS.JOIN, { roomKey, user, gameTypeId });
+export function joinTranslationGameRoom(emit, { roomKey, user, gameTypeId, playersAmount, level }) {
+  emit(TRANSLATION_GAME_EVENTS.JOIN, { roomKey, user, gameTypeId, playersAmount, level });
 }
