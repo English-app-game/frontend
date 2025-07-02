@@ -7,6 +7,7 @@ const initialState = {
   users: {}, // { [userId]: { socketId, id, name, email, avatarImg, color } }
   scoreboard: [], // [{ userId, name, score }]
   words: [], // [{ id, heb, eng, lock, disabled, heldBy }]
+  level: "",
   end: false,
   gameTypeId: "",
 };
