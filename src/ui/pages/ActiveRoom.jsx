@@ -15,6 +15,8 @@ export default function ActiveRoom() {
   const user = useSelector((store) => store.user);
   const { id: userId } = user;
   const dispatch = useDispatch();
+  const playersAmount = useSelector((store) => store.room.amountOfPlayers);
+  const level = useSelector((store) => store.room.level);
 
   const handleBack = async () => {
     console.log("test");
@@ -37,14 +39,28 @@ export default function ActiveRoom() {
   const normalizedGameType = gameType.toLowerCase().replace(/[_ ]/g, "");
 
   if (normalizedGameType === "translation") {
-    return <TranslationGame roomKey={roomKey} handleBack={handleBack} />;
+    return (
+      <TranslationGame
+        roomKey={roomKey}
+        handleBack={handleBack}
+        playersAmount={playersAmount}
+        level={level}
+      />
+    );
   }
   if (normalizedGameType === "memorygame") {
     return <MemoryGame roomKey={roomKey} handleBack={handleBack} />;
   }
 
   if (gameType.toLowerCase() === GameTypes.TRANSLATION)
-    return <TranslationGame handleBack={handleBack} roomKey={roomKey} />;
+    return (
+      <TranslationGame
+        roomKey={roomKey}
+        handleBack={handleBack}
+        playersAmount={playersAmount}
+        level={level}
+      />
+    );
 
   if (gameType.toLowerCase() === GameTypes.GUESS_WORD_GAME)
     return <GuessWordGame handleBack={handleBack} roomKey={roomKey} />;
